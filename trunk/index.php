@@ -145,9 +145,9 @@ if ($idp == "SAML") {
 					</div>
 					<span>User Assignment</span>
 					<div>
-						<input id="newUserInput" style="margin: 3px 0 3px 13px;" type="text" value="" size="15" />
+<!--						<input id="newUserInput" style="margin: 3px 0 3px 13px;" type="text" value="" size="15" />
 						<button id="addUserButton">Add User</button>
-						<div class="clear"></div>
+						<div class="clear"></div>	-->
 					</div>
 				</div>
             </section>

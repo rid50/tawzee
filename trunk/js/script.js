@@ -1978,7 +1978,7 @@ userAssignment = function() {
 									val = o.displayName;
 									return true;
 								}
-								return false;
+// !!!!!!								return false;
 							});
 
 							//$("#jstree>ul>li:last-child>ul>li:last-child>ul").append('<li rel="employee"><a href="#">' + val + '<span class="userListHiddenElement">' + $(this).text() + '</span></a></li>');
@@ -1995,13 +1995,19 @@ userAssignment = function() {
 		//$("#userList>div>div").draggable({helper: "clone", cursor: "move", revert: "valid", scroll: false, opacity: 0.7, zIndex: 100  });
 		//$("#sortable>ul").disableSelection();
 		
-		$("#userList").jstree({
+		$("#userList")
+		.on("before_open.jstree", function (e, data) {
+		})
+		.jstree({
 			"core" : {
 				//"themes" : { "stripes" : true },
 				"multiple" : false,
 				"check_callback" : function (operation, node, node_parent, node_position, more) {
 					//console.log(operation);
 					switch(operation) {
+						case "create_node":
+							return true;
+							break;
 						case "delete_node":
 							return true;
 							break;
@@ -2011,15 +2017,30 @@ userAssignment = function() {
 				}
 			},
 			"contextmenu" : {         
-				"items": function($node) {
+				"items": function(node) {
 					var tree = $("#userList").jstree(true);
 					return {
+						"Add": {
+							"separator_before": false,
+							"separator_after": false,
+							"label": "Add New User",
+							"action": function (obj) {
+								addNewUser(tree);
+							}
+						},
 						"Remove": {
 							"separator_before": false,
 							"separator_after": false,
 							"label": "Remove",
-							"action": function (obj) { 
-								tree.delete_node($node);
+							"action": function (obj) {
+								userInfo.some(function(o, index) {
+									if (index != 0 && o.loginName == node.data.loginname) {
+										userInfo.splice(index, 1);
+										return true;
+									}
+								});
+
+								tree.delete_node(node);
 							}
 						}
 					};
@@ -2154,10 +2175,10 @@ userAssignment = function() {
 								var exit = false;
 								//var rootnodes = this.element;
 								var nodes = this.element.jstree(true).get_json("#", {flat:true});
-								nodes.forEach(function(o) {
+								nodes.some(function(o) {
 									if (o.data.loginname == node.data.loginname) {
 										exit = true;
-										return false;
+										return true;
 									}
 								})
 
@@ -2455,26 +2476,64 @@ saveActors = function() {
 		});
 }
 
+this.addNewUser = function(jstree) {
+	var form = $("<div/>");
+	var html = '<input id="newUserInput" style="margin: 3px 0 3px 13px;" type="text" value="" size="15" />';
+				//'<button id="addUserButton">Add User</button>';
+    form.html(html);
+	form.data(jstree);
+    form.dialog({
+		title:$.i18n.prop('EnterUserLoginName'),
+		dialogClass: "no-close",
+        height: "auto", //640,
+        width: 300,
+        modal: true,
+		autoOpen: true,
+		resizable: false,
+		open: function( event, ui ) {
+			$(this).dialog( "option", "buttons",
+				[{	text: "Ok",
+					id: 'addUserButton',
+					click: function() {
+						//$( this ).dialog( "destroy" )
+					}
+				},
+				{	text: "Cancel",
+					click: function() {
+						$( this ).dialog( "destroy" )
+					}
+				}]
+			); 
+		},
+		close: function( event, ui ) {
+		},
+    });
+}
 
 $(function() {
 	$(document).on("click", "#addUserButton", function(){
 		//$("#addUserError").detach();
 		error("");
 		//var obj = $("#userList>input");
-		var obj = $("#newUserInput");
-		if (obj.val().length == 0)
+		var input = $("#newUserInput");
+		var loginname = input.val();
+		
+		var jstree = $(input.parent()).data();
+		$(input.parent()).dialog("destroy");
+		
+		if (loginname.length == 0)
 			return;
 
 		var found = false;
-		userInfo.some(function(o) {
-			if (obj.val() == o.loginName) {
+		userInfo.some(function(o, index) {
+			if (index != 0 && loginname == o.loginName) {
 		//html = ('<option {0} disabled="disabled" value="' + i + '">' + nam + '</option>').format((i + 1 == $(date).length) ? 'selected="selected"' : '');
 			
 				//$(".leftSection").append('<div id="addUserError" style="position:absolute; top:0px; right:10px; color:red; font-size:1.3em;">The user ' + obj.val() + ' already exists</div>');
 				//$(".leftSection").append(('<div id="addUserError" style="position:absolute; top:0px; right:10px; color:red; font-size:1.3em;">The user {0} already exists</div>').format(obj.val()));
 				//$(".leftSection").append('<div id="addUserError" style="position:absolute; top:0px; right:10px; color:red; font-size:1.3em;">' + (jQuery.i18n.prop("UserExists")).format(obj.val()) + '</div>');
-				error((jQuery.i18n.prop("UserExists")).format(obj.val()));
-				obj.val("");
+				error((jQuery.i18n.prop("UserExists")).format(loginname));
+				//obj.val("");
 				found = true;
 				return true;
 			}
@@ -2483,15 +2542,15 @@ $(function() {
 		if (found)
 			return;
 		
-		getUserIdentities("GetUserInfo",  [{loginName: obj.val()}], function () {
+		getUserIdentities("GetUserInfo",  [{loginName: loginname}], function () {
 			var index = userInfo.length;
 			if (userInfo[index - 1].loginName == userInfo[index - 1].displayName) {
 				//$(".leftSection").append('<div id="addUserError" style="position:absolute; top:0px; right:10px; color:red; font-size:1.3em;">The user ' + obj.val() + ' does not exist</div>');
 				//$(".leftSection").append(('<div id="addUserError" style="position:absolute; top:0px; right:10px; color:red; font-size:1.3em;">The user {0} does not exist</div>').format(obj.val()));
 				//$(".leftSection").append('<div id="addUserError" style="position:absolute; top:0px; right:10px; color:red; font-size:1.3em;">' + ($.i18n.prop("UserDoesNotExist")).format(obj.val()) + '</div>');
-				error((jQuery.i18n.prop("UserDoesNotExist")).format(obj.val()));
+				error((jQuery.i18n.prop("UserDoesNotExist")).format(loginname));
 				userInfo.splice(index - 1, 1);
-				obj.val("");
+				//obj.val("");
 				found = true;
 				return false;			// ???????
 			}
@@ -2499,14 +2558,17 @@ $(function() {
 			if (found)
 				return;
 
-			fillUserList();
+			//fillUserList();
 			addToUserLoginCombo();
 
 			var employees = $(rootActors).find("employees");
-			employees.append(createSpaceElement(1));
-			employees.append(createElement("employee", obj.val()));
-			employees.append(createNewLineElement(1));
-			obj.val("");
+			employees.append(xmlHelper.createSpaceElement(1));
+			employees.append(xmlHelper.createElement("employee", loginname));
+			employees.append(xmlHelper.createNewLineElement(1));
+			
+			jstree.create_node("#", {'text':userInfo[index - 1].displayName, 'data-loginname':userInfo[index - 1].loginName}, "first");
+
+			//obj.val("");
 			
 			$.post("json_db_crud_pdo.php", {'func':'saveActors', 'param' : $.xml(rootActors)})
 				.done(function( data ) {
@@ -3033,7 +3095,7 @@ function alert(text) {
 
 this.confirm = function(text, param, func) {
 	var form = $("<div/>");
-	html = '<div>' + $.i18n.prop(text) + '</div>';
+	var html = '<div>' + $.i18n.prop(text) + '</div>';
     form.html(html);
     form.dialog({
 		title:$.i18n.prop('Confirm'),
@@ -3288,7 +3350,7 @@ function toggleLanguage(lang, dir) {
 		}				
 	});
 }
-	
+/*	
 this.confirm = function(text, param, func) {
 	var form = $("<div/>");
 	html = '<div>' + $.i18n.prop(text) + '</div>';
@@ -3332,3 +3394,4 @@ this.confirm = function(text, param, func) {
 		},
     });
 }
+*/
