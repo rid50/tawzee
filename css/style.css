@@ -160,7 +160,7 @@ header {
 	//margin-bottom: 10px;
 }
 
-div#main {
+#main-div {
 	//background: url(../images/bg.png) no-repeat center center fixed; 
 	background-image: url(../images/bg.png);
 	background-repeat:no-repeat;
@@ -485,6 +485,13 @@ input[type='checkbox'] {
 	border-style: none;
 }
 /*
+.accessRejected {
+	background-image: url(images/rejected.png) !important;
+	background-position:0px 0px !important;
+	background-repeat:repeat !important;
+}
+
+
 #error-box, #error-box2 {
 	color: red;
 	background-color: transparent;
