@@ -1,0 +1,493 @@
+body {
+	font-family: Verdana, arial, sans-serif; 
+	color: #000;
+	background-color: #eee;
+	font-size: 80%;
+	margin:0px;
+	padding:0px;
+	/*line-height: 1.3em;*/
+}
+
+form {
+	margin:0;
+	padding:0;
+}
+
+h3 {
+	font-weight: normal;
+	//font-size: 1.2em;
+	margin: 0; 
+}
+
+a {
+	color: #000;
+	//text-decoration: none;
+}
+
+a:active {
+	position: relative;
+	top: 1px;
+}
+
+p {
+	margin-top: 0px;	
+}
+
+img {
+	border: none;
+}
+
+ul {
+	list-style-type: none;
+	padding: 10px 10px 5px 10px;
+	margin: 0px;
+}
+
+li {
+	list-style-type: none;
+}
+
+hr {
+	margin-top:4px;
+	height:12px;
+	border:0;
+	box-shadow: inset 0 12px 12px -12px rgba(0,0,0,0.5);
+}
+
+.forms table th, .forms table  td
+ {
+	table-layout:fixed;
+	border:1px solid black;
+	border-collapse:collapse;
+	padding:5px;
+	text-align:center;
+ }
+
+ .rid50-datepicker { margin-left:2px !important; margin-right:2px !important; width:105px;}
+
+ #application-number { width:140px;}
+
+ //input.text, input[type="radio"], button { margin-bottom:10px; padding: .4em; }
+input.text, input[type="radio"] { margin-bottom:10px; padding: .4em; }
+
+form input.text { margin-right:20px;}
+#residence-total-area, #construction-area, #ac-area, #current-load, #extra-load, #load-after-delivery, #conductive-total-load{ margin-right:0px; !important}
+label[for="square-meters"] { margin-right:20px;}
+label[for="kilo-watt"] { margin-right:20px;}
+
+#app-number-search { margin:0px !important;}
+form input[type="radio"] { margin-left:20px;}
+
+//#print { position: absolute; top:20px; right:20px;}
+
+.ui-autocomplete {
+	z-index:1000;
+	max-height: 200px;
+	overflow-y: auto;
+	/* prevent horizontal scrollbar */
+	overflow-x: hidden;
+}
+
+//.ui-jqgrid .ui-state-highlight { background: #f4c00b; }
+.ui-jqgrid .ui-state-highlight { background: Moccasin; }
+
+fieldset.possibility {
+  //-webkit-box-sizing: border-box;
+  //-moz-box-sizing: border-box;
+  //box-sizing: border-box;
+	padding: 10px;
+	border: 1px #ccc solid;
+	border-radius: 4px;
+}
+
+#add, #newForm, #editForm, #save, #print, #printForm, #delete
+{
+    background-repeat: no-repeat;
+	background-color:transparent;
+    border: none;
+	width:24px;
+	height:24px;
+	margin:0 10px;
+}
+
+#add {background-image: url(../images/add24.png)}
+#save {background-image: url(../images/save24.png)}
+#print, #printForm {background-image: url(../images/print24.png)}
+#delete {background:url(../images/sprite.png) 0 -72px;}   
+#newForm {background-image: url(../images/new24.png)} 
+#editForm {background-image: url(../images/edit24.png)}
+
+.addRow, .deleteRow
+{
+    background-repeat: no-repeat;
+	background-color:transparent;
+    border: none;
+}
+
+.addRow, #sync
+{
+	width:16px;
+	height:16px;
+}
+
+#sync {
+	background-image: url(../images/current_row.png);
+	top: -6px;
+}
+
+.deleteRow
+{
+	width:24px;
+	height:16px;
+}
+
+.addRow {background-image: url(../images/add24.png)}
+.deleteRow {background:url(../images/sprite.png) 0 -72px;}   
+
+#wrapper  {
+	//display: inline-block;
+	//font-size: 110%;
+	width: 1130px;
+	//height: 100%;	
+	margin: auto;
+	//padding: 0 10px 0;
+	//border: 1px solid red;
+}
+
+header {
+	display: inline-block;
+	width: inherit;
+	//margin-bottom: 10px;
+}
+
+div#main {
+	//background: url(../images/bg.png) no-repeat center center fixed; 
+	background-image: url(../images/bg.png);
+	background-repeat:no-repeat;
+	background-position:left bottom;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	
+	height: 620px;
+	min-height: 620px;
+	//border: 1px solid black;
+	//border-color:#000;
+	//border-style:solid;
+	//border-width:2px 4px;	
+	//font-size: 1.0em;
+	//padding: 10px;
+
+	display: inline-block;
+	//float: left;
+	//border: 1px solid red;
+	//clear: both;
+	//margin-bottom: 20px;
+	//width: 840px;
+
+}
+
+section#left-section {
+	box-shadow: 4px 4px 2px #999;
+	border: 1px solid #000;
+	//font-size:1em;
+	//background-color: #f0f0f0;
+	//background-color: #eee;
+
+	width: 900px;
+	height: inherit;
+	position: relative;
+	overflow: auto;
+
+	margin-right: 6px;
+}
+
+section#right-section {
+	box-shadow: 4px 4px 2px #999;
+	border: 1px solid #000;
+	padding: 0 6px;
+	font-size:0.9em;
+	
+	text-align:right;
+	width: 200px;
+	height: inherit;
+	//position: relative
+}
+
+#main-form, #load-form { position: relative; }
+
+.psc-logo {
+	//float: inherit;
+	//position:relative;
+}
+
+#flagUK, #flagKuwait {
+	padding: 10px;
+	padding-top: 65px;
+	//clear: left;
+	float: inherit;
+	//position:relative;
+}
+
+.floatLeft {
+	//position:relative;
+	float:left;
+	//clear: right;	
+}
+
+.floatRight {
+	//position:relative;
+	float:right;
+	//clear: left;
+}
+
+.clear {
+	height: auto !important;
+	clear: both;
+}
+
+footer {
+	clear: both;
+	float: left;
+	width: inherit;
+	margin-top: 20px;
+}
+
+.ui-accordion .ui-accordion-content {
+	padding: 1em 8px 1em 0px;
+	overflow: hidden;
+}
+
+input[type='checkbox'] {
+	//vertical-align: bottom;
+	//margin-bottom: -10px;
+}
+
+#accordion {
+	margin-top:6px;
+	//font-size:0.85em;	
+}
+
+#accordion>span {
+	text-align: right;
+}
+
+#flexslider-container {margin: 4px;}
+#report-container { position: absolute; }
+
+.certificate-images { float:right};
+
+.tooltip-for-image {
+//	text-decoration:none;
+//	position:relative;
+}
+ 
+.tooltip-for-image span
+{
+  display:none;
+  -moz-border-radius:6px;
+  -webkit-border-radius:6px;
+  border-radius:6px;
+  border:1px solid gray;
+
+  //color:black;
+  background:white; 
+}
+ 
+.tooltip-for-image span img
+{
+//  float:right;
+//  margin:0px 8px 8px 0;
+	width: auto; 
+	height: 100px;
+}
+ 
+ 
+.certificate-images:hover span
+{
+  display:block;
+  position:absolute;
+  right:0;
+  bottom:0;
+  z-index:1000;
+  //height:100px;
+  //width:auto;
+  //max-width:320px;
+  //min-height:100px;
+//  border:1px solid black;
+  //margin-top:12px;
+  margin:20px;
+  //overflow:hidden;
+  //padding:8px;
+}
+
+#signatureImages  {
+//	text-align:right;
+	height:320px;
+	overflow:auto;
+	//padding-right:4px;
+//	margin-bottom:0.6em;
+}
+
+#signatureImages div {
+	margin:2px;
+	position:relative;
+}
+
+//#clonediv {
+//	position:absolute;
+//}
+
+.img-signature {
+	display: block;
+	margin:0 auto;
+	//-moz-border-radius:6px;
+	//-webkit-border-radius:6px;
+	//border-radius:6px;
+	//border:1px solid gray;
+  
+	//border: 2px outset gray;
+	width: auto;
+	height: 120px;	// 500/300 * 72
+	margin-bottom: 8px;
+	cursor:pointer;
+}
+
+#attachmentTitles  {
+	text-align:right;
+	height:264px;
+	overflow:auto;
+	padding-right:4px;
+	//margin:0 auto; 
+//	margin-bottom:0.6em;
+}
+
+#attachmentTitles a {
+	text-decoration: none;
+}
+
+/*
+#amazingslider {
+	border: 1px solid black;
+	//position: relative;
+	width: 890px;
+	height: 610px;
+	overflow: auto;
+
+}
+*/
+/*
+.amazingslider-nav-0 {
+	width:230px !important;
+}
+
+.amazingslider-bullet-wrapper-0>div {
+	border: 1px solid black;
+}
+
+.amazingslider-nav-featuredarrow-0 {
+	border-width: 0px !important;
+}
+*/
+#divGrid {
+	padding: 20px;
+	//margin-left:4px;
+	//display:none;
+	//font-size:0.8em;	
+}
+
+#myjqGrid {
+	//padding-top: 15px;
+	//padding: 10px 10px 0 10px;
+	//width: 682px;
+}
+
+.ui-jqgrid tr.jqgrow td {
+	font-size:1.1em
+}
+
+.gridAltRows {
+	background: #eee;
+}
+
+#jstree {
+	//border: 1px solid #000;
+	float: left;
+	margin: 20px 0px 20px 20px;
+	//margin:20px;
+	width: 300px;
+	//display: none;
+}
+
+//.userListHiddenElement {display: none}
+
+#userList {
+	box-shadow: 4px 4px 2px #999;
+	border: 1px solid #000;
+
+	float: left;
+	overflow: auto;
+	margin: 20px 0 20px 40px;
+
+	//text-align:center;
+	width: 300px;
+	height: inherit;
+	//height: 382px;
+	//display: none;
+}
+/*
+#userList ul {
+	padding: 0 10px 5px 10px;
+	//z-index: -1000 !important;
+}
+
+#userList li  {
+	//background-color:transparent !important;
+	white-space:nowrap;
+	margin: 0px 3px 3px 3px; 
+	padding: 3px;
+	cursor: move;
+	//padding-left: 1.5em; 
+	//font-size: 1.4em; 
+	//height: 18px; 
+}
+*/
+#addUserButton {
+	height: 22px;
+	width: 100px;
+	margin-bottom: 4px;
+}
+
+#addUserButton>span {
+	padding: 1px 10px;
+	//padding-bottom: 1px;
+}
+
+#formButtonSet {
+	display:none;
+	position: absolute;
+	left: auto;
+	right: 10px;
+	top: 10px;
+}
+
+#error-box {
+	position: absolute;
+	left: 10px;
+	right: 10px;
+	top: 0px;
+	bottom: 2px;
+	width: 600px;
+	color: red;
+	background-color: transparent;
+	border-style: none;
+}
+/*
+#error-box, #error-box2 {
+	color: red;
+	background-color: transparent;
+	border-style: none;
+	width: 600px;
+}
+*/

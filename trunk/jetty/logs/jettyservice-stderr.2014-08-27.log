@@ -1,0 +1,9 @@
+
+2014-08-27 07:58:44 Commons Daemon procrun stderr initialized
+2014-08-27 07:58:50.402:INFO:oejs.Server:main: jetty-9.1.2.v20140210
+2014-08-27 07:58:50.419:INFO:oejdp.ScanningAppProvider:main: Deployment monitor [file:/C:/tawsilat/jetty/webapps/] at interval 1
+2014-08-27 07:58:53.352:INFO:oeja.AnnotationConfiguration:main: Scanned 1 container path jars, 9 WEB-INF/lib jars, 1 WEB-INF/classes dirs in 647ms for context o.e.j.w.WebAppContext@411379{/TawsilatJasperReports,file:/C:/tawsilat/jetty/webapps/TawsilatJasperReports/,STARTING}{C:\tawsilat\jetty\webapps\TawsilatJasperReports}
+2014-08-27 07:58:54.260:INFO:oejsh.ContextHandler:main: Started o.e.j.w.WebAppContext@411379{/TawsilatJasperReports,file:/C:/tawsilat/jetty/webapps/TawsilatJasperReports/,AVAILABLE}{C:\tawsilat\jetty\webapps\TawsilatJasperReports}
+2014-08-27 07:58:54.273:INFO:oejs.ServerConnector:main: Started ServerConnector@1973cf5{HTTP/1.1}{0.0.0.0:8084}
+2014-08-27 11:23:04.189:INFO:oejs.ServerConnector:ShutdownMonitor: Stopped ServerConnector@1973cf5{HTTP/1.1}{0.0.0.0:8084}
+2014-08-27 11:23:04.189:INFO:oejsh.ContextHandler:ShutdownMonitor: Stopped o.e.j.w.WebAppContext@411379{/TawsilatJasperReports,file:/C:/tawsilat/jetty/webapps/TawsilatJasperReports/,UNAVAILABLE}{C:\tawsilat\jetty\webapps\TawsilatJasperReports}

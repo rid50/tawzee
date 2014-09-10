@@ -1,0 +1,9 @@
+
+2014-09-01 09:59:38 Commons Daemon procrun stderr initialized
+2014-09-01 09:59:48.075:INFO:oejs.Server:main: jetty-9.1.2.v20140210
+2014-09-01 09:59:48.093:INFO:oejdp.ScanningAppProvider:main: Deployment monitor [file:/C:/tawzee/jetty/webapps/] at interval 1
+2014-09-01 09:59:53.583:INFO:oeja.AnnotationConfiguration:main: Scanned 1 container path jars, 9 WEB-INF/lib jars, 1 WEB-INF/classes dirs in 671ms for context o.e.j.w.WebAppContext@a35880{/TawzeeJasperReports,file:/C:/tawzee/jetty/webapps/TawzeeJasperReports/,STARTING}{C:\tawzee\jetty\webapps\TawzeeJasperReports}
+2014-09-01 09:59:54.967:INFO:oejsh.ContextHandler:main: Started o.e.j.w.WebAppContext@a35880{/TawzeeJasperReports,file:/C:/tawzee/jetty/webapps/TawzeeJasperReports/,AVAILABLE}{C:\tawzee\jetty\webapps\TawzeeJasperReports}
+2014-09-01 09:59:54.979:INFO:oejs.ServerConnector:main: Started ServerConnector@1d5320a{HTTP/1.1}{0.0.0.0:8084}
+2014-09-01 14:35:43.050:INFO:oejs.ServerConnector:ShutdownMonitor: Stopped ServerConnector@1d5320a{HTTP/1.1}{0.0.0.0:8084}
+2014-09-01 14:35:43.221:INFO:oejsh.ContextHandler:ShutdownMonitor: Stopped o.e.j.w.WebAppContext@a35880{/TawzeeJasperReports,file:/C:/tawzee/jetty/webapps/TawzeeJasperReports/,UNAVAILABLE}{C:\tawzee\jetty\webapps\TawzeeJasperReports}

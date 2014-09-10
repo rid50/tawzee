@@ -1,0 +1,3 @@
+prunsrv //TS//JettyService	start
+prunsrv //SS//JettyService	stop
+prunsrv //DS//JettyService	delete

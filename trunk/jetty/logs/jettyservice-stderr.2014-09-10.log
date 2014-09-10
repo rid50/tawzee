@@ -1,0 +1,7 @@
+
+2014-09-10 10:49:06 Commons Daemon procrun stderr initialized
+2014-09-10 10:49:10.119:INFO:oejs.Server:main: jetty-9.1.2.v20140210
+2014-09-10 10:49:10.135:INFO:oejdp.ScanningAppProvider:main: Deployment monitor [file:/C:/tawzee/jetty/webapps/] at interval 1
+2014-09-10 10:49:11.019:INFO:oeja.AnnotationConfiguration:main: Scanned 1 container path jars, 9 WEB-INF/lib jars, 1 WEB-INF/classes dirs in 681ms for context o.e.j.w.WebAppContext@1ef69{/TawzeeJasperReports,file:/C:/tawzee/jetty/webapps/TawzeeJasperReports/,STARTING}{C:\tawzee\jetty\webapps\TawzeeJasperReports}
+2014-09-10 10:49:15.393:INFO:oejsh.ContextHandler:main: Started o.e.j.w.WebAppContext@1ef69{/TawzeeJasperReports,file:/C:/tawzee/jetty/webapps/TawzeeJasperReports/,AVAILABLE}{C:\tawzee\jetty\webapps\TawzeeJasperReports}
+2014-09-10 10:49:15.406:INFO:oejs.ServerConnector:main: Started ServerConnector@197eb8a{HTTP/1.1}{0.0.0.0:8084}
