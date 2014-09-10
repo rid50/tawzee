@@ -78,6 +78,14 @@ if ($idp == "SAML") {
     <script src="sliderengine/initslider-1.js"></script-->
 	
 	<style type="text/css">
+		.accessRejected {
+			background-image: url(images/rejected.png) !important;
+			background-position:0px 0px !important;
+			background-repeat:repeat !important;
+			background-size: auto !important;
+			width: inherit;
+		}
+	
 		.ui-accordion .ui-accordion-content {
 			overflow: hidden;
 			padding: 1em 8px;
@@ -101,7 +109,8 @@ if ($idp == "SAML") {
 			
         </header>
         
-        <div id="main" class="ui-widget">
+        <!--div id="main-div" class="ui-widget"-->
+        <div id="main-div">
             <section id="left-section" class="floatLeft ui-corner-all">
 			</section>
 
@@ -145,6 +154,11 @@ if ($idp == "SAML") {
 					</div>
 					<span>User Assignment</span>
 					<div>
+						<fieldset style="display:inline">
+							<legend>Users</legend>					
+							<button id="importUsersButton">Import</button>
+							<button id="exportUsersButton">Export</button>
+						</fieldset>
 <!--						<input id="newUserInput" style="margin: 3px 0 3px 13px;" type="text" value="" size="15" />
 						<button id="addUserButton">Add User</button>
 						<div class="clear"></div>	-->
