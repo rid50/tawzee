@@ -432,8 +432,8 @@ input[type='checkbox'] {
 
 	//text-align:center;
 	width: 300px;
-	height: inherit;
-	//height: 382px;
+	//height: inherit;
+	height: 382px;
 	//display: none;
 }
 /*
@@ -453,6 +453,7 @@ input[type='checkbox'] {
 	//height: 18px; 
 }
 */
+/*
 #addUserButton {
 	height: 22px;
 	width: 100px;
@@ -463,7 +464,7 @@ input[type='checkbox'] {
 	padding: 1px 10px;
 	//padding-bottom: 1px;
 }
-
+*/
 #formButtonSet {
 	display:none;
 	position: absolute;
