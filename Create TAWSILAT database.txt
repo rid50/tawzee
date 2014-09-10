@@ -1,0 +1,495 @@
+﻿-- DROP DATABASE IF EXISTS tawzee;
+-- CREATE DATABASE IF NOT EXISTS tawzee DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_unicode_ci;
+-- USE tawzee;
+
+DROP TABLE IF EXISTS ApplicationLoadSignature;
+DROP TABLE IF EXISTS ApplicationLoadDetail;
+DROP TABLE IF EXISTS ApplicationLoad;
+DROP TABLE IF EXISTS ApplicationSignature;
+DROP TABLE IF EXISTS ApplicationDetail;
+DROP TABLE IF EXISTS Attachments;
+DROP TABLE IF EXISTS Application;
+DROP TABLE IF EXISTS Area;
+
+-- ------------------------------------------------------------------------------------------------------------
+DROP TABLE IF EXISTS SignatureList;
+CREATE TABLE SignatureList (
+  ID int(11) NOT NULL AUTO_INCREMENT,
+  EmployeeId varchar(45) NOT NULL,
+  Image mediumblob,
+  Width mediumint(9) NOT NULL,
+  Height mediumint(9) NOT NULL,
+  Resolution smallint(6) NOT NULL,  
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- ------------------------------------------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS Area;
+CREATE TABLE Area (
+  ID SMALLINT NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (ID),
+  AreaName VARCHAR(55) NOT NULL,
+  UNIQUE KEY AreaName_UNIQUE (AreaName) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- ------------------------------------------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS Application;
+CREATE TABLE Application (
+ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+ApplicationNumber VARCHAR( 24 ) NOT NULL,
+ApplicationDate DATE NOT NULL,
+OwnerName VARCHAR( 24 ) NOT NULL,
+ProjectName VARCHAR( 24 ) NOT NULL,
+ProjectType SMALLINT NOT NULL DEFAULT -1,
+AreaID SMALLINT NOT NULL DEFAULT -1,
+Block VARCHAR( 18 ) NULL,
+Plot VARCHAR( 18 ) NULL,
+ConstructionExpDate VARCHAR( 18 ) NULL,
+ResidenceTotalArea VARCHAR(10),
+ConstructionArea VARCHAR(10),
+ACArea VARCHAR(10),
+CurrentLoad VARCHAR(10),
+ExtraLoad VARCHAR(10),
+LoadAfterDelivery VARCHAR(10),
+ConductiveTotalLoad VARCHAR(10),
+FeedPoints VARCHAR(10),
+SiteFeedPoint SMALLINT NOT NULL DEFAULT -1,
+Requirements SMALLINT NOT NULL DEFAULT -1,
+CableSize SMALLINT NOT NULL DEFAULT -1,
+Fuze SMALLINT NOT NULL DEFAULT -1,
+Meter SMALLINT NOT NULL DEFAULT -1,
+PossibilityYes SMALLINT NOT NULL DEFAULT -1,
+PossibilityNo SMALLINT NOT NULL DEFAULT -1,
+StationNumber VARCHAR(10),
+ApplicationCreator VARCHAR(45) NOT NULL,
+OfficeId smallint(6) NOT NULL DEFAULT '0',
+time TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+ ALTER TABLE Application ADD 
+    CONSTRAINT FK_AreaID
+    FOREIGN    KEY (AreaID)
+    REFERENCES Area(ID);
+
+ALTER TABLE Application
+	ADD UNIQUE INDEX ApplicationNumber_UNIQUE (ApplicationNumber ASC);
+	
+-- ------------------------------------------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS ApplicationDetail;
+CREATE TABLE ApplicationDetail (
+ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+ApplicationNumber VARCHAR(24) NOT NULL,
+Switch VARCHAR(20) NOT NULL,
+K1000KWT DECIMAL(10,3) NOT NULL,
+K1000AMP DECIMAL(10,3) NOT NULL,
+K1250KWT DECIMAL(10,3) NOT NULL,
+K1250AMP DECIMAL(10,3) NOT NULL,
+K1600KWT DECIMAL(10,3) NOT NULL,
+K1600AMP DECIMAL(10,3) NOT NULL,
+time TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+ALTER TABLE ApplicationDetail ADD 
+    CONSTRAINT FK_ReqDetail_AppNumber
+    FOREIGN    KEY (ApplicationNumber)
+    REFERENCES Application(ApplicationNumber)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE;
+
+-- ------------------------------------------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS ApplicationSignature;
+CREATE TABLE ApplicationSignature (
+  `ApplicationNumber` varchar(24) COLLATE utf8_unicode_ci NOT NULL,
+  `SignatureID` int(11) NOT NULL,
+  `EmployeeName` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Date` date DEFAULT NULL,
+  `TopPos` float DEFAULT NULL,
+  `LeftPos` float DEFAULT NULL,
+  PRIMARY KEY (`ApplicationNumber`,`SignatureID`),
+  KEY `FK_SSignatureID_idx` (`SignatureID`),
+  CONSTRAINT `FK_SSignatureID` FOREIGN KEY (`SignatureID`) REFERENCES `SignatureList` (`ID`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  CONSTRAINT `FK_SApplicationNumber` FOREIGN KEY (`ApplicationNumber`) REFERENCES `Application` (`ApplicationNumber`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- ------------------------------------------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS ApplicationLoad;
+CREATE TABLE ApplicationLoad (
+ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+ApplicationNumber VARCHAR(24) NOT NULL,
+FileNumber VARCHAR(10) NOT NULL,
+LoadDate DATE NOT NULL,
+PowerFactorSummer DECIMAL(10,3) NOT NULL,
+PowerFactorWinter DECIMAL(10,3) NOT NULL,
+MaximumLoadsSummer DECIMAL(10,3) NOT NULL,
+MaximumLoadsWinter DECIMAL(10,3) NOT NULL,
+ApplicationCreator VARCHAR(45) NOT NULL,
+OfficeId smallint(6) NOT NULL DEFAULT '0',
+time TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+ALTER TABLE ApplicationLoad ADD 
+    CONSTRAINT FK_Load_ApplicationNumber
+    FOREIGN    KEY (ApplicationNumber)
+    REFERENCES Application(ApplicationNumber)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE;
+
+ALTER TABLE ApplicationLoad
+	ADD UNIQUE INDEX FileNumber_UNIQUE (FileNumber ASC);
+ALTER TABLE ApplicationLoad
+	ADD UNIQUE INDEX ApplicationNumber_UNIQUE (ApplicationNumber ASC);
+
+-- ------------------------------------------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS ApplicationLoadDetail;
+CREATE TABLE ApplicationLoadDetail (
+ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+FileNumber VARCHAR(10) NOT NULL,
+Description VARCHAR(20) NOT NULL,
+ConnectorLoad DECIMAL(10,3) NOT NULL,
+SummerLoad DECIMAL(10,3) NOT NULL,
+WinterLoad DECIMAL(10,3) NOT NULL,
+Remarks VARCHAR(20),
+time TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+ALTER TABLE ApplicationLoadDetail ADD 
+    CONSTRAINT FK_LoadDetail_FileNumber
+    FOREIGN    KEY (FileNumber)
+    REFERENCES ApplicationLoad(FileNumber)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE;
+
+-- ------------------------------------------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS ApplicationLoadSignature;
+CREATE TABLE ApplicationLoadSignature (
+  `FileNumber` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
+  `SignatureID` int(11) NOT NULL,
+  `EmployeeName` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Date` date DEFAULT NULL,
+  `TopPos` float DEFAULT NULL,
+  `LeftPos` float DEFAULT NULL,
+  PRIMARY KEY (`FileNumber`,`SignatureID`),
+  KEY `FK_LSignatureID_idx` (`SignatureID`),
+  CONSTRAINT `FK_LSignatureID` FOREIGN KEY (`SignatureID`) REFERENCES `SignatureList` (`ID`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  CONSTRAINT `FK_SFileNumber` FOREIGN KEY (`FileNumber`) REFERENCES `ApplicationLoad` (`FileNumber`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+	
+-- ------------------------------------------------------------------------------------------------------------
+DROP TABLE IF EXISTS UserRepository;
+CREATE TABLE UserRepository (
+LoginName VARCHAR(32) PRIMARY KEY NOT NULL,
+Password VARCHAR(64) NOT NULL,
+UPN VARCHAR(48) NOT NULL,
+DisplayName VARCHAR(48) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- ------------------------------------------------------------------------------------------------------------
+DROP TABLE IF EXISTS Attachments;
+CREATE TABLE Attachments (
+  ID INT(11) NOT NULL AUTO_INCREMENT,
+  ApplicationNumber VARCHAR(24) COLLATE utf8_unicode_ci NOT NULL,
+  Title VARCHAR(32) NOT NULL,
+  Image LONGBLOB,
+  Thumb MEDIUMBLOB,
+  User VARCHAR(32) NOT NULL,
+  AttachDate DATE NOT NULL,
+  PRIMARY KEY (ID),
+  KEY FK_Image_ApplicationNumber_idx (ApplicationNumber),
+  CONSTRAINT FK_Image_ApplicationNumber FOREIGN KEY (ApplicationNumber) REFERENCES Application (ApplicationNumber) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- ------------------------------------------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS EmployeeList;
+DROP TABLE IF EXISTS OfficeList;
+
+-- ------------------------------------------------------------------------------------------------------------
+CREATE TABLE OfficeList (
+  OfficeId smallint(6) NOT NULL,
+  Name varchar(45) NOT NULL,
+  ArabicName varchar(45) NOT NULL,
+  PRIMARY KEY (OfficeId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE EmployeeList (
+  EmployeeId varchar(45) NOT NULL,
+  ManagerId varchar(45) DEFAULT NULL,
+  OfficeId smallint(6) DEFAULT NULL,
+  SuperUser tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (EmployeeId),
+  KEY FK_OfficeId_idx (OfficeId),
+  CONSTRAINT FK_OfficeId FOREIGN KEY (OfficeId) REFERENCES OfficeList (OfficeId) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- ------------------------------------------------------------------------------------------------------------
+
+INSERT INTO `Area` VALUES ('269', 'abc');
+INSERT INTO `Area` VALUES ('268', 'ab');
+INSERT INTO `Area` VALUES ('267', 'المسايل');
+INSERT INTO `Area` VALUES ('266', 'تقاطع الدائري السادس - تقاطع (3و4و5و7)');
+INSERT INTO `Area` VALUES ('265', 'ابوحليفة');
+INSERT INTO `Area` VALUES ('264', 'الصليبية - كبد');
+INSERT INTO `Area` VALUES ('263', 'الري الصناعية');
+INSERT INTO `Area` VALUES ('262', 'الشويخ الجنوبي');
+INSERT INTO `Area` VALUES ('261', 'الجليعة');
+INSERT INTO `Area` VALUES ('260', 'جنوب السرة');
+INSERT INTO `Area` VALUES ('259', 'الرتقة');
+INSERT INTO `Area` VALUES ('258', 'الشقايا');
+INSERT INTO `Area` VALUES ('257', 'الأبرق');
+INSERT INTO `Area` VALUES ('256', 'أم قصر');
+INSERT INTO `Area` VALUES ('255', 'الفوارس');
+INSERT INTO `Area` VALUES ('254', 'قلمة شايع');
+INSERT INTO `Area` VALUES ('253', 'الجيوان');
+INSERT INTO `Area` VALUES ('252', 'الأدعمي');
+INSERT INTO `Area` VALUES ('251', 'مدينه الكويت-المقوع الشرقي');
+INSERT INTO `Area` VALUES ('250', 'ميناء الزور');
+INSERT INTO `Area` VALUES ('249', 'علي صباح السالم');
+INSERT INTO `Area` VALUES ('248', 'صباح الاحمد البحريه');
+INSERT INTO `Area` VALUES ('247', 'كاظمة');
+INSERT INTO `Area` VALUES ('246', 'الوفرة السكنية');
+INSERT INTO `Area` VALUES ('245', 'ظريف');
+INSERT INTO `Area` VALUES ('243', 'مخيمات المباركية');
+INSERT INTO `Area` VALUES ('242', 'المقوع');
+INSERT INTO `Area` VALUES ('241', 'منتزه الخيران السياحي');
+INSERT INTO `Area` VALUES ('240', 'غرب الشعيبة');
+INSERT INTO `Area` VALUES ('239', 'بنيبدر');
+INSERT INTO `Area` VALUES ('222', 'جزيرة فيلكا');
+INSERT INTO `Area` VALUES ('221', 'غرب الجهراء');
+INSERT INTO `Area` VALUES ('220', 'الشريط الساحلي (البدع)');
+INSERT INTO `Area` VALUES ('219', 'جنوب صبحان');
+INSERT INTO `Area` VALUES ('217', 'قصر بيان');
+INSERT INTO `Area` VALUES ('216', 'جنوب جليب الشيوخ');
+INSERT INTO `Area` VALUES ('215', 'ميناء الشويخ');
+INSERT INTO `Area` VALUES ('214', 'إسطبلات الوفرة');
+INSERT INTO `Area` VALUES ('213', 'الصباح الصحية');
+INSERT INTO `Area` VALUES ('212', 'جنوب الصباحية');
+INSERT INTO `Area` VALUES ('211', 'جامعة الكويت');
+INSERT INTO `Area` VALUES ('209', 'قصر السيف');
+INSERT INTO `Area` VALUES ('208', 'تيماء');
+INSERT INTO `Area` VALUES ('207', 'اشبيلية');
+INSERT INTO `Area` VALUES ('206', 'اشبيليه');
+INSERT INTO `Area` VALUES ('205', 'البدع');
+INSERT INTO `Area` VALUES ('204', 'المهبوله');
+INSERT INTO `Area` VALUES ('203', 'الجيون');
+INSERT INTO `Area` VALUES ('202', 'مشرف ( منطقه الدبلوماسية )');
+INSERT INTO `Area` VALUES ('201', 'المنطقة الوسطى');
+INSERT INTO `Area` VALUES ('200', 'فيلكا');
+INSERT INTO `Area` VALUES ('199', 'شمال غرب الجهراء');
+INSERT INTO `Area` VALUES ('198', 'الصالحية');
+INSERT INTO `Area` VALUES ('197', 'معسكر التحرير');
+INSERT INTO `Area` VALUES ('196', 'مدينة جابر الأحمد');
+INSERT INTO `Area` VALUES ('194', 'مدينة جابر العلي - قطاع (B)');
+INSERT INTO `Area` VALUES ('193', 'مدينة جابر العلي');
+INSERT INTO `Area` VALUES ('192', 'مطار الكويت الدولي');
+INSERT INTO `Area` VALUES ('191', 'مطر الكويت الدولي');
+INSERT INTO `Area` VALUES ('190', '');
+INSERT INTO `Area` VALUES ('189', 'مطار الكويت');
+INSERT INTO `Area` VALUES ('188', 'مدينة الكويت');
+INSERT INTO `Area` VALUES ('187', 'الشعيبة الغربية');
+INSERT INTO `Area` VALUES ('186', 'الشريط الساحلي ب');
+INSERT INTO `Area` VALUES ('185', 'الشريط الساحلي ج');
+INSERT INTO `Area` VALUES ('184', 'شريط الساحلي ج');
+INSERT INTO `Area` VALUES ('183', 'رأس السالمية');
+INSERT INTO `Area` VALUES ('182', 'الجهراء - تيماء');
+INSERT INTO `Area` VALUES ('181', 'المراكز الحدودية الشمالية');
+INSERT INTO `Area` VALUES ('180', 'شمال الكويت');
+INSERT INTO `Area` VALUES ('179', 'الصباح');
+INSERT INTO `Area` VALUES ('178', 'الصليبية الصناعية');
+INSERT INTO `Area` VALUES ('177', 'غرب أبو فطيرة');
+INSERT INTO `Area` VALUES ('176', 'فروسية الأحمدي');
+INSERT INTO `Area` VALUES ('175', 'الخيرانا');
+INSERT INTO `Area` VALUES ('174', 'الصليبية الزراعية');
+INSERT INTO `Area` VALUES ('173', 'الشويخ الصحية');
+INSERT INTO `Area` VALUES ('172', 'الرحاب');
+INSERT INTO `Area` VALUES ('171', 'محطة');
+INSERT INTO `Area` VALUES ('170', 'الشريط الساحلي أ');
+INSERT INTO `Area` VALUES ('169', 'شرق الأحمدي');
+INSERT INTO `Area` VALUES ('168', 'أبو فطيرة');
+INSERT INTO `Area` VALUES ('167', 'معسكر التحرير - الدائري السادس');
+INSERT INTO `Area` VALUES ('166', 'الصليبية');
+INSERT INTO `Area` VALUES ('165', 'القبلة');
+INSERT INTO `Area` VALUES ('164', 'الجهراء');
+INSERT INTO `Area` VALUES ('163', 'مبارك العبدالله');
+INSERT INTO `Area` VALUES ('162', 'المطلاع');
+INSERT INTO `Area` VALUES ('161', 'أبو حليفة');
+INSERT INTO `Area` VALUES ('160', 'تكملة الشويخ الصناعية');
+INSERT INTO `Area` VALUES ('159', 'الشويخ الصناعية');
+INSERT INTO `Area` VALUES ('158', 'العيون');
+INSERT INTO `Area` VALUES ('157', 'العمرية');
+INSERT INTO `Area` VALUES ('156', 'النزهة');
+INSERT INTO `Area` VALUES ('155', 'الفنطاس');
+INSERT INTO `Area` VALUES ('154', 'القيروان');
+INSERT INTO `Area` VALUES ('153', 'الأحمدي');
+INSERT INTO `Area` VALUES ('152', 'الواحة');
+INSERT INTO `Area` VALUES ('151', 'أم الهيمان');
+INSERT INTO `Area` VALUES ('150', 'شرق الصليبخات');
+INSERT INTO `Area` VALUES ('149', 'مخازن الصليبية');
+INSERT INTO `Area` VALUES ('148', 'الحساوي');
+INSERT INTO `Area` VALUES ('147', 'مزارع الصليبية');
+INSERT INTO `Area` VALUES ('146', 'شمال صبحان');
+INSERT INTO `Area` VALUES ('145', 'المطار');
+INSERT INTO `Area` VALUES ('142', 'الرابية');
+INSERT INTO `Area` VALUES ('140', 'العارضية');
+INSERT INTO `Area` VALUES ('139', 'العدان');
+INSERT INTO `Area` VALUES ('138', 'المهبولة');
+INSERT INTO `Area` VALUES ('137', 'أشبيلية');
+INSERT INTO `Area` VALUES ('136', 'أبرق خيطان');
+INSERT INTO `Area` VALUES ('135', 'الشعب البحري');
+INSERT INTO `Area` VALUES ('134', 'الشعيبة الصناعية');
+INSERT INTO `Area` VALUES ('133', 'رجم خشمان');
+INSERT INTO `Area` VALUES ('132', 'هدية');
+INSERT INTO `Area` VALUES ('131', 'الجابرية');
+INSERT INTO `Area` VALUES ('130', 'القصور');
+INSERT INTO `Area` VALUES ('129', 'الشامية');
+INSERT INTO `Area` VALUES ('127', 'إسطبلات الأحمدي');
+INSERT INTO `Area` VALUES ('126', 'أمغرة');
+INSERT INTO `Area` VALUES ('125', 'الرميثية');
+INSERT INTO `Area` VALUES ('124', 'الظهر');
+INSERT INTO `Area` VALUES ('123', 'مبارك الكبير');
+INSERT INTO `Area` VALUES ('122', 'المقوع الشرقي');
+INSERT INTO `Area` VALUES ('121', 'سعد العبدالله');
+INSERT INTO `Area` VALUES ('120', 'جابر الاحمد');
+INSERT INTO `Area` VALUES ('119', 'جابر العلي');
+INSERT INTO `Area` VALUES ('118', 'النويصيب');
+INSERT INTO `Area` VALUES ('117', 'الزور');
+INSERT INTO `Area` VALUES ('116', 'الضبيعية');
+INSERT INTO `Area` VALUES ('115', 'بنيدر');
+INSERT INTO `Area` VALUES ('114', 'لؤلؤة الخيران');
+INSERT INTO `Area` VALUES ('113', 'الخيران');
+INSERT INTO `Area` VALUES ('112', 'ام الهيمان');
+INSERT INTO `Area` VALUES ('111', 'الوفرة');
+INSERT INTO `Area` VALUES ('110', 'ميناء عبدالله');
+INSERT INTO `Area` VALUES ('109', 'الشعيبة');
+INSERT INTO `Area` VALUES ('108', 'الفحيحيل');
+INSERT INTO `Area` VALUES ('107', 'الصباحية');
+INSERT INTO `Area` VALUES ('106', 'المنقف');
+INSERT INTO `Area` VALUES ('105', 'فهد الاحمد');
+INSERT INTO `Area` VALUES ('104', 'ابوحليقة');
+INSERT INTO `Area` VALUES ('103', 'الفنطاس الزراعية');
+INSERT INTO `Area` VALUES ('102', 'العقيلة');
+INSERT INTO `Area` VALUES ('101', 'الرقة');
+INSERT INTO `Area` VALUES ('100', 'صبحان');
+INSERT INTO `Area` VALUES ('99', 'ابو الحصانية');
+INSERT INTO `Area` VALUES ('98', 'الفنيطيس');
+INSERT INTO `Area` VALUES ('97', 'الفطاس');
+INSERT INTO `Area` VALUES ('96', 'القرين');
+INSERT INTO `Area` VALUES ('95', 'العديلية');
+INSERT INTO `Area` VALUES ('94', 'الدعية');
+INSERT INTO `Area` VALUES ('93', 'المسيلة');
+INSERT INTO `Area` VALUES ('92', 'الشرق');
+INSERT INTO `Area` VALUES ('91', 'بنيد القار');
+INSERT INTO `Area` VALUES ('90', 'شرق حولي');
+INSERT INTO `Area` VALUES ('89', 'ميدان حولي');
+INSERT INTO `Area` VALUES ('88', 'السالمية');
+INSERT INTO `Area` VALUES ('87', 'سلوى');
+INSERT INTO `Area` VALUES ('86', 'صباح السالم');
+INSERT INTO `Area` VALUES ('85', 'مشرف');
+INSERT INTO `Area` VALUES ('84', 'بيان');
+INSERT INTO `Area` VALUES ('83', 'الشعب');
+INSERT INTO `Area` VALUES ('82', 'المنصورية');
+INSERT INTO `Area` VALUES ('81', 'عبدالله السالم');
+INSERT INTO `Area` VALUES ('80', 'المرقاب');
+INSERT INTO `Area` VALUES ('79', 'الدسمة');
+INSERT INTO `Area` VALUES ('78', 'القادسية');
+INSERT INTO `Area` VALUES ('77', 'كيفان');
+INSERT INTO `Area` VALUES ('76', 'اليرموك');
+INSERT INTO `Area` VALUES ('75', 'الخالدية');
+INSERT INTO `Area` VALUES ('74', 'الري');
+INSERT INTO `Area` VALUES ('73', 'الشويخ السكنية');
+INSERT INTO `Area` VALUES ('72', 'الشويخ');
+INSERT INTO `Area` VALUES ('70', 'الفيحاء');
+INSERT INTO `Area` VALUES ('69', 'قرطبة');
+INSERT INTO `Area` VALUES ('68', 'الروضة');
+INSERT INTO `Area` VALUES ('67', 'حولي');
+INSERT INTO `Area` VALUES ('66', 'الصديق');
+INSERT INTO `Area` VALUES ('65', 'الشهداء');
+INSERT INTO `Area` VALUES ('64', 'الزهراء');
+INSERT INTO `Area` VALUES ('63', 'حطين');
+INSERT INTO `Area` VALUES ('62', 'السلام');
+INSERT INTO `Area` VALUES ('61', 'السرة');
+INSERT INTO `Area` VALUES ('58', 'الشدادية');
+INSERT INTO `Area` VALUES ('57', 'جليب الشيوخ');
+INSERT INTO `Area` VALUES ('56', 'النهضة');
+INSERT INTO `Area` VALUES ('55', 'غرناطة');
+INSERT INTO `Area` VALUES ('54', 'فروسية الفروانية');
+INSERT INTO `Area` VALUES ('53', 'فروسية الجهراء');
+INSERT INTO `Area` VALUES ('52', 'كبد');
+INSERT INTO `Area` VALUES ('51', 'العميرية');
+INSERT INTO `Area` VALUES ('50', 'الضجيج');
+INSERT INTO `Area` VALUES ('49', 'الصليبخات');
+INSERT INTO `Area` VALUES ('48', 'الصبية');
+INSERT INTO `Area` VALUES ('47', 'جنوب الدوحة');
+INSERT INTO `Area` VALUES ('46', 'الدوحة');
+INSERT INTO `Area` VALUES ('45', 'خيطان');
+INSERT INTO `Area` VALUES ('44', 'الرقعي');
+INSERT INTO `Area` VALUES ('43', 'الاندلس');
+INSERT INTO `Area` VALUES ('42', 'الفردوس');
+INSERT INTO `Area` VALUES ('41', 'صباح الناصر');
+INSERT INTO `Area` VALUES ('40', 'الفروانية');
+INSERT INTO `Area` VALUES ('39', 'عبدالله المبارك');
+INSERT INTO `Area` VALUES ('38', 'السالمي');
+INSERT INTO `Area` VALUES ('37', 'العبدلي');
+INSERT INTO `Area` VALUES ('36', 'القصر');
+INSERT INTO `Area` VALUES ('34', 'النعيم');
+INSERT INTO `Area` VALUES ('33', 'النسيم');
+INSERT INTO `Area` VALUES ('32', 'جنوب الجهراء');
+
+-- ------------------------------------------------------------------------------------------------------------
+
+INSERT INTO Application (ApplicationNumber, ApplicationDate, OwnerName, ProjectName, ProjectType, AreaID, Block, Plot, ConstructionExpDate, ResidenceTotalArea, ConstructionArea, ACArea, CurrentLoad, ExtraLoad, LoadAfterDelivery, ConductiveTotalLoad, FeedPoints, SiteFeedPoint, Requirements, CableSize, Fuze, Meter, PossibilityYes, PossibilityNo, StationNumber) VALUES (12345, STR_TO_DATE('01/08/2013', '%d/%m/%Y'), 'سلمان الحربي', 'Project 1', 1, 32, 3, 300, 'ستة أشهر', "a500", "1523", "1376", "123", "456", "94", "118", "1", 1, 1, 1, 1, 1, 1, 0, "1");
+INSERT INTO Application (ApplicationNumber, ApplicationDate, OwnerName, ProjectName, ProjectType, AreaID, Block, Plot, ConstructionExpDate, ResidenceTotalArea, ConstructionArea, ACArea, CurrentLoad, ExtraLoad, LoadAfterDelivery, ConductiveTotalLoad, FeedPoints, SiteFeedPoint, Requirements, CableSize, Fuze, Meter, PossibilityYes, PossibilityNo, StationNumber) VALUES (12346, STR_TO_DATE('09/09/2013', '%d/%m/%Y'), 'عبد الله شمس الدين', 'Project 2', 2, 33, 3, 400, 'ستة أشهر', "a500", "1523", "1376", "", "", "94", "118", "2", 2, 2, 2, 2, 2, 0, 2, "2");
+INSERT INTO Application (ApplicationNumber, ApplicationDate, OwnerName, ProjectName, ProjectType, AreaID, Block, Plot, ConstructionExpDate, ResidenceTotalArea, ConstructionArea, ACArea, CurrentLoad, ExtraLoad, LoadAfterDelivery, ConductiveTotalLoad, FeedPoints, SiteFeedPoint, Requirements, CableSize, Fuze, Meter, PossibilityYes, PossibilityNo, StationNumber) VALUES (12347, STR_TO_DATE('22/10/2013', '%d/%m/%Y'), 'Awatef Al-Ali', 'Project 3', 3, 37, 6, 125, 'سنة', "500", "1523", "1376", "", "", "94", "118", "3", 3, 3, 3, 3, 3, 3, 0, "3");
+INSERT INTO Application (ApplicationNumber, ApplicationDate, OwnerName, ProjectName, ProjectType, AreaID, Block, Plot, ConstructionExpDate) VALUES (12348, STR_TO_DATE('04/09/2013', '%d/%m/%Y'), 'Bader Al-Anazi', 'Project 4', 4, 39, 7, 288, '6 أشهر');
+INSERT INTO Application (ApplicationNumber, ApplicationDate, OwnerName, ProjectName, ProjectType, AreaID, Block, Plot, ConstructionExpDate) VALUES (25678, STR_TO_DATE('24/07/2013', '%d/%m/%Y'), 'منصور ميثيون', 'Project 5', 5, 32, 7, 52, 'سنة');
+INSERT INTO Application (ApplicationNumber, ApplicationDate, OwnerName, ProjectName, ProjectType, AreaID, Block, Plot, ConstructionExpDate) VALUES (45678, STR_TO_DATE('24/07/2013', '%d/%m/%Y'), 'Abdalla Masri', 'Project 6', 6, 40, 7, 100, '6 أشهر');
+
+INSERT INTO ApplicationDetail (ApplicationNumber, Switch, K1000KWT, K1000AMP, K1250KWT, K1250AMP, K1600KWT, K1600AMP) VALUES (12345, "Switch-1", 113.82, 100.42, 86.765, 88.765, 13.82, 00.42);
+INSERT INTO ApplicationDetail (ApplicationNumber, Switch, K1000KWT, K1000AMP, K1250KWT, K1250AMP, K1600KWT, K1600AMP) VALUES (12345, "Switch-2", 113.82, 100.42, 86.765, 88.765, 13.82, 00.42);
+INSERT INTO ApplicationDetail (ApplicationNumber, Switch, K1000KWT, K1000AMP, K1250KWT, K1250AMP, K1600KWT, K1600AMP) VALUES (12345, "Switch-3", 113.82, 100.42, 86.765, 88.765, 13.82, 00.42);
+
+INSERT INTO ApplicationLoad (ApplicationNumber, FileNumber, LoadDate, PowerFactorSummer, PowerFactorWinter, MaximumLoadsSummer, MaximumLoadsWinter) VALUES (12345, 144,  STR_TO_DATE('02/12/2013', '%d/%m/%Y'), 0.7, 0.8, 93.21, 77.96);
+INSERT INTO ApplicationLoad (ApplicationNumber, FileNumber, LoadDate, PowerFactorSummer, PowerFactorWinter, MaximumLoadsSummer, MaximumLoadsWinter) VALUES (12346, 266,  STR_TO_DATE('12/02/2014', '%d/%m/%Y'), 0.8, 0.9, 93.22, 77.97);
+INSERT INTO ApplicationLoad (ApplicationNumber, FileNumber, LoadDate, PowerFactorSummer, PowerFactorWinter, MaximumLoadsSummer, MaximumLoadsWinter) VALUES (12347, 388,  STR_TO_DATE('14/04/2014', '%d/%m/%Y'), 0.9, 0.95, 93.23, 77.98);
+
+INSERT INTO ApplicationLoadDetail (FileNumber, Description, ConnectorLoad, SummerLoad, WinterLoad, Remarks) VALUES (144, "M.S.B.1", 113.82, 100.42, 86.765, "First MSB");
+INSERT INTO ApplicationLoadDetail (FileNumber, Description, ConnectorLoad, SummerLoad, WinterLoad) VALUES (144, "M.S.B.2", 113.82, 100.42, 86.765);
+INSERT INTO ApplicationLoadDetail (FileNumber, Description, ConnectorLoad, SummerLoad, WinterLoad, Remarks) VALUES (144, 'M.S.B.3', 113.82, 100.42, 86.765, "Third MSB");
+
+-- INSERT INTO ApplicationRequirements (ApplicationNumber, ResidenceTotalArea, ConstructionArea, ACArea, CurrentLoad, ExtraLoad, LoadAfterDelivery, ConductiveTotalLoad, FeedPoints, SiteFeedPoint, Requirements, CableSize, Fuze, Meter, PossibilityYes, PossibilityNo, StationNumber)
+-- VALUES (12345, "500", "1523", "1376", "123", "456", "94", "118", "1", 1, 1, 1, 1, 1, 1, 0, "1");
+-- INSERT INTO ApplicationRequirements (ApplicationNumber, ResidenceTotalArea, ConstructionArea, ACArea, CurrentLoad, ExtraLoad, LoadAfterDelivery, ConductiveTotalLoad, FeedPoints, SiteFeedPoint, Requirements, CableSize, Fuze, Meter, PossibilityYes, PossibilityNo, StationNumber)
+-- VALUES (12346, "500", "1523", "1376", "", "", "94", "118", "2", 2, 2, 2, 2, 2, 0, 2, "2");
+-- INSERT INTO ApplicationRequirements (ApplicationNumber, ResidenceTotalArea, ConstructionArea, ACArea, CurrentLoad, ExtraLoad, LoadAfterDelivery, ConductiveTotalLoad, FeedPoints, SiteFeedPoint, Requirements, CableSize, Fuze, Meter, PossibilityYes, PossibilityNo, StationNumber)
+-- VALUES (12347, "500", "1523", "1376", "", "", "94", "118", "3", 3, 3, 3, 3, 3, 3, 0, "3");
+
+-- ------------------------------------------------------------------------------------------------------------
+
+INSERT INTO UserRepository VALUES ('abdalla', 'abdalla', 'abdalla@mewj.gov.kw', 'Abdalla Masri');
+INSERT INTO UserRepository VALUES ('ahmed', 'ahmed', 'ahmed@mewj.gov.kw', 'Ahmed Al-Atheri');
+INSERT INTO UserRepository VALUES ('ali', 'ali', 'ali@mewj.gov.kw', 'Ali Al-Ghanem');
+INSERT INTO UserRepository VALUES ('amr', 'amr', 'amr@mewj.gov.kw', 'Amr Maken');
+INSERT INTO UserRepository VALUES ('awatef', 'awatef', 'awatef@mewj.gov.kw', 'Awatef Al-Ali');
+INSERT INTO UserRepository VALUES ('bader', 'bader', 'bader@mewj.gov.kw', 'Bader Al-Anazi');
+INSERT INTO UserRepository VALUES ('bashar', 'bashar', 'bashar@mewj.gov.kw', 'Bashar Atout');
+INSERT INTO UserRepository VALUES ('basma', 'basma', 'basma@mewj.gov.kw', 'Basma Atia');
+INSERT INTO UserRepository VALUES ('hesham', 'hesham', 'hesham@mewj.gov.kw', 'Hesham Al-Nouri');
+INSERT INTO UserRepository VALUES ('hosam', 'hosam', 'hosam@mewj.gov.kw', 'Hosam Kayali');
+INSERT INTO UserRepository VALUES ('husain', 'husain', 'husain@mewj.gov.kw', 'Husain Mairza');
+INSERT INTO UserRepository VALUES ('jkmutlaq', 'jkmutlaq', 'jkmutlaq@mewj.gov.kw', 'Jasem Mutlaq');
+INSERT INTO UserRepository VALUES ('mansour', 'mansour', 'mansour@mewj.gov.kw', 'Mansour Al-Methen');
+INSERT INTO UserRepository VALUES ('maalhaider', 'maalhaider', 'maalhaider@mewj.gov.kw', 'Muneerah Alhaider');
+INSERT INTO UserRepository VALUES ('mnsarhan', 'mnsarhan', 'mnsarhan@mewj.gov.kw', 'Mohammed Sharhan');
+INSERT INTO UserRepository VALUES ('ridavidenko', 'ridavidenko', 'ridavidenko@mewj.gov.kw', 'Roman Davidenko');
+INSERT INTO UserRepository VALUES ('roman', 'roman', 'roman@mewj.gov.kw', 'Roman');
+INSERT INTO UserRepository VALUES ('tamalallah', 'tamalallah', 'tamalallah@mewj.gov.kw', 'Talal Malallah');
+INSERT INTO UserRepository VALUES ('zjaljadi', 'zjaljadi', 'zjaljadi@mewj.gov.kw', 'Zahraa Aljadi');
+INSERT INTO UserRepository VALUES ('zkalbannay', 'zkalbannay', 'zkalbannay@mewj.gov.kw', 'Zainab Albannay');
+INSERT INTO UserRepository VALUES ('shukri', 'shukri', 'shukri@mewj.gov.kw', 'Shukri');
+

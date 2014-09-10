@@ -1,0 +1,5 @@
+2014-08-26 13:29:26.954:INFO:oejs.Server:main: jetty-9.1.2.v20140210
+2014-08-26 13:29:26.975:INFO:oejdp.ScanningAppProvider:main: Deployment monitor [file:/var/www/html/jetty/webapps/] at interval 1
+2014-08-26 13:29:29.895:INFO:oeja.AnnotationConfiguration:main: Scanned 1 container path jars, 9 WEB-INF/lib jars, 1 WEB-INF/classes dirs in 2405ms for context o.e.j.w.WebAppContext@653b6d0c{/TawsilatJasperReports,file:/var/www/html/jetty/webapps/TawsilatJasperReports/,STARTING}{/TawsilatJasperReports}
+2014-08-26 13:29:30.644:INFO:oejsh.ContextHandler:main: Started o.e.j.w.WebAppContext@653b6d0c{/TawsilatJasperReports,file:/var/www/html/jetty/webapps/TawsilatJasperReports/,AVAILABLE}{/TawsilatJasperReports}
+2014-08-26 13:29:30.662:INFO:oejs.ServerConnector:main: Started ServerConnector@7dcbf94b{HTTP/1.1}{0.0.0.0:8084}
