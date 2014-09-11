@@ -8,11 +8,11 @@ class DatabaseRepository {
 	public function __construct() {
 		date_default_timezone_set('Asia/Kuwait');
 		//date_default_timezone_set('UTC');
-		$domain = 'mew';
+		$ini = parse_ini_file("config.ini", true);
+		$domain = $ini[$defaultDomain];
 		if ($_SERVER["USERDOMAIN"] != null && (strtolower($_SERVER["USERDOMAIN"]) == "mew" || strtolower($_SERVER["USERDOMAIN"]) == "adeliya"))
 			$domain = strtolower($_SERVER["USERDOMAIN"]);
 			
-		$ini = parse_ini_file("config.ini", true);
 		$this->dsn = $ini[$domain]["dsn"];
 		if (!preg_match('/;$/', $this->dsn))
 			$this->dsn .= ';';
@@ -1079,7 +1079,8 @@ class DatabaseRepository {
 	
 	public function saveActors($param) {
 		$dbh = $this->connect();
-	
+		//$dbh->setAttribute("PDO::ATTR_ERRMODE", PDO::ERRMODE_EXCEPTION); 
+		
 		$xml = simplexml_load_string($param);
 
 		$superuser = explode(",", $xml['superuser']);
@@ -1094,38 +1095,42 @@ class DatabaseRepository {
 		//throw new Exception('Failed to execute/prepare query: ' . $xml->sections->section[0]['arName']);
 		//throw new Exception('Failed to execute/prepare query: ' . $xml['superuser']);
 		
-		$st = "delete from EmployeeList;";
-		$st .= "delete from OfficeList;";
-		try {
-			foreach ($xml->employees->employee as $employee) {
-				$st .= "INSERT INTO EmployeeList (EmployeeId) VALUES ('{$employee}');";
-			//throw new Exception('Failed to execute/prepare query: ' . $st);
-			}
+		$st = "delete from EmployeeList";
+		$st .= ";delete from OfficeList";
+		
+		foreach ($xml->employees->employee as $employee) {
+			$st .= ";INSERT INTO EmployeeList (EmployeeId) VALUES ('{$employee}')";
+		//throw new Exception('Failed to execute/prepare query: ' . $st);
+		}
 
-			//$ds = $dbh->prepare($st);
-			//$ds->execute();
+		//$ds = $dbh->prepare($st);
+		//$ds->execute();
+		
+		//$st = "";
+		foreach ($xml->sections->section as $section) {
+			$st .= ";INSERT INTO OfficeList (OfficeId, Name, ArabicName) VALUES ('{$section['id']}', '{$section['name']}', '{$section['arName']}')";
+			foreach ($section->managers->manager as $manager) {
+				$superuserflag = 0;
+				if (in_array($manager['name'], $superuser))
+					$superuserflag = 1;
 			
-			//$st = "";
-			foreach ($xml->sections->section as $section) {
-				$st .= "INSERT INTO OfficeList (OfficeId, Name, ArabicName) VALUES ('{$section['id']}', '{$section['name']}', '{$section['arName']}');";
-				foreach ($section->managers->manager as $manager) {
-					$superuserflag = 0;
-					if (in_array($manager['name'], $superuser))
-						$superuserflag = 1;
-				
-					$st .= "UPDATE EmployeeList SET OfficeId = {$section['id']}, ManagerId = NULL, SuperUser = $superuserflag WHERE EmployeeId = '{$manager['name']}';";
-					foreach ($manager->employee as $employee) {
-						$st .= "UPDATE EmployeeList SET OfficeId = {$section['id']}, ManagerId = '{$manager['name']}' WHERE EmployeeId = '{$employee}';";
-					}
+				$st .= ";UPDATE EmployeeList SET OfficeId = {$section['id']}, ManagerId = NULL, SuperUser = $superuserflag WHERE EmployeeId = '{$manager['name']}'";
+				foreach ($manager->employee as $employee) {
+					$st .= ";UPDATE EmployeeList SET OfficeId = {$section['id']}, ManagerId = '{$manager['name']}' WHERE EmployeeId = '{$employee}'";
 				}
 			}
-			
-			//throw new Exception('Failed to execute/prepare query: ' . $st);
+		}
 
-
-			$ds = $dbh->prepare($st);
-			$ds->execute();
+		$statements = explode(";", $st);
+		//throw new Exception('Failed to execute/prepare query: ' . print_r($statements, false));
+		try {
+			$dbh->beginTransaction();
+			foreach( $statements as $statement ) {
+				$ds = $dbh->exec($statement);
+			}
+			$dbh->commit();
 		} catch (PDOException $e) {
+			$dbh->rollBack();
 			throw new Exception('Failed to execute/prepare query: ' . $e->getMessage());
 		}
 		

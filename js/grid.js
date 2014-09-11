@@ -57,7 +57,7 @@ Grid = {
 */		
         grid.jqGrid({
 			direction: direction,
-            url: "json_db_crud_pdo.php",
+            url: "json_db_pdo.php",
 			postData:{"func": "getApps"},
 			loadonce: false,
             mtype: "get",
@@ -261,8 +261,8 @@ function gridReload(searchOrReset, applicationNumber) {
 		//jQuery("#grid").jqGrid('searchGrid', options );
 
 		
-		//jQuery("#grid").setGridParam({ url: "json_db_crud_pdo.php?searchField=" + searchField + "&searchString=" + searchString + "&searchOper=" + searchOper, page: 1 }).trigger("reloadGrid");
-		//jQuery("#grid").setGridParam({ url: "json_db_crud_pdo.php", page: 1 });
+		//jQuery("#grid").setGridParam({ url: "json_db_pdo.php?searchField=" + searchField + "&searchString=" + searchString + "&searchOper=" + searchOper, page: 1 }).trigger("reloadGrid");
+		//jQuery("#grid").setGridParam({ url: "json_db_pdo.php", page: 1 });
 
 		//$("#grid").jqGrid("setColProp", "file_no", { searchoptions: { sopt: ['cn']} }).trigger("reloadGrid");
 		//jQuery("#grid").setGridParam({ url: "Checkup/List?search=" + search, page: 1 }).trigger("reloadGrid");
