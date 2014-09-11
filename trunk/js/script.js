@@ -9,7 +9,7 @@ var _superuser;
 var _userLoginName = "";
 
 var userInfo;
-var rootActors;
+var _rootActors;
 var actor;
 var sectionId;				// id of  section of the department, like: follow_up, ac...
 var reportTo = null;
@@ -247,7 +247,7 @@ $(document).ready(function () {
 			
 			//data = {"func":"getLoad", "param":{applicationNumber:_applicationNumber}};
 				
-			$.get("json_db_crud_pdo.php", data)
+			$.get("json_db_pdo.php", data)
 				.done(function( data ) {
 					if (isAjaxError(data))
 						return;
@@ -507,7 +507,7 @@ $(document).ready(function () {
 							if (_applicationNumber == "")
 								return;
 								
-							url = "json_db_crud_pdo.php";
+							url = "json_db_pdo.php";
 							$.get(url, {"func":"getAttachmentList", "param":{applicationNumber: _applicationNumber}})
 								.done(function( data ) {
 									if (isAjaxError(data))
@@ -599,7 +599,7 @@ $(document).ready(function () {
 	});
 
 	(function() {
-		url = "json_db_crud_pdo.php";
+		url = "json_db_pdo.php";
 		$.get(url, {"func":"getAreas", "param":{}})
 			.done(function( data ) {
 				if (isAjaxError(data))
@@ -975,7 +975,7 @@ function initAccordion() {
 						if (_applicationNumber == "")
 							return;
 							
-						url = "json_db_crud_pdo.php";
+						url = "json_db_pdo.php";
 						$.get(url, {"func":"getAttachmentList", "param":{applicationNumber: _applicationNumber}})
 							.done(function( data ) {
 								if (isAjaxError(data))
@@ -1067,7 +1067,7 @@ function initAccordion() {
 }
 
 function getAreas() {
-	url = "json_db_crud_pdo.php";
+	url = "json_db_pdo.php";
 	$.get(url, {"func":"getAreas", "param":{}})
 		.done(function( data ) {
 			if (isAjaxError(data))
@@ -1244,7 +1244,7 @@ function disableAccordionTabs(flag) {
 
 function start(userLoginName, actorsSource, func) {
 //	rootDoc = null;
-	rootActors = null;
+	_rootActors = null;
 	userInfo = [];
 
 	getUserIdentities("GetUserInfo", [{loginName:userLoginName}], function() {
@@ -1253,17 +1253,17 @@ function start(userLoginName, actorsSource, func) {
 	
 		//var found = false;
 		
-		var url = 'json_db_crud_pdo.php', param = {'func':'getActors'};
+		var url = 'json_db_pdo.php', param = {'func':'getActors'};
 		if (actorsSource == 'xml') {
 			url = 'actors.xml';
 			param = {};
 		}
 		
-		//$.get('json_db_crud_pdo.php', {'func':'getActors'})
+		//$.get('json_db_pdo.php', {'func':'getActors'})
 		$.get(url, param)
 		
 		//$.get("actors.xml")    // sync request
-		//$.get('json_db_crud_pdo.php', {'func':'getActors'})
+		//$.get('json_db_pdo.php', {'func':'getActors'})
 			.done(function(data) {
 				if (isAjaxError(data))
 					return;
@@ -1276,12 +1276,12 @@ function start(userLoginName, actorsSource, func) {
 				// }
 				
 				//if (data.d == undefined)
-				//	rootActors = data;
+				//	_rootActors = data;
 				//else
-				//	rootActors = data.d.Data;
+				//	_rootActors = data.d.Data;
 
 			//.success(function(data) {
-				rootActors = data;
+				_rootActors = data;
 
 				var found = false;
 				$(data).find('managers>manager, managers employee').each(function() {
@@ -1369,19 +1369,19 @@ function start(userLoginName, actorsSource, func) {
 /*
 function getActors(xml, func) {
 //	rootDoc = null;
-	rootActors = null;
+	_rootActors = null;
 //	userInfo = [];
 
 //	getUserIdentities("GetUserInfo", [{loginName:userLoginName}], function() {
 //		var found = false;
 		//$.get("actors.xml")    // sync request
-		var url = 'json_db_crud_pdo.php', param = {'func':'getActors'};
+		var url = 'json_db_pdo.php', param = {'func':'getActors'};
 		if (xml) {
 			url = 'actors.xml';
 			param = {};
 		}
 		
-		//$.get('json_db_crud_pdo.php', {'func':'getActors'})
+		//$.get('json_db_pdo.php', {'func':'getActors'})
 		$.get(url, param)
 			.done(function(data) {
 				var found = false;
@@ -1396,12 +1396,12 @@ function getActors(xml, func) {
 				// }
 				
 				//if (data.d == undefined)
-				//	rootActors = data;
+				//	_rootActors = data;
 				//else
-				//	rootActors = data.d.Data;
+				//	_rootActors = data.d.Data;
 
 			//.success(function(data) {
-				rootActors = data;
+				_rootActors = data;
 				if ($(data).find('department').attr('superuser') != undefined)
 					_superuser = $(data).find('department').attr('superuser').split(',');
 				else
@@ -1477,7 +1477,7 @@ function getUserIdentities(url, json, func) {
 		//contentType = "application/x-www-form-urlencoded; charset=UTF-8";
 		//data = {loginNames:JSON.stringify(json)};
 		
-		url = "json_db_crud_pdo.php";
+		url = "json_db_pdo.php";
 		data = {"func":"getUserAttributes",	"param":{loginNames:JSON.stringify(json)}};
 	} else {
 		alert("Unknown user repository");
@@ -1562,7 +1562,7 @@ function getUserIdentities(url, json, func) {
 function getActorsStatus() {
 	var v;
 	actor = -1, sectionId = null; //, actorSectionNumber = -1;
-	if ((v = $(rootActors).find('manager[name="' + userInfo[0].loginName + '"]')).length != 0) {
+	if ((v = $(_rootActors).find('manager[name="' + userInfo[0].loginName + '"]')).length != 0) {
 		//$("#tabs>ul>li").find('a[href="#tabs-4"] span').text(jQuery.i18n.prop("UserAssignmentTab"));
 		//actorSectionNumber = v.closest('section').index();		//a position of an actor's section to determine what records to show to approve
 		sectionId =  v.closest('section').attr('id');		//an ID of an actor's section
@@ -1570,7 +1570,7 @@ function getActorsStatus() {
 		reportTo = v.closest('section').next().find('manager');		//reportTo[0].attributes[0].value
 		//reportTo = v.closest('section').next().find('manager').attr('name');
 	} else {
-		$(rootActors).find('manager>employee').each(function(){
+		$(_rootActors).find('manager>employee').each(function(){
 			//$("#tabs>ul>li").find('a[href="#tabs-4"] span').text(jQuery.i18n.prop("CreateUpdateDocumentTab"));
 			if ($(this).text() == userInfo[0].loginName) {
 				//actorSectionNumber = v.index();			//a position of an actor's section to determine what records to show to edit
@@ -1687,7 +1687,7 @@ function fillUserLoginCombo() {
 }
 
 function loadUserSignatures() {
-	url = "json_db_crud_pdo.php";
+	url = "json_db_pdo.php";
 
 	$.get(url, {"func":"getUserSignatureList", "param":{"currentuser": userInfo[0].loginName}})
 		.done(function( data ) {
@@ -1839,7 +1839,7 @@ function loadStampedSignatures() {
 	//$(target + ' .dragclone').remove();
 	$(target + ' div').remove();
 	//$('#' + _currentForm + ' .dragclone').remove();
-	$.get("json_db_crud_pdo.php", {'func':'getStampedSignatures',
+	$.get("json_db_pdo.php", {'func':'getStampedSignatures',
 		'param': {
 			'schema': _currentForm,
 			'data-key-field' : $('#' + _currentForm).attr('data-key-field'),
@@ -1925,7 +1925,7 @@ function loadStampedSignatures() {
 function setUserSignatureAsDroppable(ui, cloneId) {
 	ui.droppable({ accept: '#' + cloneId,
 		drop: function( event, ui ) {
-			$.post("json_db_crud_pdo.php", {'func':'deleteSignature',
+			$.post("json_db_pdo.php", {'func':'deleteSignature',
 				'param': {
 					'schema': _currentForm,
 					'data-key-field' : $('#' + _currentForm).attr('data-key-field'),
@@ -1957,7 +1957,7 @@ function setUserSignatureAsDroppable(ui, cloneId) {
 }
 
 function saveSignature(id, top, left) {
-	$.post("json_db_crud_pdo.php", {'func':'saveSignature',
+	$.post("json_db_pdo.php", {'func':'saveSignature',
 		'param': {
 			'schema': _currentForm,
 			'data-key-field' : $('#' + _currentForm).attr('data-key-field'),
@@ -2125,7 +2125,7 @@ function CheckConnection(timeoutID, func) {
 	//}
 	//} catch (e) {
 	//		errBox.val("Check if Jetty Reporting Service started");
-//	//$.post("json_db_crud_pdo.php", {"func": "startWebServer"});
+//	//$.post("json_db_pdo.php", {"func": "startWebServer"});
 //	$('#error-box').val("Check if Jetty Reporting Service started");
 //	return false;	
 	//}
@@ -2172,7 +2172,7 @@ userAssignment = function() {
 
 		var managers, employees, val;
 
-		$(rootActors).find('section').each(function(section_index) {
+		$(_rootActors).find('section').each(function(section_index) {
 			$("#jstree>ul").append('<li id="' + $(this).attr('id') + '"><a href="#">' + (($("body[dir='ltr']").length) ? $(this).attr('name') : $(this).attr('arName')) + '</a></li>');
 			//$("#jstree>ul").append('<li class="jstree-drop" id="' + $(this).attr('id') + '"><a href="#">' + (($("body[dir='ltr']").length) ? $(this).attr('name') : $(this).attr('arName')) + '</a></li>');
 			//$("#jstree>ul").append('<li rel="department" id="' + $(this).attr('id') + '"><a href="#">' + (($("body[dir='ltr']").length) ? $(this).attr('name') : $(this).attr('arName')) + '</a></li>');
@@ -2226,7 +2226,8 @@ userAssignment = function() {
 		//$("#sortable>ul").disableSelection();
 		
 		$("#userList")
-		.on("before_open.jstree", function (e, data) {
+		.on("create_node.jstree", function (e, data) {
+			var i = 0;
 		})
 		.jstree({
 			"core" : {
@@ -2236,9 +2237,13 @@ userAssignment = function() {
 					//console.log(operation);
 					switch(operation) {
 						case "create_node":
+							//node.data('loginname', userInfo[1].loginName);
+						
+							saveActors();
 							return true;
 							break;
 						case "delete_node":
+							saveActors();
 							return true;
 							break;
 						default:
@@ -2266,6 +2271,10 @@ userAssignment = function() {
 								userInfo.some(function(o, index) {
 									if (index != 0 && o.loginName == node.data.loginname) {
 										userInfo.splice(index, 1);
+										var emp = $(_rootActors).find('employees>employee:contains("' + node.data.loginname + '")');
+										if (emp.length != 0)
+											emp.remove();
+										
 										return true;
 									}
 								});
@@ -2613,9 +2622,9 @@ userAssignment = function() {
 	})
 };
 
-saveActors = function() {
+saveActors = function(actorsTarget = 'db') {
 	var department, section, mamagers, manager, employee;
-	var department = xmlHelper.createElementWithAttribute("department", 'superuser', $(rootActors).find('department').attr('superuser'));
+	var department = xmlHelper.createElementWithAttribute("department", 'superuser', $(_rootActors).find('department').attr('superuser'));
 	xmlHelper.appendNewLineElement(department, 1);
 	var sections = document.createElementNS("", "sections");
 	department.appendChild(sections);
@@ -2626,9 +2635,9 @@ saveActors = function() {
 		section = xmlHelper.createElementWithAttribute("section", 'id', this.id);
 		if ($("body[dir='ltr']").length) {
 			name = this.text.trim();
-			arName = $(rootActors).find('section[id="' + this.id + '"]').attr('arName');
+			arName = $(_rootActors).find('section[id="' + this.id + '"]').attr('arName');
 		} else {
-			name = $(rootActors).find('section[id="' + this.id + '"]').attr('name');
+			name = $(_rootActors).find('section[id="' + this.id + '"]').attr('name');
 			arName = this.text.trim();
 		}
 
@@ -2660,7 +2669,7 @@ saveActors = function() {
 		xmlHelper.appendNewLineElement(sections, 2);
 		section = xmlHelper.createElementWithAttribute("section", 'id', $(this).parent().attr('id'));
 		xmlHelper.appendAttributeToElement(section, 'name', $(this).text().trim());
-		xmlHelper.appendAttributeToElement(section, 'arName', $(rootActors).find('section[id="' + $(this).parent().attr('id') + '"]').attr('arName'));
+		xmlHelper.appendAttributeToElement(section, 'arName', $(_rootActors).find('section[id="' + $(this).parent().attr('id') + '"]').attr('arName'));
 		sections.appendChild(section);
 		xmlHelper.appendNewLineElement(section, 3);
 		managers = document.createElementNS("", "managers");
@@ -2683,13 +2692,21 @@ saveActors = function() {
 	
 	xmlHelper.appendNewLineElement(sections, 1);
 	xmlHelper.appendNewLineElement(department, 1);
-	var employees = $(rootActors).find("department>employees").clone();
+	var employees = $(_rootActors).find("department>employees").clone();
 	$(department).append(employees);
 	xmlHelper.appendNewLineElement(department, 0);
 
 	$.ajaxSetup({ cache: false, async: true });
 	//$.post("xml-write.php", {'fileName': 'actors.xml', 'xml' : $.xml(department)})
-	$.post("json_db_crud_pdo.php", {'func':'saveActors', 'param' : $.xml(department)})
+	//$.post("json_db_pdo.php", {'func':'saveActors', 'param' : $.xml(department)})
+	
+	var url = 'json_db_pdo.php', param = {'func':'saveActors', 'param' : $.xml(department)};
+	if (actorsTarget == 'xml') {
+		url = 'xml-write.php';
+		param = {'fileName': 'actors.xml', 'xml' : $.xml(department)};
+	}
+	
+	$.post(url, param)
 		.done(function( data ) {
 			if (isAjaxError(data))
 				return;
@@ -2700,6 +2717,10 @@ saveActors = function() {
 					// return;
 				// }
 			// }
+		})
+		.fail(function(jqXHR, textStatus, errorThrown) {
+			errorFound = true;
+			alert("saveActors - error: " + errorThrown);
 		})
 		.always(function() {
 			$.ajaxSetup({ cache: false, async: false });
@@ -2734,6 +2755,13 @@ this.addNewUser = function(jstree) {
 					}
 				}]
 			); 
+			//$('.ui-dialog-buttonpane button:first').focus();
+			$(this).keyup(function(e) {
+				if (e.keyCode == 13) {
+				   $('.ui-dialog-buttonpane button:first').trigger('click');
+				}
+			});
+
 		},
 		close: function( event, ui ) {
 		},
@@ -2792,16 +2820,18 @@ $(function() {
 			//fillUserList();
 			addToUserLoginCombo();
 
-			var employees = $(rootActors).find("employees");
-			employees.append(xmlHelper.createSpaceElement(1));
+			var employees = $(_rootActors).find("employees");
+			//employees.append(xmlHelper.createSpaceElement(1));
 			employees.append(xmlHelper.createElement("employee", loginname));
-			employees.append(xmlHelper.createNewLineElement(1));
+			//employees.append(xmlHelper.createNewLineElement(1));
 			
+			jstree.create_node("#", {'text':userInfo[index - 1].displayName, 'data':{'loginname':userInfo[index - 1].loginName}}, "first");
 			//jstree.create_node("#", {'text':userInfo[index - 1].displayName, 'data-loginname':userInfo[index - 1].loginName}, "first");
+			//jstree.create_node("#", {'text':userInfo[index - 1].displayName}, "first");
 
 			//obj.val("");
-			
-			$.post("json_db_crud_pdo.php", {'func':'saveActors', 'param' : $.xml(rootActors)})
+/*			
+			$.post("json_db_pdo.php", {'func':'saveActors', 'param' : $.xml(_rootActors)})
 				.done(function( data ) {
 					if (isAjaxError(data))
 						return;
@@ -2812,9 +2842,13 @@ $(function() {
 							// return;
 						// }
 					// }
+				})
+				.fail(function(jqXHR, textStatus, errorThrown) {
+					errorFound = true;
+					alert("saveActors - error: " + errorThrown);
 				});
-			
-			//$.post("xml-write.php", {'fileName': 'actors.xml', 'xml' : $.xml(rootActors)},
+*/			
+			//$.post("xml-write.php", {'fileName': 'actors.xml', 'xml' : $.xml(_rootActors)},
 			//function(data, status){
 			//	if (data.error) {
 			//		alert("Data: " + data + "\nStatus: " + status);
@@ -2825,9 +2859,11 @@ $(function() {
 	
 	$(document).on("click", "#importUsersButton", function(){
 		start(_userLoginName, 'xml', null);		// 'xml' - get Actors from actors.xml file
+		saveActors();
 	});
 
 	$(document).on("click", "#exportUsersButton", function(){
+		saveActors('xml');
 	});
 	
 })
@@ -3152,7 +3188,7 @@ function saveForm(that, func) {
 	param["schema"] = _currentForm;
 	
 	if ( valid ) {
-		url = "json_db_crud_pdo.php";
+		url = "json_db_pdo.php";
 		data = {"func": func,
 			"param": param
 				// docFileNumber:file_number.val(),
@@ -3234,7 +3270,7 @@ function deleteForm() {
 	//param["schema"][2]["primary-key"] = $('#' + _currentForm).attr('data-key-field');
 */
 
-	var url = "json_db_crud_pdo.php";
+	var url = "json_db_pdo.php";
 	var data = {"func":"delete", "param":param};
 
 	$.post(url, data)
