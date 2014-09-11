@@ -2238,7 +2238,6 @@ userAssignment = function() {
 					switch(operation) {
 						case "create_node":
 							//node.data('loginname', userInfo[1].loginName);
-						
 							saveActors();
 							return true;
 							break;
