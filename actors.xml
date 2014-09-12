@@ -2,13 +2,10 @@
  <sections>
   <section id="0" name="Gulf Consult" arName="مستشارو الخليج">
    <managers>
-    <manager name="awatef">
-    </manager>
     <manager name="ali">
+     <employee>shukri</employee>
      <employee>amr</employee>
      <employee>abdalla</employee>
-    </manager>
-    <manager name="ahmed">
     </manager>
    </managers>
   </section>
@@ -50,6 +47,5 @@
    </managers>
   </section>
  </sections>
- <employees><employee>nina</employee><employee>masri</employee><employee>awatef</employee><employee>bashar</employee><employee>shukri</employee><employee>jkmutlaq</employee><employee>zkalbannay</employee><employee>ali</employee><employee>ahmed</employee><employee>amr</employee><employee>abdalla</employee><employee>bader</employee><employee>basma</employee><employee>hesham</employee><employee>hosam</employee><employee>husain</employee><employee>roman</employee><employee>mnsarhan</employee><employee>zjaljadi</employee><employee>maalhaider</employee><employee>tamalallah</employee><employee>ridavidenko</employee><employee>mansour</employee>
- </employees>
+ <employees><employee>nina</employee><employee>ahmed</employee><employee>masri</employee><employee>awatef</employee><employee>bashar</employee><employee>jkmutlaq</employee><employee>zkalbannay</employee><employee>ali</employee><employee>amr</employee><employee>abdalla</employee><employee>bader</employee><employee>basma</employee><employee>hesham</employee><employee>hosam</employee><employee>husain</employee><employee>roman</employee><employee>mnsarhan</employee><employee>zjaljadi</employee><employee>maalhaider</employee><employee>tamalallah</employee><employee>ridavidenko</employee><employee>mansour</employee><employee>shukri</employee></employees>
 </department>
