@@ -2227,7 +2227,13 @@ userAssignment = function() {
 		
 		$("#userList")
 		.on("create_node.jstree", function (e, data) {
-			var i = 0;
+			//alert(data.node.data.li_attr);
+			//data.node.data = {'login':'kuku'};
+			//var i = 0;
+			saveActors();
+		})
+		.on("delete_node.jstree", function (e, data) {
+			saveActors();
 		})
 		.jstree({
 			"core" : {
@@ -2238,11 +2244,10 @@ userAssignment = function() {
 					switch(operation) {
 						case "create_node":
 							//node.data('loginname', userInfo[1].loginName);
-							saveActors();
+							//saveActors();
 							return true;
 							break;
 						case "delete_node":
-							saveActors();
 							return true;
 							break;
 						default:
@@ -2268,9 +2273,9 @@ userAssignment = function() {
 							"label": "Remove",
 							"action": function (obj) {
 								userInfo.some(function(o, index) {
-									if (index != 0 && o.loginName == node.data.loginname) {
+									if (index != 0 && o.loginName == node.li_attr["data-loginname"]) {
 										userInfo.splice(index, 1);
-										var emp = $(_rootActors).find('employees>employee:contains("' + node.data.loginname + '")');
+										var emp = $(_rootActors).find('employees>employee:contains("' + node.li_attr["data-loginname"] + '")');
 										if (emp.length != 0)
 											emp.remove();
 										
@@ -2377,6 +2382,10 @@ userAssignment = function() {
 			.on("delete_node.jstree", function (e, data) {
 				saveActors();
 			})
+			.on('keydown.jstree', '.jstree-anchor', function (e) {
+			  // e.which 
+			})
+			
 			
 /*			
 			.on("select_node.jstree", function (e, data) {
@@ -2404,17 +2413,26 @@ userAssignment = function() {
 					"check_callback" : function (operation, node, node_parent, node_position, more) {
 						console.log(operation);
 						switch(operation) {
+							case "create_node":
+								return false;
+								//return { 
+								//	after : false, 
+								//	before : true, 
+								//	inside : false 
+								//};
 							case "move_node":
 								return false;
 							case "copy_node":
-								if (node.data == null)
+								//if (node.data == null)
+								if (node.li_attr["data-loginname"] == null)
 									return false;
 							
 								var exit = false;
 								//var rootnodes = this.element;
 								var nodes = this.element.jstree(true).get_json("#", {flat:true});
 								nodes.some(function(o) {
-									if (o.data.loginname == node.data.loginname) {
+									//if (o.data.loginname == node.data.loginname) {
+									if (o.data.loginname == node.li_attr["data-loginname"]) {
 										exit = true;
 										return true;
 									}
@@ -2493,7 +2511,8 @@ userAssignment = function() {
 							}
 						};
 						
-						if (node.data != null && node.data.loginname == undefined) {
+						//if (node.data != null && node.data.loginname == undefined) {
+						if (node.li_attr["data-loginname"] == undefined) {
 							delete items.remove;
 						} else {
 							delete items.rename;
@@ -2650,12 +2669,14 @@ saveActors = function(actorsTarget = 'db') {
 		//$(this).siblings('ul').children('li').children('a').each(function(index) {
 		$(this.children).each(function() {
 			xmlHelper.appendNewLineElement(managers, 4);
-			manager = xmlHelper.createElementWithAttribute("manager", 'name', this.data.loginname);
+			manager = xmlHelper.createElementWithAttribute("manager", 'name', this.li_attr["data-loginname"]);
+			//manager = xmlHelper.createElementWithAttribute("manager", 'name', this.data.loginname);
 			managers.appendChild(manager);
 			$(this.children).each(function() {
 			//$(this).siblings('ul').children('li').children('a').each(function(index) {
 				xmlHelper.appendNewLineElement(manager, 5);
-				employee = xmlHelper.createElement("employee", this.data.loginname);
+				employee = xmlHelper.createElement("employee", this.li_attr["data-loginname"]);
+				//employee = xmlHelper.createElement("employee", this.data.loginname);
 				manager.appendChild(employee);
 			})
 			xmlHelper.appendNewLineElement(manager, 4);
@@ -2824,7 +2845,7 @@ $(function() {
 			employees.append(xmlHelper.createElement("employee", loginname));
 			//employees.append(xmlHelper.createNewLineElement(1));
 			
-			jstree.create_node("#", {'text':userInfo[index - 1].displayName, 'data':{'loginname':userInfo[index - 1].loginName}}, "first");
+			jstree.create_node("#", {'text':userInfo[index - 1].displayName, 'li_attr':{'data-loginname':userInfo[index - 1].loginName}}, "first");
 			//jstree.create_node("#", {'text':userInfo[index - 1].displayName, 'data-loginname':userInfo[index - 1].loginName}, "first");
 			//jstree.create_node("#", {'text':userInfo[index - 1].displayName}, "first");
 
@@ -3429,6 +3450,14 @@ function toggleLanguage(lang, dir) {
 		language: lang,
 		callback: function() {
 
+			if (dir == 'ltr') {
+				$("body").css("font-size", "80%");
+				//$(".ui-jqgrid").css("font-size", "0.8em");
+			} else {
+				$("body").css("font-size", "90%");
+				//$(".ui-jqgrid").css("font-size", "1.0em");
+			}
+		
 			if (dir == 'ltr') {
 				$.datepicker.setDefaults( $.datepicker.regional[ lang == "en" ? "" : lang ] );
 				$(".rid50-datepicker").datepicker("option", "changeMonth", lang == "en" ? true : false);
