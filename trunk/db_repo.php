@@ -955,9 +955,21 @@ class DatabaseRepository {
 		} catch (PDOException $e) {
 			throw new Exception('Failed to execute query: ' . $e->getMessage());
 		}
-
+		
 		try {
 			$data = $ds->fetchAll(PDO::FETCH_ASSOC);
+		} catch (PDOException $e) {
+			throw new Exception('Failed to fetch result set: ' . $e->getMessage());
+		}
+		
+		try {
+			$ds = $dbh->query("SELECT o.OfficeId, Name, ArabicName FROM OfficeList AS o LEFT OUTER JOIN EmployeeList AS e ON o.OfficeId = e.OfficeId WHERE e.OfficeId IS NULL ORDER BY e.OfficeId");
+		} catch (PDOException $e) {
+			throw new Exception('Failed to execute query: ' . $e->getMessage());
+		}
+		
+		try {
+			$data2 = $ds->fetchAll(PDO::FETCH_ASSOC);
 		} catch (PDOException $e) {
 			throw new Exception('Failed to fetch result set: ' . $e->getMessage());
 		}
@@ -978,6 +990,14 @@ class DatabaseRepository {
 			} else
 				$ar[$r -> OfficeId][$r -> ManagerId][] = $r -> EmployeeId;
 		}
+		
+		foreach ($data2 as $row) {
+			$r = (object)$row;
+
+			if (!isset($ar[$r -> OfficeId]))
+				$ar[$r -> OfficeId] = array('name' => $r -> Name, 'arName' => $r -> ArabicName);
+		}
+		
 /*
 		$ar = 	array(
 					0 => array(
@@ -1135,7 +1155,23 @@ class DatabaseRepository {
 		}
 		
 		return $this->result;		
-	}	
+	}
+	
+	public function createOU($param) {
+		$dbh = $this->connect();
+
+		try {
+			$prest = $dbh->prepare("INSERT INTO OfficeList(Name, ArabicName) VALUES('{$param['name']}', '{$param['name']}');");
+		//throw new Exception("INSERT INTO OfficeList() VALUES('{$param['name']}', '{$param['name']}');");
+			$prest->execute();
+			$this->result[] =  $dbh->lastInsertId();
+		} catch (PDOException $e) {
+			$dbh->rollBack();
+			throw new Exception('Failed to execute/prepare query: ' . $e->getMessage());
+		}
+		
+		return $this->result;		
+	}
 /*
 	public function createUpdateOngoingCheckup($param) {
 		$dbh = $this->connect();

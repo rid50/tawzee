@@ -1,6 +1,6 @@
-﻿-- DROP DATABASE IF EXISTS tawzee;
--- CREATE DATABASE IF NOT EXISTS tawzee DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_unicode_ci;
--- USE tawzee;
+﻿DROP DATABASE IF EXISTS tawzee;
+CREATE DATABASE IF NOT EXISTS tawzee DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_unicode_ci;
+USE tawzee;
 
 DROP TABLE IF EXISTS ApplicationLoadSignature;
 DROP TABLE IF EXISTS ApplicationLoadDetail;
@@ -63,8 +63,8 @@ Meter SMALLINT NOT NULL DEFAULT -1,
 PossibilityYes SMALLINT NOT NULL DEFAULT -1,
 PossibilityNo SMALLINT NOT NULL DEFAULT -1,
 StationNumber VARCHAR(10),
-ApplicationCreator VARCHAR(45) NOT NULL,
-OfficeId smallint(6) NOT NULL DEFAULT '0',
+ApplicationCreator VARCHAR(45) NULL,
+OfficeId smallint NOT NULL,
 time TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -127,8 +127,8 @@ PowerFactorSummer DECIMAL(10,3) NOT NULL,
 PowerFactorWinter DECIMAL(10,3) NOT NULL,
 MaximumLoadsSummer DECIMAL(10,3) NOT NULL,
 MaximumLoadsWinter DECIMAL(10,3) NOT NULL,
-ApplicationCreator VARCHAR(45) NOT NULL,
-OfficeId smallint(6) NOT NULL DEFAULT '0',
+ApplicationCreator VARCHAR(45) NULL,
+OfficeId smallint NOT NULL,
 time TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -212,21 +212,25 @@ DROP TABLE IF EXISTS OfficeList;
 
 -- ------------------------------------------------------------------------------------------------------------
 CREATE TABLE OfficeList (
-  OfficeId smallint(6) NOT NULL,
+  OfficeId smallint AUTO_INCREMENT,
   Name varchar(45) NOT NULL,
   ArabicName varchar(45) NOT NULL,
   PRIMARY KEY (OfficeId)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE EmployeeList (
   EmployeeId varchar(45) NOT NULL,
   ManagerId varchar(45) DEFAULT NULL,
-  OfficeId smallint(6) DEFAULT NULL,
-  SuperUser tinyint(1) NOT NULL DEFAULT '0',
+  OfficeId smallint DEFAULT NULL,
+  SuperUser tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (EmployeeId),
   KEY FK_OfficeId_idx (OfficeId),
   CONSTRAINT FK_OfficeId FOREIGN KEY (OfficeId) REFERENCES OfficeList (OfficeId) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- ------------------------------------------------------------------------------------------------------------
+
+INSERT INTO `OfficeList` VALUES ('11', "Gulf Consult", "مستشارو الخليج");
 
 -- ------------------------------------------------------------------------------------------------------------
 
@@ -443,20 +447,17 @@ INSERT INTO `Area` VALUES ('32', 'جنوب الجهراء');
 
 -- ------------------------------------------------------------------------------------------------------------
 
-INSERT INTO Application (ApplicationNumber, ApplicationDate, OwnerName, ProjectName, ProjectType, AreaID, Block, Plot, ConstructionExpDate, ResidenceTotalArea, ConstructionArea, ACArea, CurrentLoad, ExtraLoad, LoadAfterDelivery, ConductiveTotalLoad, FeedPoints, SiteFeedPoint, Requirements, CableSize, Fuze, Meter, PossibilityYes, PossibilityNo, StationNumber) VALUES (12345, STR_TO_DATE('01/08/2013', '%d/%m/%Y'), 'سلمان الحربي', 'Project 1', 1, 32, 3, 300, 'ستة أشهر', "a500", "1523", "1376", "123", "456", "94", "118", "1", 1, 1, 1, 1, 1, 1, 0, "1");
-INSERT INTO Application (ApplicationNumber, ApplicationDate, OwnerName, ProjectName, ProjectType, AreaID, Block, Plot, ConstructionExpDate, ResidenceTotalArea, ConstructionArea, ACArea, CurrentLoad, ExtraLoad, LoadAfterDelivery, ConductiveTotalLoad, FeedPoints, SiteFeedPoint, Requirements, CableSize, Fuze, Meter, PossibilityYes, PossibilityNo, StationNumber) VALUES (12346, STR_TO_DATE('09/09/2013', '%d/%m/%Y'), 'عبد الله شمس الدين', 'Project 2', 2, 33, 3, 400, 'ستة أشهر', "a500", "1523", "1376", "", "", "94", "118", "2", 2, 2, 2, 2, 2, 0, 2, "2");
-INSERT INTO Application (ApplicationNumber, ApplicationDate, OwnerName, ProjectName, ProjectType, AreaID, Block, Plot, ConstructionExpDate, ResidenceTotalArea, ConstructionArea, ACArea, CurrentLoad, ExtraLoad, LoadAfterDelivery, ConductiveTotalLoad, FeedPoints, SiteFeedPoint, Requirements, CableSize, Fuze, Meter, PossibilityYes, PossibilityNo, StationNumber) VALUES (12347, STR_TO_DATE('22/10/2013', '%d/%m/%Y'), 'Awatef Al-Ali', 'Project 3', 3, 37, 6, 125, 'سنة', "500", "1523", "1376", "", "", "94", "118", "3", 3, 3, 3, 3, 3, 3, 0, "3");
-INSERT INTO Application (ApplicationNumber, ApplicationDate, OwnerName, ProjectName, ProjectType, AreaID, Block, Plot, ConstructionExpDate) VALUES (12348, STR_TO_DATE('04/09/2013', '%d/%m/%Y'), 'Bader Al-Anazi', 'Project 4', 4, 39, 7, 288, '6 أشهر');
-INSERT INTO Application (ApplicationNumber, ApplicationDate, OwnerName, ProjectName, ProjectType, AreaID, Block, Plot, ConstructionExpDate) VALUES (25678, STR_TO_DATE('24/07/2013', '%d/%m/%Y'), 'منصور ميثيون', 'Project 5', 5, 32, 7, 52, 'سنة');
-INSERT INTO Application (ApplicationNumber, ApplicationDate, OwnerName, ProjectName, ProjectType, AreaID, Block, Plot, ConstructionExpDate) VALUES (45678, STR_TO_DATE('24/07/2013', '%d/%m/%Y'), 'Abdalla Masri', 'Project 6', 6, 40, 7, 100, '6 أشهر');
+INSERT INTO Application (ApplicationNumber, ApplicationDate, OwnerName, ProjectName, ProjectType, AreaID, Block, Plot, ConstructionExpDate, ResidenceTotalArea, ConstructionArea, ACArea, CurrentLoad, ExtraLoad, LoadAfterDelivery, ConductiveTotalLoad, FeedPoints, SiteFeedPoint, Requirements, CableSize, Fuze, Meter, PossibilityYes, PossibilityNo, StationNumber, OfficeId) VALUES (12345, STR_TO_DATE('01/08/2013', '%d/%m/%Y'), 'سلمان الحربي', 'Project 1', 1, 32, 3, 300, 'ستة أشهر', "a500", "1523", "1376", "123", "456", "94", "118", "1", 1, 1, 1, 1, 1, 1, 0, "1", 11);
+INSERT INTO Application (ApplicationNumber, ApplicationDate, OwnerName, ProjectName, ProjectType, AreaID, Block, Plot, ConstructionExpDate, ResidenceTotalArea, ConstructionArea, ACArea, CurrentLoad, ExtraLoad, LoadAfterDelivery, ConductiveTotalLoad, FeedPoints, SiteFeedPoint, Requirements, CableSize, Fuze, Meter, PossibilityYes, PossibilityNo, StationNumber, OfficeId) VALUES (12346, STR_TO_DATE('09/09/2013', '%d/%m/%Y'), 'عبد الله شمس الدين', 'Project 2', 2, 33, 3, 400, 'ستة أشهر', "a500", "1523", "1376", "", "", "94", "118", "2", 2, 2, 2, 2, 2, 0, 2, "2", 11);
+INSERT INTO Application (ApplicationNumber, ApplicationDate, OwnerName, ProjectName, ProjectType, AreaID, Block, Plot, ConstructionExpDate, ResidenceTotalArea, ConstructionArea, ACArea, CurrentLoad, ExtraLoad, LoadAfterDelivery, ConductiveTotalLoad, FeedPoints, SiteFeedPoint, Requirements, CableSize, Fuze, Meter, PossibilityYes, PossibilityNo, StationNumber, OfficeId) VALUES (12347, STR_TO_DATE('09/09/2013', '%d/%m/%Y'), 'عبد الله شمس الدين', 'Project 3', 2, 33, 3, 400, 'ستة أشهر', "a500", "1523", "1376", "", "", "94", "118", "2", 2, 2, 2, 2, 2, 0, 2, "2", 11);
 
 INSERT INTO ApplicationDetail (ApplicationNumber, Switch, K1000KWT, K1000AMP, K1250KWT, K1250AMP, K1600KWT, K1600AMP) VALUES (12345, "Switch-1", 113.82, 100.42, 86.765, 88.765, 13.82, 00.42);
 INSERT INTO ApplicationDetail (ApplicationNumber, Switch, K1000KWT, K1000AMP, K1250KWT, K1250AMP, K1600KWT, K1600AMP) VALUES (12345, "Switch-2", 113.82, 100.42, 86.765, 88.765, 13.82, 00.42);
 INSERT INTO ApplicationDetail (ApplicationNumber, Switch, K1000KWT, K1000AMP, K1250KWT, K1250AMP, K1600KWT, K1600AMP) VALUES (12345, "Switch-3", 113.82, 100.42, 86.765, 88.765, 13.82, 00.42);
 
-INSERT INTO ApplicationLoad (ApplicationNumber, FileNumber, LoadDate, PowerFactorSummer, PowerFactorWinter, MaximumLoadsSummer, MaximumLoadsWinter) VALUES (12345, 144,  STR_TO_DATE('02/12/2013', '%d/%m/%Y'), 0.7, 0.8, 93.21, 77.96);
-INSERT INTO ApplicationLoad (ApplicationNumber, FileNumber, LoadDate, PowerFactorSummer, PowerFactorWinter, MaximumLoadsSummer, MaximumLoadsWinter) VALUES (12346, 266,  STR_TO_DATE('12/02/2014', '%d/%m/%Y'), 0.8, 0.9, 93.22, 77.97);
-INSERT INTO ApplicationLoad (ApplicationNumber, FileNumber, LoadDate, PowerFactorSummer, PowerFactorWinter, MaximumLoadsSummer, MaximumLoadsWinter) VALUES (12347, 388,  STR_TO_DATE('14/04/2014', '%d/%m/%Y'), 0.9, 0.95, 93.23, 77.98);
+INSERT INTO ApplicationLoad (ApplicationNumber, FileNumber, LoadDate, PowerFactorSummer, PowerFactorWinter, MaximumLoadsSummer, MaximumLoadsWinter, OfficeId) VALUES (12345, 144,  STR_TO_DATE('02/12/2013', '%d/%m/%Y'), 0.7, 0.8, 93.21, 77.96, 11);
+INSERT INTO ApplicationLoad (ApplicationNumber, FileNumber, LoadDate, PowerFactorSummer, PowerFactorWinter, MaximumLoadsSummer, MaximumLoadsWinter, OfficeId) VALUES (12346, 266,  STR_TO_DATE('12/02/2014', '%d/%m/%Y'), 0.8, 0.9, 93.22, 77.97, 11);
+INSERT INTO ApplicationLoad (ApplicationNumber, FileNumber, LoadDate, PowerFactorSummer, PowerFactorWinter, MaximumLoadsSummer, MaximumLoadsWinter, OfficeId) VALUES (12347, 388,  STR_TO_DATE('14/04/2014', '%d/%m/%Y'), 0.9, 0.95, 93.23, 77.98, 11);
 
 INSERT INTO ApplicationLoadDetail (FileNumber, Description, ConnectorLoad, SummerLoad, WinterLoad, Remarks) VALUES (144, "M.S.B.1", 113.82, 100.42, 86.765, "First MSB");
 INSERT INTO ApplicationLoadDetail (FileNumber, Description, ConnectorLoad, SummerLoad, WinterLoad) VALUES (144, "M.S.B.2", 113.82, 100.42, 86.765);
