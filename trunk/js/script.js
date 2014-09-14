@@ -2592,7 +2592,7 @@ userAssignment = function() {
 												return;
 											}
 											
-											node = tree.create_node(node, {'id':data[0], 'text':deptname}, "before");
+											node = tree.create_node(node, {'id':data[0], 'text':deptname, 'data':{}, 'li_attr':{"data-name":deptname, "data-arname":deptname}}, "before");
 											tree.edit(node);
 /*											
 											var section = xmlHelper.createElementWithAttribute("section", 'id', data[0]);
@@ -2635,6 +2635,11 @@ userAssignment = function() {
 							remove: {
 								"separator_before": false,
 								"separator_after": false,
+								"_disabled": function (obj) { 
+									if (node.children.length != 0)
+										return true;
+								},								
+								//disabled: node.children.length != 0,
 								"label": "Remove",
 								"action": function (obj) { 
 									tree.delete_node(node);
@@ -2643,9 +2648,8 @@ userAssignment = function() {
 						};
 						
 						//if (node.data != null && node.data.loginname == undefined) {
-						if (node.li_attr["data-loginname"] == undefined) {
-							delete items.remove;
-						} else {
+						//if (node.li_attr["data-loginname"] == undefined) {
+						if (node.type != 'default') {
 							delete items.rename;
 							delete items.create;
 						}
