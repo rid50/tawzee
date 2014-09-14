@@ -62,7 +62,7 @@ if ($idp == "SAML") {
     <!--script src="js/jquery.hotkeys.js" type="text/javascript"></script-->
 	<!--script src="js/jstree.min.js" type="text/javascript"></script-->
 	<!--script src="js/jquery.jstree.js" type="text/javascript"></script-->
-	<script src="js/jstree.js" type="text/javascript"></script>
+	<script src="js/jstree.min.js" type="text/javascript"></script>
 	<!--script src="js/jquery-ui-1.10.2.custom.min.js" type="text/javascript"></script-->
 	<script src="js/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
 	<script src="js/jquery.ui.datepicker-ar.js" type="text/javascript"></script>

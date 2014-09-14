@@ -2159,6 +2159,14 @@ function error(error) {
 */	
 }
 
+toggleJsTree = function() {
+	var nodes = $('#jstree').jstree(true).get_json("#", {flat:false});
+	$(nodes).each(function() {
+		this.data.refresh = true;		// true - do not save actors in a database
+		$('#jstree').jstree(true).rename_node(this, ($("body[dir='ltr']").length) ? this.li_attr["data-name"] : this.li_attr["data-arname"]);
+		//$('#jstree').jstree(true).rename_node(this, ($("body[dir='ltr']").length) ? this.data.name : this.data.arname);
+	})
+}
 
 userAssignment = function() {
 	$(function() {
@@ -2362,17 +2370,24 @@ userAssignment = function() {
 				saveActors();
 			})
 			.on("rename_node.jstree", function (e, data) {
-				if (data.node.data.refresh != undefined && data.node.data.refresh == true) {
+				if ($("body[dir='ltr']").length)
+					data.node.li_attr["data-name"] = data.text;
+					//data.node.data.name = data.text;
+				else
+					data.node.li_attr["data-arname"] = data.text;
+						//data.node.data.arname = data.text;
+
+				if (data.node.data != null && data.node.data.refresh != undefined && data.node.data.refresh == true) {
 					data.node.data.refresh = false;
 					return;
 				}
 				
 				if (data.old != data.text) {
-					if ($("body[dir='ltr']").length)
-						data.node.li_attr["data-name"] = data.text;
+					//if ($("body[dir='ltr']").length)
+						//data.node.li_attr["data-name"] = data.text;
 						//data.node.data.name = data.text;
-					else
-						data.node.li_attr["data-arname"] = data.text;
+					//else
+						//data.node.li_attr["data-arname"] = data.text;
 						//data.node.data.arname = data.text;
 						
 					saveActors();
@@ -2769,13 +2784,13 @@ saveActors = function(actorsTarget = 'db') {
 		section = xmlHelper.createElementWithAttribute("section", 'id', this.id);
 		if ($("body[dir='ltr']").length) {
 			name = this.text.trim();
-			arName = this.li_attr["data-arname"];
+			arName = this.li_attr["data-arname"].trim();
 			//arName = this.data.arname;
 			//arName = $(_rootActors).find('section[id="' + this.id + '"]').attr('arName');
 		} else {
 			//name = $(_rootActors).find('section[id="' + this.id + '"]').attr('name');
 			//name = this.data.name;
-			name = this.li_attr["data-name"];
+			name = this.li_attr["data-name"].trim();
 			arName = this.text.trim();
 		}
 
@@ -3588,8 +3603,8 @@ function toggleLanguage(lang, dir) {
 
 			//userAssignment();
 			//$('#jstree').jstree("refresh_node", {'id':'#'});
-			$('#jstree').jstree("refresh");
-
+			//$('#jstree').jstree("refresh");
+			toggleJsTree();
 			toggleGrid(lang);
 
 			$('#copyright').text(jQuery.i18n.prop('Copyright'));
