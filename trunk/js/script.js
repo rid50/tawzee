@@ -2181,7 +2181,7 @@ userAssignment = function() {
 		var managers, employees, val;
 
 		$(_rootActors).find('section').each(function(section_index) {
-			$("#jstree>ul").append('<li id="' + $(this).attr('id') + '" data-name="' + $(this).attr('name') + '" data-arName="' + $(this).attr('arName') + '"><a href="#">' + (($("body[dir='ltr']").length) ? $(this).attr('name') : $(this).attr('arName')) + '</a></li>');
+			$("#jstree>ul").append('<li data-jstree=\'{"type":"department"}\' id="' + $(this).attr('id') + '" data-name="' + $(this).attr('name') + '" data-arname="' + $(this).attr('arname') + '"><a href="#">' + (($("body[dir='ltr']").length) ? $(this).attr('name') : $(this).attr('arName')) + '</a></li>');
 			//$("#jstree>ul").append('<li class="jstree-drop" id="' + $(this).attr('id') + '"><a href="#">' + (($("body[dir='ltr']").length) ? $(this).attr('name') : $(this).attr('arName')) + '</a></li>');
 			//$("#jstree>ul").append('<li rel="department" id="' + $(this).attr('id') + '"><a href="#">' + (($("body[dir='ltr']").length) ? $(this).attr('name') : $(this).attr('arName')) + '</a></li>');
 			//$("#jstree>ul").append('<li data-jstree=\'{"icon":"images/users.png"}\' id="' + $(this).attr('id') + '"><a href="#">' + (($("body[dir='ltr']").length) ? $(this).attr('name') : $(this).attr('arName')) + '</a></li>');
@@ -2204,7 +2204,7 @@ userAssignment = function() {
 					//$("#jstree>ul>li:last-child>ul").append('<li data-jstree=\'{"icon":"images/user.png"}\'><a href="#">' + val + '<span class="userListHiddenElement">' + $(this).attr('name') + '</span></a></li>');
 					//$("#jstree>ul>li:last-child>ul").append('<li class="jstree-drop" data-jstree=\'{"type":"employee"}\'><a href="#">' + val + '<span class="userListHiddenElement">' + $(this).attr('name') + '</span></a></li>');
 					//$("#jstree>ul>li:last-child>ul").append('<li data-jstree=\'{"type":"employee"}\'><a href="#">' + val + '<span class="userListHiddenElement">' + $(this).attr('name') + '</span></a></li>');
-					$("#jstree>ul>li:last-child>ul").append('<li data-jstree=\'{"type":"employee"}\' data-loginname="' + $(this).attr('name') + '"><a href="#">' + val + '</a></li>');
+					$("#jstree>ul>li:last-child>ul").append('<li data-jstree=\'{"type":"manager"}\' data-loginname="' + $(this).attr('name') + '"><a href="#">' + val + '</a></li>');
 					employees = $(this).find('employee');
 					if (employees.length != 0) {
 						$("#jstree>ul>li:last-child>ul>li:last-child").append('<ul></ul>');
@@ -2301,7 +2301,7 @@ userAssignment = function() {
 				"always_copy" : true,
 			},
 			"types" : {
-				"default" : {
+				"employee" : {
 					"icon" : "images/user.png"
 				}
 			},
@@ -2313,7 +2313,6 @@ userAssignment = function() {
 			},
 			
 			"plugins" : [ "dnd", "types", "themes", "contextmenu" ]
-			//"plugins" : [ "dnd", "types", "wholerow" ]
 		});
 
 		//$(document).bind('dnd_stop.vakata', function (e, data) {
@@ -2366,7 +2365,18 @@ userAssignment = function() {
 				//saveActors();
 			})
 			.on("copy_node.jstree", function (e, data) {
-				data.node.data = $.extend(true, {}, data.original.data);
+				//data.node.data = $.extend(true, {}, data.original.data);
+				//data.node.type = "manager";
+				//if (node_parent.type == "employee")
+				//var par = $.jstree._focused()._get_parent(data.node);
+				//var par = $("#" + data.node.parent); 
+				var nd = data.instance.get_node($("#" + data.node.parent));
+				//var par = data.instance._get_parent(data.node);
+				if (nd.type == "department")
+					data.instance.set_type(data.node, "manager");
+				//data.instance.set_icon(data.node, "manager");
+				//$.jstree._focused().set_type("some-type-string", $ 
+				//data.instance.refresh_node(data.node.id);
 				saveActors();
 			})
 			.on("rename_node.jstree", function (e, data) {
@@ -2488,11 +2498,10 @@ userAssignment = function() {
 								sections.append(section);
 								
 								return true;
-							case "move_node":
-								return false;
+							//case "move_node":
+							//	return false;
 							case "copy_node":
-								//if (node.data == null)
-								if (node.li_attr["data-loginname"] == null)
+								if (!node.li_attr["data-loginname"])
 									return false;
 							
 								var exit = false;
@@ -2500,7 +2509,7 @@ userAssignment = function() {
 								var nodes = this.element.jstree(true).get_json("#", {flat:true});
 								nodes.some(function(o) {
 									//if (o.data.loginname == node.data.loginname) {
-									if (o.data.loginname == node.li_attr["data-loginname"]) {
+									if (node.type != "department" && o.data.loginname == node.li_attr["data-loginname"]) {
 										exit = true;
 										return true;
 									}
@@ -2529,9 +2538,12 @@ userAssignment = function() {
 								if (exit)
 									return false;
 									
-								if (node_parent.parents.length == 0 || node_parent.parents.length > 2)
+								//if (node_parent.parents.length == 0 || node_parent.parents.length > 2)
+								if (node_parent.type == "employee")
 									return false;
 
+								//this.element.jstree(true).set_type(node, "manager");
+									
 								return true;
 								break;
 							case "delete_node":
@@ -2657,120 +2669,19 @@ userAssignment = function() {
 						return items;
 					}
 				},
-/*				
-				"dnd" : {
-					"check_while_dragging" : true,
-
-					"drop_finish" : function () { 
-						alert("DROP"); 
-					},
-					"drag_check" : function (data) {
-						var exit = false;
-						var node = $("#jstree");
-						$(node).find('ul li a>span').each(function() {
-							if ($(this).text() == $(data.o).children('span').text()) {
-								exit = true;
-								return false;
-							}
-						});
-						
-						if (exit)
-							return false;
-						
-						if ($(data.r).parentsUntil("#jstree", "li").length > 1)
-							return false;
-
-						//if (exit)
-						//	return false;
-							
-						return { 
-							after : false, 
-							before : false, 
-							inside : true 
-						};
-					},
-					"drag_finish" : function (data) { 
-						//data.r[0].children[1].text = data.o.innerHTML;
-						var node = data.r;
-						
-						//var liNodes = $(node).closest("li", "#jstree").length;
-						if ($(node).parentsUntil("#jstree", "li").length < 2) {
-							this.create_node(node, "first", {data: data.o.childNodes[0].textContent }, false, false);
-							//$(node).find('ul>li').attr('rel', 'employee');
-							//$(node).find('ul>li').attr('data-jstree', '{"icon":"images/user.png"}');
-							$(node).find('ul>li').attr('data-jstree', '{"type":"employee"}');
-							$(node).find('ul>li').attr('data-loginname', data.o.childNodes[1].textContent);
-							//$(node).find('ul>li:first>a').append('<span class="userListHiddenElement">' + data.o.childNodes[1].textContent + '</span>');
-
-							saveActors();
-						}
-					}
-				},
-				
-				"crrm" : {
-					"move" : {
-						"default_position" : "first",
-						"check_move" : function (m) {
-							//return (m.o[0].id === "thtml_1") ? false : true;
-							return false;
-						}
-					}
-				},
-				
-				"hotkeys" : {
-					"f2" :  function (event) {
-						if (this.is_selected()) {
-							if (this._get_parent(this._get_node()) == -1)							
-								this.rename();
-						}
-						return false;
-					},
-					"del" : function () {
-						if (this.is_selected()) {
-							if (this._get_parent(this._get_node()) != -1) {
-								//this.remove();
-								//var nod = $(this).jstree('get_node', this);
-								confirm("AreYouSure", this, function(that) {
-									that.remove();
-									//data.inst.delete_node(data.inst);
-									//$('#jstree').jstree('delete_node', nod);
-								});
-								
-								
-							}
-						}
-					}
-				},
-				
-				"themes" : {
-					"theme" : "classic",
-					"dots" : true,
-					"icons" : true
-				},
-*/				
 				"types" : {
-					//"#" : {
-					//	  "max_children" : 1, 
-					//	  "max_depth" : 4, 
-					//	  "valid_children" : ["department"]
-					//	},
-				
-					//"types" : {
-						"department" : {
-							"icon" : "images/users.png",
-							"valid_children" : []
-							//"icon" : {
-							//	"image" : "images/users.png"
-							//}
-						},
-						"employee" : {
-							"icon" : "images/user.png"
-						}
-					//}
+					"department" : {
+						"icon" : "jstree-folder",
+					},
+					"manager" : {
+						"icon" : "images/manager.png",
+					},
+					"employee" : {
+						"icon" : "images/user.png"
+					}
 				},
 				
 				"plugins" : [ "themes", "dnd", "types", "contextmenu" ]
-				//"plugins" : [ "themes", "html_data", "ui", "crrm", "hotkeys", "dnd", "types" ]
 			});
 	})
 };
@@ -3058,7 +2969,7 @@ function fillUserList() {
 		//$("#userList>ul").append('<li class="ui-state-default jstree-draggable">' + name[0] + '<span class="userListHiddenElement">' + name[1] + '</span></li>');
 		//$("#userList>ul").append('<li class="jstree-node ui-state-default jstree-draggable ui-draggable">' + name[0] + '<span class="userListHiddenElement">' + name[1] + '</span></li>');
 		//$("#userList>ul").append('<li class="jstree-drop">' + name[0] + '<span class="userListHiddenElement">' + name[1] + '</span></li>');
-		$("#userList>ul").append('<li data-loginname="' + name[1] + '">' + name[0] + '</li>');
+		$("#userList>ul").append('<li data-jstree=\'{"type":"employee"}\' data-loginname="' + name[1] + '">' + name[0] + '</li>');
 	});
 }
 //jstree-node ui-state-default jstree-draggable ui-draggable 
