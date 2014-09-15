@@ -1,21 +1,23 @@
-<department superuser="roman,zjaljadi,maalhaider,tamalallah,ridavidenko">
+<department superusers="roman,zjaljadi,maalhaider,tamalallah,ridavidenko">
  <sections>
-  <section id="11" name="Gulf Consult" arName="مستشارو الخليج">
+  <section id="11" name="Gulf Consult" arname="مستشارو الخليج">
    <managers>
     <manager name="ali">
      <employee>amr</employee>
      <employee>abdalla</employee>
     </manager>
+    <manager name="ahmed">
+    </manager>
    </managers>
   </section>
-  <section id="12" name="Salmiya Electricity Emergency" arName="السالمية طوارئ الكهرباء">
+  <section id="12" name="Salmiya Electricity Emergency" arname="السالمية طوارئ الكهرباء">
    <managers>
     <manager name="bader">
      <employee>basma</employee>
     </manager>
    </managers>
   </section>
-  <section id="13" name="Hawali Electricity Emergency" arName="حولي طوارئ الكهرباء">
+  <section id="13" name="Hawali Electricity Emergency" arname="حولي طوارئ الكهرباء">
    <managers>
     <manager name="hesham">
      <employee>hosam</employee>
@@ -23,7 +25,7 @@
     </manager>
    </managers>
   </section>
-  <section id="14" name="Electricity Installation Department" arName="وزارة الكهرباء التثبيت">
+  <section id="14" name="Electricity Installation Department" arname="وزارة الكهرباء التثبيت">
    <managers>
     <manager name="roman">
     </manager>
@@ -35,24 +37,42 @@
     </manager>
     <manager name="tamalallah">
     </manager>
+    <manager name="zkalbannay">
+    </manager>
     <manager name="ridavidenko">
     </manager>
    </managers>
   </section>
-  <section id="15" name="Electricity Distribution Department" arName="قسم توزيع الكهرباء">
+  <section id="15" name="Electricity Distribution Department" arname="قسم توزيع الكهرباء">
    <managers>
     <manager name="mansour">
     </manager>
    </managers>
   </section>
-  <section id="33" name="New department" arName="New department">
-   <managers>
-    <manager name="jkmutlaq">
-    </manager>
-    <manager name="awatef">
-    </manager>
-   </managers>
-  </section>
  </sections>
- <employees><employee>nina</employee><employee>ahmed</employee><employee>masri</employee><employee>bashar</employee><employee>shukri</employee><employee>jkmutlaq</employee><employee>zkalbannay</employee><employee>ali</employee><employee>amr</employee><employee>abdalla</employee><employee>bader</employee><employee>basma</employee><employee>hesham</employee><employee>hosam</employee><employee>husain</employee><employee>roman</employee><employee>mnsarhan</employee><employee>zjaljadi</employee><employee>maalhaider</employee><employee>tamalallah</employee><employee>ridavidenko</employee><employee>mansour</employee><employee>awatef</employee></employees>
+  <employees>
+  <employee>abdalla</employee>
+  <employee>ahmed</employee>
+  <employee>amr</employee>
+  <employee>awatef</employee>
+  <employee>bader</employee>
+  <employee>bashar</employee>
+  <employee>basma</employee>
+  <employee>hesham</employee>
+  <employee>husain</employee>
+  <employee>hosam</employee>
+  <employee>mansour</employee>
+  <employee>masri</employee>
+  <employee>ridavidenko</employee>
+  <employee>roman</employee>
+  <employee>tamalallah</employee>
+  <employee>zjaljadi</employee>
+  <employee>nina</employee>
+  <employee>maalhaider</employee>
+  <employee>zkalbannay</employee>
+  <employee>mnsarhan</employee>
+  <employee>ali</employee>
+  <employee>jkmutlaq</employee>
+  <employee>shukri</employee>
+ </employees>
 </department>

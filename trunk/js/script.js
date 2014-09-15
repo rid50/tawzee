@@ -5,7 +5,7 @@ var searchInterval;
 
 var _admin;
 
-var _superuser;
+var _superusers;
 var _userLoginName = "";
 
 var userInfo;
@@ -1307,10 +1307,10 @@ function start(userLoginName, actorsSource, func) {
 					return;
 				}
 
-				if ($(data).find('department').attr('superuser') != undefined)
-					_superuser = $(data).find('department').attr('superuser').split(',');
+				if ($(data).find('department').attr('superusers') != undefined)
+					_superusers = $(data).find('department').attr('superusers').split(',');
 				else
-					_superuser = [];
+					_superusers = [];
 					
 				var a = [], name;
 				$(data).find('employees employee').each(function() {
@@ -1402,10 +1402,10 @@ function getActors(xml, func) {
 
 			//.success(function(data) {
 				_rootActors = data;
-				if ($(data).find('department').attr('superuser') != undefined)
-					_superuser = $(data).find('department').attr('superuser').split(',');
+				if ($(data).find('department').attr('superusers') != undefined)
+					_superusers = $(data).find('department').attr('superusers').split(',');
 				else
-					_superuser = [];
+					_superusers = [];
 					
 				$(data).find('managers>manager, managers employee').each(function() {
 					if ((this.nodeName == "manager" && $(this).attr("name") == userInfo[0].loginName) || userInfo[0].loginName == $(this).text()) {
@@ -1646,7 +1646,7 @@ function fillUserLoginCombo() {
 				$("#accordion").accordion( "option", "active", 0 );				
 			
 				var found = false;
-				_superuser.some(function(name) {
+				_superusers.some(function(name) {
 					if (userInfo[0].loginName == name) {
 						$("#jstree>ul>li").show();
 						//$("#jstree").jstree("open_all");
@@ -2181,7 +2181,7 @@ userAssignment = function() {
 		var managers, employees, val;
 
 		$(_rootActors).find('section').each(function(section_index) {
-			$("#jstree>ul").append('<li data-jstree=\'{"type":"department"}\' id="' + $(this).attr('id') + '" data-name="' + $(this).attr('name') + '" data-arname="' + $(this).attr('arname') + '"><a href="#">' + (($("body[dir='ltr']").length) ? $(this).attr('name') : $(this).attr('arName')) + '</a></li>');
+			$("#jstree>ul").append('<li data-jstree=\'{"type":"department"}\' id="' + $(this).attr('id') + '" data-name="' + $(this).attr('name') + '" data-arname="' + $(this).attr('arname') + '"><a href="#">' + (($("body[dir='ltr']").length) ? $(this).attr('name') : $(this).attr('arname')) + '</a></li>');
 			//$("#jstree>ul").append('<li class="jstree-drop" id="' + $(this).attr('id') + '"><a href="#">' + (($("body[dir='ltr']").length) ? $(this).attr('name') : $(this).attr('arName')) + '</a></li>');
 			//$("#jstree>ul").append('<li rel="department" id="' + $(this).attr('id') + '"><a href="#">' + (($("body[dir='ltr']").length) ? $(this).attr('name') : $(this).attr('arName')) + '</a></li>');
 			//$("#jstree>ul").append('<li data-jstree=\'{"icon":"images/users.png"}\' id="' + $(this).attr('id') + '"><a href="#">' + (($("body[dir='ltr']").length) ? $(this).attr('name') : $(this).attr('arName')) + '</a></li>');
@@ -2339,7 +2339,7 @@ userAssignment = function() {
 				})
 */
 				var found = false;
-				_superuser.some(function(name) {
+				_superusers.some(function(name) {
 					if (userInfo[0].loginName == name) {
 						//$("#jstree").jstree("open_all");
 						//$("#jstree").jstree("open_node", $("#jstree>ul>li"));	//doesn't work
@@ -2483,7 +2483,7 @@ userAssignment = function() {
 								
 								var section = xmlHelper.createElementWithAttribute("section", 'id', node.id);
 								xmlHelper.appendAttributeToElement(section, 'name', node.text);
-								xmlHelper.appendAttributeToElement(section, 'arName', node.text);
+								xmlHelper.appendAttributeToElement(section, 'arname', node.text);
 								/*
 								if ($("body[dir='ltr']").length) {
 									xmlHelper.appendAttributeToElement(section, 'name', node.text);
@@ -2661,7 +2661,7 @@ userAssignment = function() {
 						
 						//if (node.data != null && node.data.loginname == undefined) {
 						//if (node.li_attr["data-loginname"] == undefined) {
-						if (node.type != 'default') {
+						if (node.type != 'department') {
 							delete items.rename;
 							delete items.create;
 						}
@@ -2688,29 +2688,29 @@ userAssignment = function() {
 
 saveActors = function(actorsTarget = 'db') {
 	var department, section, mamagers, manager, employee;
-	var department = xmlHelper.createElementWithAttribute("department", 'superuser', $(_rootActors).find('department').attr('superuser'));
+	var department = xmlHelper.createElementWithAttribute("department", 'superusers', $(_rootActors).find('department').attr('superusers'));
 	xmlHelper.appendNewLineElement(department, 1);
 	var sections = document.createElementNS("", "sections");
 	department.appendChild(sections);
 	var nodes = $('#jstree').jstree(true).get_json("#", {flat:false});
-	var name, arName;
+	var name, arname;
 	$(nodes).each(function() {
 		xmlHelper.appendNewLineElement(sections, 2);
 		section = xmlHelper.createElementWithAttribute("section", 'id', this.id);
 		if ($("body[dir='ltr']").length) {
 			name = this.text.trim();
-			arName = this.li_attr["data-arname"].trim();
+			arname = this.li_attr["data-arname"].trim();
 			//arName = this.data.arname;
 			//arName = $(_rootActors).find('section[id="' + this.id + '"]').attr('arName');
 		} else {
 			//name = $(_rootActors).find('section[id="' + this.id + '"]').attr('name');
 			//name = this.data.name;
 			name = this.li_attr["data-name"].trim();
-			arName = this.text.trim();
+			arname = this.text.trim();
 		}
 
 		xmlHelper.appendAttributeToElement(section, 'name', name);
-		xmlHelper.appendAttributeToElement(section, 'arName', arName);
+		xmlHelper.appendAttributeToElement(section, 'arname', arname);
 
 		sections.appendChild(section);
 		xmlHelper.appendNewLineElement(section, 3);

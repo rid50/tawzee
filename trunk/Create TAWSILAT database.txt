@@ -64,7 +64,7 @@ PossibilityYes SMALLINT NOT NULL DEFAULT -1,
 PossibilityNo SMALLINT NOT NULL DEFAULT -1,
 StationNumber VARCHAR(10),
 ApplicationCreator VARCHAR(45) NULL,
-OfficeId smallint NOT NULL,
+OfficeId SMALLINT UNSIGNED NOT NULL,
 time TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -128,7 +128,7 @@ PowerFactorWinter DECIMAL(10,3) NOT NULL,
 MaximumLoadsSummer DECIMAL(10,3) NOT NULL,
 MaximumLoadsWinter DECIMAL(10,3) NOT NULL,
 ApplicationCreator VARCHAR(45) NULL,
-OfficeId smallint NOT NULL,
+OfficeId SMALLINT UNSIGNED NOT NULL,
 time TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -212,7 +212,7 @@ DROP TABLE IF EXISTS OfficeList;
 
 -- ------------------------------------------------------------------------------------------------------------
 CREATE TABLE OfficeList (
-  OfficeId smallint AUTO_INCREMENT,
+  OfficeId SMALLINT UNSIGNED AUTO_INCREMENT,
   Name varchar(45) NOT NULL,
   ArabicName varchar(45) NOT NULL,
   PRIMARY KEY (OfficeId)
@@ -221,7 +221,7 @@ CREATE TABLE OfficeList (
 CREATE TABLE EmployeeList (
   EmployeeId varchar(45) NOT NULL,
   ManagerId varchar(45) DEFAULT NULL,
-  OfficeId smallint DEFAULT NULL,
+  OfficeId SMALLINT UNSIGNED DEFAULT NULL,
   SuperUser tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (EmployeeId),
   KEY FK_OfficeId_idx (OfficeId),

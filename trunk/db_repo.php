@@ -981,11 +981,11 @@ class DatabaseRepository {
 				continue;
 				
 			if ($r -> SuperUser == 1)
-				$superuser[] = $r -> EmployeeId;
+				$superusers[] = $r -> EmployeeId;
 				
 			if ($r -> ManagerId == null) {
 				if (!isset($ar[$r -> OfficeId]))
-					$ar[$r -> OfficeId] = array('name' => $r -> Name, 'arName' => $r -> ArabicName);
+					$ar[$r -> OfficeId] = array('name' => $r -> Name, 'arname' => $r -> ArabicName);
 				$ar[$r -> OfficeId][$r -> EmployeeId] = array();
 			} else
 				$ar[$r -> OfficeId][$r -> ManagerId][] = $r -> EmployeeId;
@@ -995,7 +995,7 @@ class DatabaseRepository {
 			$r = (object)$row;
 
 			if (!isset($ar[$r -> OfficeId]))
-				$ar[$r -> OfficeId] = array('name' => $r -> Name, 'arName' => $r -> ArabicName);
+				$ar[$r -> OfficeId] = array('name' => $r -> Name, 'arname' => $r -> ArabicName);
 		}
 		
 /*
@@ -1053,16 +1053,16 @@ class DatabaseRepository {
 		$w->openMemory();
 		//$w->startDocument('1.0','UTF-8');
 		$w->startElement("department");
-		$w->writeAttribute("superuser", implode(",", $superuser));
+		$w->writeAttribute("superusers", implode(",", $superusers));
 		$w->startElement("sections");
 		foreach ($ar as $key => $value) {
 			$w->startElement("section");
 			$w->writeAttribute("id", $key);
 			$w->writeAttribute("name",  $value['name']);
-			$w->writeAttribute("arName",  $value['arName']);
+			$w->writeAttribute("arname",  $value['arname']);
 			$w->startElement("managers");
 			foreach ($value as $key2 => $value2) {
-				if ($key2 == 'name' || $key2 == 'arName')
+				if ($key2 == 'name' || $key2 == 'arname')
 					continue;
 				$w->startElement("manager");
 				$w->writeAttribute("name", $key2);
@@ -1103,7 +1103,7 @@ class DatabaseRepository {
 		
 		$xml = simplexml_load_string($param);
 
-		$superuser = explode(",", $xml['superuser']);
+		$superusers = explode(",", $xml['superusers']);
 		//throw new Exception('Failed to execute/prepare query: ' . $superuser);
 		
 		//$file = fopen("act.xml","w");
@@ -1128,10 +1128,12 @@ class DatabaseRepository {
 		
 		//$st = "";
 		foreach ($xml->sections->section as $section) {
-			$st .= ";INSERT INTO OfficeList (OfficeId, Name, ArabicName) VALUES ('{$section['id']}', '{$section['name']}', '{$section['arName']}')";
+			if ($section['id'] == 0 || $section['id'] == NULL)
+				throw new Exception('Failed to execute/prepare query: Office ID - 0 Or NULL is not allowed');
+			$st .= ";INSERT INTO OfficeList (OfficeId, Name, ArabicName) VALUES ('{$section['id']}', '{$section['name']}', '{$section['arname']}')";
 			foreach ($section->managers->manager as $manager) {
 				$superuserflag = 0;
-				if (in_array($manager['name'], $superuser))
+				if (in_array($manager['name'], $superusers))
 					$superuserflag = 1;
 			
 				$st .= ";UPDATE EmployeeList SET OfficeId = {$section['id']}, ManagerId = NULL, SuperUser = $superuserflag WHERE EmployeeId = '{$manager['name']}'";
