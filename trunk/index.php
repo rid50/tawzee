@@ -175,9 +175,9 @@ if ($idp == "SAML") {
     </div>
 	</form>	
 
-<div id="userAssignmentDiv" style="display:none">
+<div id="resourceManagement" style="display:none">
 	<div id="jstree" dir="ltr" style="background-color:transparent;">
-		<ul></ul>
+	<!--	<ul></ul>	-->
 	</div>
 	<!--div id="???" style="display:none; position:absolute; left:20px; bottom:40px"> F2 rename, DEL - delete </div-->
 	<div id="userList" dir="ltr">
@@ -186,7 +186,7 @@ if ($idp == "SAML") {
 		<button id="addUserButton">Add User</button>
 		<div class="clear"></div>
 	-->
-		<ul></ul>
+	<!--	<ul></ul>	-->
 	</div>
 	<fieldset id="usersLegend" dir="ltr">
 		<legend>Legend</legend>

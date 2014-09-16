@@ -452,7 +452,7 @@ $(document).ready(function () {
 	}
 /*
 	$(function() {
-		var divGrid = $('#divGrid'), main_form = $('#main-form'), report_container = $('#report-container'), flexslider_container = $('#flexslider-container'), userAssignmentDiv = $("#userAssignmentDiv");
+		var divGrid = $('#divGrid'), main_form = $('#main-form'), report_container = $('#report-container'), flexslider_container = $('#flexslider-container'), resourceManagement = $("#resourceManagement");
 			
 		$("#accordion").accordion({
 			//active: false,
@@ -465,14 +465,14 @@ $(document).ready(function () {
 						$('#' + _currentForm).hide();
 						report_container.hide();
 						flexslider_container.hide();
-						userAssignmentDiv.hide();
+						resourceManagement.hide();
 						break;
 					case 2:
 						$("#" + $('#' + _currentForm).attr('data-link')).click();
 						divGrid.hide();
 						report_container.hide();
 						flexslider_container.hide();
-						userAssignmentDiv.hide();						
+						resourceManagement.hide();						
 						break;
 					case 4:
 						$('#' + _currentForm).hide();
@@ -500,7 +500,7 @@ $(document).ready(function () {
 					
 						divGrid.hide();
 						flexslider_container.hide();
-						userAssignmentDiv.hide();
+						resourceManagement.hide();
 						break;						
 					case 6:
 						(function() {
@@ -572,14 +572,14 @@ $(document).ready(function () {
 						divGrid.hide();
 						$('#' + _currentForm).hide();
 						report_container.hide();
-						userAssignmentDiv.hide();
+						resourceManagement.hide();
 						break;
 					case 8:
 						divGrid.hide();
 						$('#' + _currentForm).hide();
 						report_container.hide();
 						flexslider_container.hide();
-						userAssignmentDiv.show();
+						resourceManagement.show();
 						break;
 				}
 			}
@@ -829,7 +829,7 @@ $(document).ready(function () {
 	//$('#main-form, #load-form').html('<input type="text" id="error-box" />');	
 /*	
 	$("#left-section").append($("#divGrid"));
-	$("#left-section").append($("#userAssignmentDiv"));
+	$("#left-section").append($("#resourceManagement"));
 	$("#left-section").append($("#main-form"));
 	$("#left-section").append($("#load-form"));
 	$("#left-section").append($("#report-container"));
@@ -888,7 +888,7 @@ $(document).ready(function () {
 		getAreas();
 
 		$("#left-section").append($("#divGrid"));
-		$("#left-section").append($("#userAssignmentDiv"));
+		$("#left-section").append($("#resourceManagement"));
 		$("#left-section").append($("#main-form"));
 		$("#left-section").append($("#load-form"));
 		$("#left-section").append($("#report-container"));
@@ -905,7 +905,7 @@ $(document).ready(function () {
 		$('#accordion').show();
 	} else if (_admin == userInfo[0].loginName) {
 		$("#main-div").removeClass("accessRejected");
-		$("#left-section").append($("#userAssignmentDiv"));
+		$("#left-section").append($("#resourceManagement"));
 		initAccordion();
 		var accTabs = $("#accordion > span");
 		accTabs.addClass( "ui-state-disabled" );
@@ -914,13 +914,13 @@ $(document).ready(function () {
 		$("#accordion").accordion( "option", "active", 4 );				
 		$('#accordion').show();
 		
-		//$("#userAssignmentDiv").show();
+		//$("#resourceManagement").show();
 
 	}
 });
 
 function initAccordion() {
-	var divGrid = $('#divGrid'), main_form = $('#main-form'), report_container = $('#report-container'), flexslider_container = $('#flexslider-container'), userAssignmentDiv = $("#userAssignmentDiv");
+	var divGrid = $('#divGrid'), main_form = $('#main-form'), report_container = $('#report-container'), flexslider_container = $('#flexslider-container'), resourceManagement = $("#resourceManagement");
 		
 	$("#accordion").accordion({
 		//active: false,
@@ -933,14 +933,14 @@ function initAccordion() {
 					$('#' + _currentForm).hide();
 					report_container.hide();
 					flexslider_container.hide();
-					userAssignmentDiv.hide();
+					resourceManagement.hide();
 					break;
 				case 2:
 					$("#" + $('#' + _currentForm).attr('data-link')).click();
 					divGrid.hide();
 					report_container.hide();
 					flexslider_container.hide();
-					userAssignmentDiv.hide();						
+					resourceManagement.hide();						
 					break;
 				case 4:
 					$('#' + _currentForm).hide();
@@ -968,7 +968,7 @@ function initAccordion() {
 				
 					divGrid.hide();
 					flexslider_container.hide();
-					userAssignmentDiv.hide();
+					resourceManagement.hide();
 					break;						
 				case 6:
 					(function() {
@@ -1040,14 +1040,14 @@ function initAccordion() {
 					divGrid.hide();
 					$('#' + _currentForm).hide();
 					report_container.hide();
-					userAssignmentDiv.hide();
+					resourceManagement.hide();
 					break;
 				case 8:
 					divGrid.hide();
 					$('#' + _currentForm).hide();
 					report_container.hide();
 					flexslider_container.hide();
-					userAssignmentDiv.show();
+					resourceManagement.show();
 					break;
 			}
 		}
@@ -1632,12 +1632,12 @@ function fillUserLoginCombo() {
 			//$("#newForm").detach();
 			//$("#tabs").detach();
 
-			$("#userAssignmentDiv").css("display", "none");
+			$("#resourceManagement").css("display", "none");
 			//$("#userList").css("display", "none");
 			//$("#jstree").css("display", "none");
 			//$("#newForm").css("display", "none");
 			
-			//$("body").append($("#userAssignmentDiv"));
+			//$("body").append($("#resourceManagement"));
 			//$("body").append($("#userList"));
 			//$("body").append($("#jstree"));
 			//$("body").append($("#newForm"));
@@ -2209,7 +2209,7 @@ userAssignment = function() {
 		if ($("#jstree").hasClass("jstree")) {
 			$("#jstree").jstree('destroy').empty();
 			//$("#jstree>ul").remove();
-			$("#jstree").append('<ul></ul>');
+			//$("#jstree").append('<ul></ul>');
 		}
 
 		var managers, employees, val;
@@ -2245,7 +2245,7 @@ userAssignment = function() {
 			var managers_data = [];
 			managers = $(this).find('manager');
 			if (managers.length != 0) {
-				$("#jstree>ul>li:last-child").append('<ul></ul>');
+				//$("#jstree>ul>li:last-child").append('<ul></ul>');
 				managers.each(function(mindex) {
 					val = $(this).attr('name');
 					
@@ -2270,7 +2270,7 @@ userAssignment = function() {
 					var employees_data = [];
 					employees = $(this).find('employee');
 					if (employees.length != 0) {
-						$("#jstree>ul>li:last-child>ul>li:last-child").append('<ul></ul>');
+						//$("#jstree>ul>li:last-child>ul>li:last-child").append('<ul></ul>');
 						employees.each(function(eindex) {
 							val = $(this).text();
 
@@ -3055,7 +3055,7 @@ function fillUserList() {
 	if ($("#userList").hasClass("jstree")) {
 		$("#userList").jstree('destroy').empty();
 		//$("#userList>ul").remove();
-		$("#userList").append('<ul></ul>');
+		//$("#userList").append('<ul></ul>');
 	}
 
 	var a = [];
