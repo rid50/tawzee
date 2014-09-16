@@ -2254,7 +2254,7 @@ userAssignment = function() {
 							val = o.displayName;
 							return false;
 						}
-						//return true;			//?????
+						return true;	// not like ".some()", it must be !!!!!!!!
 					});
 
 					//$("#jstree>ul>li:last-child>ul").append('<li data-jstree=\'{"type":"manager"}\' data-loginname="' + $(this).attr('name') + '"><a href="#">' + val + '</a></li>');
@@ -2267,7 +2267,7 @@ userAssignment = function() {
 						},
 					});
 					
-				var employees_data = [];
+					var employees_data = [];
 					employees = $(this).find('employee');
 					if (employees.length != 0) {
 						$("#jstree>ul>li:last-child>ul>li:last-child").append('<ul></ul>');
@@ -2279,7 +2279,6 @@ userAssignment = function() {
 									val = o.displayName;
 									return true;
 								}
-// !!!!!!								return false;
 							});
 
 							//$("#jstree>ul>li:last-child>ul>li:last-child>ul").append('<li data-jstree=\'{"type":"employee"}\' data-loginname="' + $(this).text() + '"><a href="#">' + val + '</a></li>');
@@ -2439,9 +2438,9 @@ userAssignment = function() {
 				$(nodes).each(function() {
 					if (idx > -1)
 						data.instance.open_node(this);
-					else if (sectionId == this.id) {
+					else if (sectionId == this.id)
 						data.instance.open_node(this);
-					} else
+					else
 						$('#' + this.id).hide(); 
 				
 				})
