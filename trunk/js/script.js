@@ -2160,17 +2160,51 @@ function error(error) {
 }
 
 toggleJsTree = function() {
+/*
 	var nodes = $('#jstree').jstree(true).get_json("#", {flat:false});
 	$(nodes).each(function() {
-		this.data.refresh = true;		// true - do not save actors in a database
-		$('#jstree').jstree(true).rename_node(this, ($("body[dir='ltr']").length) ? this.li_attr["data-name"] : this.li_attr["data-arname"]);
-		//$('#jstree').jstree(true).rename_node(this, ($("body[dir='ltr']").length) ? this.data.name : this.data.arname);
+		//if ($(this).filter( ":visible" )) {
+			this.data.refresh = true;		// true - do not save actors in a database
+			$('#jstree').jstree(true).rename_node(this, ($("body[dir='ltr']").length) ? this.li_attr["data-name"] : this.li_attr["data-arname"]);
+			//$('#jstree').jstree(true).rename_node(this, ($("body[dir='ltr']").length) ? this.data.name : this.data.arname);
+		//}
+	})
+*/	
+	var idx = _superusers.indexOf(userInfo[0].loginName);
+	var nodes = $('#jstree').jstree(true).get_json("#", {flat:false});
+	$(nodes).each(function() {
+		if (idx > -1 || sectionId == this.id) {
+			this.data.refresh = true;		// true - do not save actors in a database
+			$('#jstree').jstree(true).rename_node(this, ($("body[dir='ltr']").length) ? this.li_attr["data-name"] : this.li_attr["data-arname"]);
+		}
 	})
 }
+/*
+openJsNodes = function() {
+	var found = false;
+	_superusers.some(function(name) {
+		if (userInfo[0].loginName == name) {
+			$("#jstree>ul>li").each(function(i) {
+				$("#jstree").jstree("open_node", this);
+			})
+			found = true;
+			return true;
+		}
+	})
 
+	if (!found) {
+		$("#jstree>ul>li").each(function(i) {
+			if (sectionId == $(this).attr('id')) {
+				$('#jstree').jstree("open_node", $("#jstree>ul>li:nth-child(" + (i + 1) + ")"));
+			} else
+				$("#jstree>ul>li:nth-child(" + (i + 1) + ")").hide();
+		})						
+	}
+}
+*/
 userAssignment = function() {
 	$(function() {
-		fillUserList();
+		//fillUserList();
 		
 		if ($("#jstree").hasClass("jstree")) {
 			$("#jstree").jstree('destroy').empty();
@@ -2200,7 +2234,8 @@ userAssignment = function() {
 				'id': $(this).attr('id'),
 				'type': 'department',
 				'text': ($("body[dir='ltr']").length) ? $(this).attr('name') : $(this).attr('arname'),
-				'state' : { 'opened' : true, 'selected' : false },
+				//'state': { 'opened' : true, 'selected' : false },
+				'data': {},
 				'li_attr': {
 					'data-name': $(this).attr('name'),
 					'data-arname': $(this).attr('arname'),
@@ -2285,7 +2320,8 @@ userAssignment = function() {
 		.jstree({
 			"core" : {
 				//"themes" : { "stripes" : true },
-				"multiple" : false,				
+				"multiple" : false,
+				"data" : fillUserList(),
 				"check_callback" : function (operation, node, node_parent, node_position, more) {
 					//console.log(operation);
 					switch(operation) {
@@ -2398,28 +2434,21 @@ userAssignment = function() {
 		$("#jstree")
 			//.bind("loaded.jstree", function (e, data) {
 			.on("ready.jstree", function (e, data) {
-				//$("#userAssignmentDiv").show();
-/*				
-				var userList = $("#userList");
-				var mainTree = $("#jstree");
-				var mainNodes = mainTree.jstree(true).get_json("#", {flat:true});
-				var userNodes = userList.jstree(true).get_json("#", {flat:true});
-				mainNodes.forEach(function(om) {
-					if (om.data.loginname != undefined) {
-						userNodes.some(function(ou) {
-							if (om.data.loginname == ou.data.loginname) {
-								userList.jstree(true).disable_node(ou);
-								return true;
-							}
-						})
-					}
+				var idx = _superusers.indexOf(userInfo[0].loginName);
+				var nodes = data.instance.get_json("#", {flat:false});
+				$(nodes).each(function() {
+					if (idx > -1)
+						data.instance.open_node(this);
+					else if (sectionId == this.id) {
+						data.instance.open_node(this);
+					} else
+						$('#' + this.id).hide(); 
+				
 				})
-*/
+/*			
 				var found = false;
 				_superusers.some(function(name) {
 					if (userInfo[0].loginName == name) {
-						//$("#jstree").jstree("open_all");
-						//$("#jstree").jstree("open_node", $("#jstree>ul>li"));	//doesn't work
 						$("#jstree>ul>li").each(function(i) {
 							$("#jstree").jstree("open_node", this);
 						})
@@ -2436,6 +2465,7 @@ userAssignment = function() {
 							$("#jstree>ul>li:nth-child(" + (i + 1) + ")").hide();
 					})						
 				}
+*/				
 			})
 			.on("create_node.jstree", function (e, data) {
 				//var k = 0;
@@ -2681,7 +2711,7 @@ userAssignment = function() {
 												return;
 											}
 											
-											node = tree.create_node(node, {'id':data[0], 'text':deptname, 'data':{}, 'li_attr':{"data-name":deptname, "data-arname":deptname}}, "before");
+											node = tree.create_node(node, {'id':data[0], 'text':deptname, 'data':{}, 'type':'department', 'li_attr':{"data-name":deptname, "data-arname":deptname}}, "before");
 											tree.edit(node);
 /*											
 											var section = xmlHelper.createElementWithAttribute("section", 'id', data[0]);
@@ -3023,6 +3053,12 @@ $(function() {
 })
 
 function fillUserList() {
+	if ($("#userList").hasClass("jstree")) {
+		$("#userList").jstree('destroy').empty();
+		//$("#userList>ul").remove();
+		$("#userList").append('<ul></ul>');
+	}
+
 	var a = [];
 	userInfo.forEach(function(o, index) {
 		if (index != 0)
@@ -3037,16 +3073,11 @@ function fillUserList() {
 		}
 	);
 
-	if ($("#userList").hasClass("jstree")) {
-		$("#userList").jstree('destroy').empty();
-		//$("#userList>ul").remove();
-		$("#userList").append('<ul></ul>');
-	}
-	
 	//$("#userList>ul>li").remove();
 	//$("#userList>div>div").remove();
 	
 	var idx, type;
+	var users_data = [];
 	a.forEach(function(name){
 		name = name.split('|');
 		//$("#userList>div").append('<div class="ui-state-default jstree-draggable">' + name[0] + '<span class="userListHiddenElement">' + name[1] + '</span></div>');
@@ -3061,10 +3092,21 @@ function fillUserList() {
 		else
 			type = "employee";
 		
+		users_data.push({
+			'id': $(this).attr('id'),
+			'type': (idx > -1) ? "superuser" : "employee",
+			'text': name[0],
+			'state' : { 'opened' : true, 'selected' : false },
+			'li_attr': {
+				'data-loginname': name[1],
+			},
+		});
 		
-		$("#userList>ul").append('<li data-jstree=\'{"type":"' + type + '"}\' data-loginname="' + name[1] + '">' + name[0] + '</li>');
-		//$("#userList>ul").append('<li data-jstree=\'{"type":"employee"}\' data-loginname="' + name[1] + '">' + name[0] + '</li>');
+		
+		//$("#userList>ul").append('<li data-jstree=\'{"type":"' + type + '"}\' data-loginname="' + name[1] + '">' + name[0] + '</li>');
 	});
+	
+	return users_data;
 }
 //jstree-node ui-state-default jstree-draggable ui-draggable 
 function insertForm(that) {
