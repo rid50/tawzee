@@ -977,12 +977,12 @@ class DatabaseRepository {
 		foreach ($data as $row) {
 			$r = (object)$row;
 
-			if ($r -> OfficeId == null)
-				continue;
-				
 			if ($r -> SuperUser == 1)
 				$superusers[] = $r -> EmployeeId;
-				
+
+			if ($r -> OfficeId == null)
+				continue;
+
 			if ($r -> ManagerId == null) {
 				if (!isset($ar[$r -> OfficeId]))
 					$ar[$r -> OfficeId] = array('name' => $r -> Name, 'arname' => $r -> ArabicName);
@@ -1118,8 +1118,15 @@ class DatabaseRepository {
 		$st = "delete from EmployeeList";
 		$st .= ";delete from OfficeList";
 		
+		$superuserval = 0;
 		foreach ($xml->employees->employee as $employee) {
-			$st .= ";INSERT INTO EmployeeList (EmployeeId) VALUES ('{$employee}')";
+			$superuserval = 0;
+			if (in_array($employee, $superusers))
+				$superuserval = 1;
+			
+			$st .= ";INSERT INTO EmployeeList (EmployeeId, SuperUser) VALUES ('{$employee}', $superuserval)";
+
+			//$st .= ";INSERT INTO EmployeeList (EmployeeId) VALUES ('{$employee}')";
 		//throw new Exception('Failed to execute/prepare query: ' . $st);
 		}
 
@@ -1132,11 +1139,12 @@ class DatabaseRepository {
 				throw new Exception('Failed to execute/prepare query: Office ID - 0 Or NULL is not allowed');
 			$st .= ";INSERT INTO OfficeList (OfficeId, Name, ArabicName) VALUES ('{$section['id']}', '{$section['name']}', '{$section['arname']}')";
 			foreach ($section->managers->manager as $manager) {
-				$superuserflag = 0;
-				if (in_array($manager['name'], $superusers))
-					$superuserflag = 1;
+				//$superuserval = 0;
+				//if (in_array($manager['name'], $superusers))
+				//	$superuserval = 1;
 			
-				$st .= ";UPDATE EmployeeList SET OfficeId = {$section['id']}, ManagerId = NULL, SuperUser = $superuserflag WHERE EmployeeId = '{$manager['name']}'";
+				//$st .= ";UPDATE EmployeeList SET OfficeId = {$section['id']}, ManagerId = NULL, SuperUser = $superuserval WHERE EmployeeId = '{$manager['name']}'";
+				$st .= ";UPDATE EmployeeList SET OfficeId = {$section['id']}, ManagerId = NULL WHERE EmployeeId = '{$manager['name']}'";
 				foreach ($manager->employee as $employee) {
 					$st .= ";UPDATE EmployeeList SET OfficeId = {$section['id']}, ManagerId = '{$manager['name']}' WHERE EmployeeId = '{$employee}'";
 				}

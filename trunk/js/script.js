@@ -2266,8 +2266,8 @@ userAssignment = function() {
 			"contextmenu" : {         
 				"items": function(node) {
 					var tree = $("#userList").jstree(true);
-					return {
-						"Add": {
+					var items = {
+						add: {
 							"separator_before": false,
 							"separator_after": false,
 							"label": "Add New User",
@@ -2275,7 +2275,7 @@ userAssignment = function() {
 								addNewUser(tree);
 							}
 						},
-						"Remove": {
+						remove: {
 							"separator_before": false,
 							"separator_after": false,
 							"label": "Remove",
@@ -2293,8 +2293,38 @@ userAssignment = function() {
 
 								tree.delete_node(node);
 							}
-						}
+						},
+						set: {
+							"separator_before": false,
+							"separator_after": false,
+							"label": "Set",
+							"action": function (obj) {
+								if (node.type == 'employee') {
+									tree.set_type(node, "superuser");
+									_superusers.push(node.li_attr["data-loginname"]);
+								} else if (node.type == 'superuser') {
+									tree.set_type(node, "employee");
+									var idx = _superusers.indexOf(node.li_attr["data-loginname"]);
+									if (idx > -1) {
+										_superusers.splice(idx, 1);
+									}									
+								}
+								
+								saveActors();
+							}
+						},
 					};
+					
+					if (node.type == 'employee') {
+						items.set.label = "Promote to Superuser";
+					} else if (node.type == 'superuser') {
+						items.set.label = "Demote to Employee";
+					} else {
+						delete item.set;
+					}
+
+				
+					return items;
 				}
 			},
 			"dnd" : {
@@ -2303,6 +2333,9 @@ userAssignment = function() {
 			"types" : {
 				"employee" : {
 					"icon" : "images/user.png"
+				},
+				"superuser" : {
+					"icon" : "images/superuser.png"
 				}
 			},
 			"themes" : {
@@ -2688,7 +2721,8 @@ userAssignment = function() {
 
 saveActors = function(actorsTarget = 'db') {
 	var department, section, mamagers, manager, employee;
-	var department = xmlHelper.createElementWithAttribute("department", 'superusers', $(_rootActors).find('department').attr('superusers'));
+	//var department = xmlHelper.createElementWithAttribute("department", 'superusers', $(_rootActors).find('department').attr('superusers'));
+	var department = xmlHelper.createElementWithAttribute("department", 'superusers', _superusers);
 	xmlHelper.appendNewLineElement(department, 1);
 	var sections = document.createElementNS("", "sections");
 	department.appendChild(sections);
@@ -2962,6 +2996,7 @@ function fillUserList() {
 	//$("#userList>ul>li").remove();
 	//$("#userList>div>div").remove();
 	
+	var idx, type;
 	a.forEach(function(name){
 		name = name.split('|');
 		//$("#userList>div").append('<div class="ui-state-default jstree-draggable">' + name[0] + '<span class="userListHiddenElement">' + name[1] + '</span></div>');
@@ -2969,7 +3004,16 @@ function fillUserList() {
 		//$("#userList>ul").append('<li class="ui-state-default jstree-draggable">' + name[0] + '<span class="userListHiddenElement">' + name[1] + '</span></li>');
 		//$("#userList>ul").append('<li class="jstree-node ui-state-default jstree-draggable ui-draggable">' + name[0] + '<span class="userListHiddenElement">' + name[1] + '</span></li>');
 		//$("#userList>ul").append('<li class="jstree-drop">' + name[0] + '<span class="userListHiddenElement">' + name[1] + '</span></li>');
-		$("#userList>ul").append('<li data-jstree=\'{"type":"employee"}\' data-loginname="' + name[1] + '">' + name[0] + '</li>');
+		
+		idx = _superusers.indexOf(name[1]);
+		if (idx > -1)
+			type = "superuser";
+		else
+			type = "employee";
+		
+		
+		$("#userList>ul").append('<li data-jstree=\'{"type":"' + type + '"}\' data-loginname="' + name[1] + '">' + name[0] + '</li>');
+		//$("#userList>ul").append('<li data-jstree=\'{"type":"employee"}\' data-loginname="' + name[1] + '">' + name[0] + '</li>');
 	});
 }
 //jstree-node ui-state-default jstree-draggable ui-draggable 
