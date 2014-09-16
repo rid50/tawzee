@@ -2180,16 +2180,38 @@ userAssignment = function() {
 
 		var managers, employees, val;
 
-		$(_rootActors).find('section').each(function(section_index) {
-			$("#jstree>ul").append('<li data-jstree=\'{"type":"department"}\' id="' + $(this).attr('id') + '" data-name="' + $(this).attr('name') + '" data-arname="' + $(this).attr('arname') + '"><a href="#">' + (($("body[dir='ltr']").length) ? $(this).attr('name') : $(this).attr('arname')) + '</a></li>');
-			//$("#jstree>ul").append('<li class="jstree-drop" id="' + $(this).attr('id') + '"><a href="#">' + (($("body[dir='ltr']").length) ? $(this).attr('name') : $(this).attr('arName')) + '</a></li>');
-			//$("#jstree>ul").append('<li rel="department" id="' + $(this).attr('id') + '"><a href="#">' + (($("body[dir='ltr']").length) ? $(this).attr('name') : $(this).attr('arName')) + '</a></li>');
-			//$("#jstree>ul").append('<li data-jstree=\'{"icon":"images/users.png"}\' id="' + $(this).attr('id') + '"><a href="#">' + (($("body[dir='ltr']").length) ? $(this).attr('name') : $(this).attr('arName')) + '</a></li>');
+/*
+		var jstree_data = [
+			'Simple root node',
+			{
+				'id' : 'node_2',
+				'text' : 'Root node with options',
+				'state' : { 'opened' : true, 'selected' : true },
+				'children' : [ { 'text' : 'Child 1' }, 'Child 2']
+			}
+		]
+*/							
+		var departments_data = [];
 
+		$(_rootActors).find('section').each(function(dindex) {
+			//$("#jstree>ul").append('<li data-jstree=\'{"type":"department"}\' id="' + $(this).attr('id') + '" data-name="' + $(this).attr('name') + '" data-arname="' + $(this).attr('arname') + '"><a href="#">' + (($("body[dir='ltr']").length) ? $(this).attr('name') : $(this).attr('arname')) + '</a></li>');
+
+			departments_data.push({
+				'id': $(this).attr('id'),
+				'type': 'department',
+				'text': ($("body[dir='ltr']").length) ? $(this).attr('name') : $(this).attr('arname'),
+				'state' : { 'opened' : true, 'selected' : false },
+				'li_attr': {
+					'data-name': $(this).attr('name'),
+					'data-arname': $(this).attr('arname'),
+				},
+			});
+			
+			var managers_data = [];
 			managers = $(this).find('manager');
 			if (managers.length != 0) {
 				$("#jstree>ul>li:last-child").append('<ul></ul>');
-				managers.each(function(manager_index) {
+				managers.each(function(mindex) {
 					val = $(this).attr('name');
 					
 					userInfo.every(function(o) {
@@ -2197,18 +2219,24 @@ userAssignment = function() {
 							val = o.displayName;
 							return false;
 						}
-						return true;			//?????
+						//return true;			//?????
 					});
 
-					//$("#jstree>ul>li:last-child>ul").append('<li rel="employee"><a href="#">' + val + '<span class="userListHiddenElement">' + $(this).attr('name') + '</span></a></li>');
-					//$("#jstree>ul>li:last-child>ul").append('<li data-jstree=\'{"icon":"images/user.png"}\'><a href="#">' + val + '<span class="userListHiddenElement">' + $(this).attr('name') + '</span></a></li>');
-					//$("#jstree>ul>li:last-child>ul").append('<li class="jstree-drop" data-jstree=\'{"type":"employee"}\'><a href="#">' + val + '<span class="userListHiddenElement">' + $(this).attr('name') + '</span></a></li>');
-					//$("#jstree>ul>li:last-child>ul").append('<li data-jstree=\'{"type":"employee"}\'><a href="#">' + val + '<span class="userListHiddenElement">' + $(this).attr('name') + '</span></a></li>');
-					$("#jstree>ul>li:last-child>ul").append('<li data-jstree=\'{"type":"manager"}\' data-loginname="' + $(this).attr('name') + '"><a href="#">' + val + '</a></li>');
+					//$("#jstree>ul>li:last-child>ul").append('<li data-jstree=\'{"type":"manager"}\' data-loginname="' + $(this).attr('name') + '"><a href="#">' + val + '</a></li>');
+					
+					managers_data.push({
+						'type': 'manager',
+						'text': val,
+						'li_attr': {
+							'data-loginname': $(this).attr('name'),
+						},
+					});
+					
+				var employees_data = [];
 					employees = $(this).find('employee');
 					if (employees.length != 0) {
 						$("#jstree>ul>li:last-child>ul>li:last-child").append('<ul></ul>');
-						employees.each(function(employee_index) {
+						employees.each(function(eindex) {
 							val = $(this).text();
 
 							userInfo.some(function(o) {
@@ -2219,14 +2247,25 @@ userAssignment = function() {
 // !!!!!!								return false;
 							});
 
-							//$("#jstree>ul>li:last-child>ul>li:last-child>ul").append('<li rel="employee"><a href="#">' + val + '<span class="userListHiddenElement">' + $(this).text() + '</span></a></li>');
-							//$("#jstree>ul>li:last-child>ul>li:last-child>ul").append('<li data-jstree=\'{"icon":"images/user.png"}\'><a href="#">' + val + '<span class="userListHiddenElement">' + $(this).text() + '</span></a></li>');
-							//$("#jstree>ul>li:last-child>ul>li:last-child>ul").append('<li data-jstree=\'{"type":"employee"}\'><a href="#">' + val + '<span class="userListHiddenElement">' + $(this).text() + '</span></a></li>');
-							$("#jstree>ul>li:last-child>ul>li:last-child>ul").append('<li data-jstree=\'{"type":"employee"}\' data-loginname="' + $(this).text() + '"><a href="#">' + val + '</a></li>');
+							//$("#jstree>ul>li:last-child>ul>li:last-child>ul").append('<li data-jstree=\'{"type":"employee"}\' data-loginname="' + $(this).text() + '"><a href="#">' + val + '</a></li>');
+							
+							employees_data.push({
+								'type': 'employee',
+								'text': val,
+								'li_attr': {
+									'data-loginname': $(this).text(),
+								},
+							});
+							
 						})
+						
+						managers_data[mindex].children = employees_data;
 					}
 				})
+				
+				departments_data[dindex].children = managers_data;
 			}
+			
 		})
 
 		//$("#userList>ul>li").draggable({helper: "clone", cursor: "move", revert: "valid", scroll: false, opacity: 0.7, zIndex: 100  });
@@ -2246,7 +2285,7 @@ userAssignment = function() {
 		.jstree({
 			"core" : {
 				//"themes" : { "stripes" : true },
-				"multiple" : false,
+				"multiple" : false,				
 				"check_callback" : function (operation, node, node_parent, node_position, more) {
 					//console.log(operation);
 					switch(operation) {
@@ -2270,7 +2309,8 @@ userAssignment = function() {
 						add: {
 							"separator_before": false,
 							"separator_after": false,
-							"label": "Add New User",
+							"icon" : false,
+							"label": $.i18n.prop("AddNewUser"),
 							"action": function (obj) {
 								addNewUser(tree);
 							}
@@ -2278,7 +2318,10 @@ userAssignment = function() {
 						remove: {
 							"separator_before": false,
 							"separator_after": false,
-							"label": "Remove",
+							//"shortcut"			: 73,
+							//"shortcut_label"	: 'Del',
+							//"icon"				: "glyphicon glyphicon-leaf",
+							"label": $.i18n.prop("Remove"),
 							"action": function (obj) {
 								userInfo.some(function(o, index) {
 									if (index != 0 && o.loginName == node.li_attr["data-loginname"]) {
@@ -2297,6 +2340,7 @@ userAssignment = function() {
 						set: {
 							"separator_before": false,
 							"separator_after": false,
+							"icon" : false,
 							"label": "Set",
 							"action": function (obj) {
 								if (node.type == 'employee') {
@@ -2316,9 +2360,9 @@ userAssignment = function() {
 					};
 					
 					if (node.type == 'employee') {
-						items.set.label = "Promote to Superuser";
+						items.set.label = $.i18n.prop("PromoteToSuperuser");
 					} else if (node.type == 'superuser') {
-						items.set.label = "Demote to Employee";
+						items.set.label = $.i18n.prop("DemoteToEmployee");
 					} else {
 						delete item.set;
 					}
@@ -2474,6 +2518,8 @@ userAssignment = function() {
 				"core" : {
 					"multiple" : false,
 					"themes" : { "stripes" : true },
+					"data" : departments_data,
+					
 					"check_callback" : function (operation, node, node_parent, node_position, more) {
 						//console.log(operation);
 						switch(operation) {
@@ -2538,11 +2584,9 @@ userAssignment = function() {
 									return false;
 							
 								var exit = false;
-								//var rootnodes = this.element;
 								var nodes = this.element.jstree(true).get_json("#", {flat:true});
 								nodes.some(function(o) {
-									//if (o.data.loginname == node.data.loginname) {
-									if (node.type != "department" && o.data.loginname == node.li_attr["data-loginname"]) {
+									if (o.type != "department" && o.li_attr["data-loginname"] == node.li_attr["data-loginname"]) {
 										exit = true;
 										return true;
 									}
@@ -2602,7 +2646,7 @@ userAssignment = function() {
 							create : {
 								"separator_before": false,
 								"separator_after": false,
-								"label": "Create Department",
+								"label": $.i18n.prop("CreateDepartment"),
 								"action": function (obj) {
 								/*
 									$.post("json_db_pdo.php", {"func":"createOU", "param":{}})	// OU - Organizational Unit
@@ -2672,7 +2716,10 @@ userAssignment = function() {
 							rename: {
 								"separator_before": false,
 								"separator_after": false,
-								"label": "Rename",
+								//"shortcut"			: 13,
+								//"shortcut_label"	: 'F2',
+								//"icon"				: "glyphicon glyphicon-leaf",
+								"label": $.i18n.prop("Rename"),
 								"action": function (obj) { 
 									tree.edit(node);
 								}
@@ -2680,12 +2727,15 @@ userAssignment = function() {
 							remove: {
 								"separator_before": false,
 								"separator_after": false,
+								//"shortcut"			: 73,
+								//"shortcut_label"	: 'Del',
+								//"icon"				: "glyphicon glyphicon-leaf",
 								"_disabled": function (obj) { 
 									if (node.children.length != 0)
 										return true;
 								},								
 								//disabled: node.children.length != 0,
-								"label": "Remove",
+								"label": $.i18n.prop("Remove"),
 								"action": function (obj) { 
 									tree.delete_node(node);
 								}
@@ -2961,12 +3011,12 @@ $(function() {
 		});
 	});
 	
-	$(document).on("click", "#importUsersButton", function(){
+	$(document).on("click", "#usersImportButton", function(){
 		start(_userLoginName, 'xml', null);		// 'xml' - get Actors from actors.xml file
 		saveActors();
 	});
 
-	$(document).on("click", "#exportUsersButton", function(){
+	$(document).on("click", "#usersExportButton", function(){
 		saveActors('xml');
 	});
 	
@@ -3594,8 +3644,11 @@ function toggleLanguage(lang, dir) {
 				$("#possibility-yes, #possibility-no").css("text-align", "left");
 				
 				$('#formButtonSet').css({'left':'auto', 'right':'10px'});
+				//$('.vakata-context li > a .vakata-contextmenu-sep').css({'margin':'0 0.5em 0 0 !important'});
 				
 			} else {
+				//$('.vakata-context li > a .vakata-contextmenu-sep').css({'margin':'0 0 0 0.5em !important'});
+
 				//$("#left-section").css("margin", "0, 0, 0, 6px");
 				$("#left-section").css("margin-left", "6px");
 				$("#left-section").css("margin-right", "0");
@@ -3635,8 +3688,16 @@ function toggleLanguage(lang, dir) {
 			$('.deleteRow').attr({title: $.i18n.prop('DeleteRow')});
 			$('#sync').attr({title: $.i18n.prop('GoToLastSelectedRow')});
 			
-			$("#addUserButton").button({ label: $.i18n.prop('AddUser')});
+			$("#usersImportExport legend").text(($.i18n.prop('Users')));
+			$("#usersImportButton").button({ label: $.i18n.prop('ImportUsers')});
+			$("#usersExportButton").button({ label: $.i18n.prop('ExportUsers')});
 
+			$("#usersLegend legend").text(($.i18n.prop('Legend')));
+			$("#usersLegend>span:nth-of-type(1)").text(($.i18n.prop('User')));
+			$("#usersLegend>span:nth-of-type(2)").text(($.i18n.prop('Manager')));
+			$("#usersLegend>span:nth-of-type(3)").text(($.i18n.prop('Superuser')));
+
+			
 			$('#application-form-link').html($.i18n.prop('ApplicationForm'));
 			$('#load-form-link').html($.i18n.prop('LoadsRequired'));
 					

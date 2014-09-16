@@ -415,12 +415,18 @@ input[type='checkbox'] {
 	//border: 1px solid #000;
 	float: left;
 	margin: 20px 0px 20px 20px;
-	//margin:20px;
 	width: 300px;
-	//display: none;
 }
 
-//.userListHiddenElement {display: none}
+.vakata-context li > a .vakata-contextmenu-sep {
+	margin:0 0.5em 0 0.5em !important;
+}
+
+#usersLegend {
+	float: left;
+	margin-left: 40px;
+	margin-top: 13px;
+}
 
 #userList {
 	box-shadow: 4px 4px 2px #999;

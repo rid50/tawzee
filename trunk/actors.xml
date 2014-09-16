@@ -1,4 +1,4 @@
-<department superusers="roman,zjaljadi,maalhaider,tamalallah,ridavidenko">
+<department superusers="roman,zjaljadi,maalhaider,tamalallah,ridavidenko,awatef">
  <sections>
   <section id="11" name="Gulf Consult" arname="مستشارو الخليج">
    <managers>
@@ -50,29 +50,5 @@
    </managers>
   </section>
  </sections>
-  <employees>
-  <employee>abdalla</employee>
-  <employee>ahmed</employee>
-  <employee>amr</employee>
-  <employee>awatef</employee>
-  <employee>bader</employee>
-  <employee>bashar</employee>
-  <employee>basma</employee>
-  <employee>hesham</employee>
-  <employee>husain</employee>
-  <employee>hosam</employee>
-  <employee>mansour</employee>
-  <employee>masri</employee>
-  <employee>ridavidenko</employee>
-  <employee>roman</employee>
-  <employee>tamalallah</employee>
-  <employee>zjaljadi</employee>
-  <employee>nina</employee>
-  <employee>maalhaider</employee>
-  <employee>zkalbannay</employee>
-  <employee>mnsarhan</employee>
-  <employee>ali</employee>
-  <employee>jkmutlaq</employee>
-  <employee>shukri</employee>
- </employees>
+ <employees><employee>nina</employee><employee>masri</employee><employee>awatef</employee><employee>bashar</employee><employee>shukri</employee><employee>jkmutlaq</employee><employee>ali</employee><employee>ahmed</employee><employee>amr</employee><employee>abdalla</employee><employee>bader</employee><employee>basma</employee><employee>hesham</employee><employee>hosam</employee><employee>husain</employee><employee>roman</employee><employee>mnsarhan</employee><employee>zjaljadi</employee><employee>maalhaider</employee><employee>tamalallah</employee><employee>zkalbannay</employee><employee>ridavidenko</employee><employee>mansour</employee></employees>
 </department>

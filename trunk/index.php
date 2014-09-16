@@ -154,10 +154,10 @@ if ($idp == "SAML") {
 					</div>
 					<span>User Assignment</span>
 					<div>
-						<fieldset style="text-align:center;">
+						<fieldset id="usersImportExport" style="text-align:center;">
 							<legend>Users</legend>
-							<button id="importUsersButton">Import</button>
-							<button id="exportUsersButton">Export</button>
+							<button id="usersImportButton">Import</button>
+							<button id="usersExportButton">Export</button>
 						</fieldset>
 <!--						<input id="newUserInput" style="margin: 3px 0 3px 13px;" type="text" value="" size="15" />
 						<button id="addUserButton">Add User</button>
@@ -188,6 +188,13 @@ if ($idp == "SAML") {
 	-->
 		<ul></ul>
 	</div>
+	<fieldset id="usersLegend" dir="ltr">
+		<legend>Legend</legend>
+		<img src="images/user.png" alt="User"/><span style="vertical-align:top">User</span><br/>
+		<img src="images/manager.png" alt="Manager"/><span style="vertical-align:top">Manager</span><br/>
+		<img src="images/superuser.png" alt="Superuser"/><span style="vertical-align:top">Superuser</span><br/>
+	</fieldset>
+	
 </div>
 
 <div id="main-form" class="forms" style="display:none; padding:20px; font-size:1.2em" class="floatLeft"
