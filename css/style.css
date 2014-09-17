@@ -422,13 +422,14 @@ input[type='checkbox'] {
 	margin:0 0.5em 0 0.5em !important;
 }
 
-#usersLegend {
+#userLegend {
 	float: left;
 	margin-left: 40px;
 	margin-top: 13px;
 }
 
-#jstree_userlist {
+#jstree_userlist,
+#jstree_resourcelist {
 	box-shadow: 4px 4px 2px #999;
 	border: 1px solid #000;
 
