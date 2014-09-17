@@ -161,17 +161,18 @@ $(document).ready(function () {
 		}
 	});
 
+// ********************************* on show/hide *************************************
+
 	(function ($) {
 		$.each(['show', 'hide'], function (i, ev) {
 			var el = $.fn[ev];
 			$.fn[ev] = function () {
-			  this.trigger(ev);
-			  return el.apply(this, arguments);
+				//console.log(this);
+				this.trigger(ev);
+				return el.apply(this, arguments);
 			};
 		});
 	})(jQuery);
-
-// ********************************* on show/hide *************************************
 	
 	$('#main-form').on('show', function() {
 		if (_applicationNumber == "") {
@@ -218,34 +219,34 @@ $(document).ready(function () {
 		$(".slider").remove();
 	});
 
-	$('#jstree_userlist').on('show', function() {
-		initUserTree();
-		$('#userLegend').show();
-	});
-
-	$('#jstree_userlist').on('hide', function() {
-		$('#userLegend').hide();
-		if ($(this).hasClass("jstree")) {
-			$(this).jstree('destroy').empty();
+	$('#jstree_userlist').on('show', function(e) {
+		if (e.target === this) {	// call is from accordion tabs, not from jTree framework
+			//console.log(this.id);
+			initUserTree();
+			$('#userLegend').show();
 		}
 	});
 
-	$('#jstree_resourcelist').on('show', function() {
-		initResourceTree();
+	$('#jstree_userlist').on('hide', function(e) {
+		if (e.target === this) {
+			$('#userLegend').hide();
+			if ($(this).hasClass("jstree")) {
+				$(this).jstree('destroy').empty();
+			}
+		}
 	});
 
-	$('#jstree_resourcelist').on('hide', function(e, data) {
-		alert(this.id);
-		//if ($(this).hasClass("jstree")) {
-		//	$(this).jstree('destroy').empty();
-		//}
+	$('#jstree_resourcelist').on('show', function(e) {
+		if (e.target === this)
+			initResourceTree();
 	});
 
-	$('#jstree').on('show', function() {
-		//alert(this.id);
-		//if ($(this).hasClass("jstree")) {
-		//	$(this).jstree('destroy').empty();
-		//}
+	$('#jstree_resourcelist').on('hide', function(e) {
+		if (e.target === this) {
+			if ($(this).hasClass("jstree")) {
+				$(this).jstree('destroy').empty();
+			}
+		}
 	});
 	
 // ********************************* on show/hide *************************************
@@ -622,75 +623,6 @@ $(document).ready(function () {
 
 	setEventToDeleteRowButtons();
 	
-/*		
-	var lastRow, i;
-	for (i = 0; i < 1; i++) {
-		lastRow = $('.tr-application-detail:last').clone();
-		$('.tr-application-detail:last').after(lastRow);
-		lastRow = $('.tr-load-detail:first').clone();
-		$('.tr-load-detail:first').after(lastRow);
-	}
-*/	
-/*	
-	var lastRow = $('#main-form table tr:last').clone();
-	$('#main-form table tr:last').after(lastRow);
-	lastRow = $('#main-form table tr:last').clone();
-	$('#main-form table tr:last').after(lastRow);
-	lastRow = $('#main-form table tr:last').clone();
-	$('#main-form table tr:last').after(lastRow);
-	lastRow = $('#main-form table tr:last').clone();
-	$('#main-form table tr:last').after(lastRow);
-
-	lastRow = $('#load-form table tr:nth-child(3)').clone();
-	$('#load-form table tr:nth-child(3)').after(lastRow);
-	lastRow = $('#load-form table tr:nth-child(3)').clone();
-	$('#load-form table tr:nth-child(3)').after(lastRow);
-	lastRow = $('#load-form table tr:nth-child(3)').clone();
-	$('#load-form table tr:nth-child(3)').after(lastRow);
-*/	
-/*
-	lastRow = $('#main-form table tr:last').clone();
-	$('#main-form table tr:last').after(lastRow);
-	lastRow = $('#main-form table tr:last').clone();
-	$('#main-form table tr:last').after(lastRow);
-	lastRow = $('#main-form table tr:last').clone();
-	$('#main-form table tr:last').after(lastRow);
-	lastRow = $('#main-form table tr:last').clone();
-	$('#main-form table tr:last').after(lastRow);
-	lastRow = $('#main-form table tr:last').clone();
-	$('#main-form table tr:last').after(lastRow);
-	lastRow = $('#main-form table tr:last').clone();
-	$('#main-form table tr:last').after(lastRow);
-	lastRow = $('#main-form table tr:last').clone();
-	$('#main-form table tr:last').after(lastRow);
-*/	
-    //$grid = $('#myjqGrid');
-	
-	//$('#main-form, #load-form').html('<input type="text" id="error-box" />');	
-/*	
-	$("#left-section").append($("#divGrid"));
-	$("#left-section").append($("#resourceManagement"));
-	$("#left-section").append($("#main-form"));
-	$("#left-section").append($("#load-form"));
-	$("#left-section").append($("#report-container"));
-	
-	_slider = $(".slider").html(); 
-	$("#left-section").append($("#flexslider-container"));
-	$(".slider").remove();
-	
-	if ($("#divGrid").css("display") == "none") {
-		toggleGrid(lang);
-		$("#divGrid").show();
-	}
-*/
-	//userLoginName = "abdalla";
-	//userLoginName = "amr";
-	//userLoginName = "ahmed";
-	//userLoginName = "bader";
-	//userLoginName = "basma";
-	//userLoginName = "bashar";
-	//userLoginName = "zjaljadi";
-	//userLoginName = "tamalallah";
 	//userLoginName = "ridavidenko";
 /*
     $(function(){
@@ -716,10 +648,6 @@ $(document).ready(function () {
       });
     });
 */	
-//	$('#accordion').show();
-	//$('#flexslider-container').show();
-		
-	//$.get("startJasperReportsService.php");
 		
 	start(_userLoginName, 'db', null);	// 'db' - get Actors from database
 
@@ -2502,11 +2430,11 @@ function initResourceTree() {
 		//$("#jstree_userlist").append('<ul></ul>');
 	}
 	
-	var data = [], fields_data = [];
+	var data = [], fields_data = [], node, id;
 	var forms = $('.forms');
 	forms.each(function(index) {
 		data.push({
-			'id': 'myjs_' + this.id,
+			'id': this.id,
 			'type': "form",
 			'text': $('#' + this.attributes['data-link'].value).text(),
 			'state' : { 'opened' : true, 'selected' : false },
@@ -2518,22 +2446,33 @@ function initResourceTree() {
 		fields_data = [];
 		var fields = $(this).find('input');
 		fields.each(function() {
-			fields_data.push({
-				'id': 'myjs_' + this.id,
+			node = {
+				'id': (this.type == "radio") ? this.name : this.id,
 				'type': "field",
-				'text': this.id,
+				'text': (function(obj){
+					if (obj.type == "radio") {
+						if ($('label[for="' + obj.name + '"]').length != 0)
+							return $('label[for="' + obj.name + '"]').text().replace(/:$/, "");
+						else
+							return $('fieldset[id="' + obj.name + '"] legend').text().replace(/:$/, "");
+					} else if (obj.type == "text" || obj.type == "checkbox")
+						return $('label[for="' + obj.id + '"]').text().replace(/:$/, "");
+				})(this)
 				//'state' : { 'opened' : true, 'selected' : false },
 				//'data': {
 				//	'data-loginname': name[1],
 				//},
-			});
-			return false;
+			};
+
+			if (!fields_data.length || node.id != fields_data[fields_data.length-1].id)
+				fields_data.push(node);
 		})
 
 		data[index].children = fields_data;
 	})	
 	
 	jstree
+	/*
 		.on("open_node.jstree", function (e, data) {
 			return true;
 		})
@@ -2541,8 +2480,9 @@ function initResourceTree() {
 			//e.preventDefault();
 			//e.stopImmediatePropagation();
 			//e.stopPropagation();
-			e.data = {"a":"b"};
+			//e.data = {"a":"b"};
 		})
+	*/
 		.jstree({
 			"core" : {
 				//"themes" : { "stripes" : true },
