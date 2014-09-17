@@ -170,7 +170,9 @@ $(document).ready(function () {
 			};
 		});
 	})(jQuery);
-		
+
+// ********************************* on show/hide *************************************
+	
 	$('#main-form').on('show', function() {
 		if (_applicationNumber == "") {
 			$('#application-number').removeAttr('readonly');
@@ -215,21 +217,41 @@ $(document).ready(function () {
 	$('#flexslider-container').on('hide', function() {
 		$(".slider").remove();
 	});
-	
-/*
-	$('#divGrid').on('hide', function() {
-		if ($('#error-box2').length > 0)
-			$('#error-box2').remove();
+
+	$('#jstree_userlist').on('show', function() {
+		initUserTree();
+		$('#userLegend').show();
 	});
-*/	
+
+	$('#jstree_userlist').on('hide', function() {
+		$('#userLegend').hide();
+		if ($(this).hasClass("jstree")) {
+			$(this).jstree('destroy').empty();
+		}
+	});
+
+	$('#jstree_resourcelist').on('show', function() {
+		initResourceTree();
+	});
+
+	$('#jstree_resourcelist').on('hide', function(e, data) {
+		alert(this.id);
+		//if ($(this).hasClass("jstree")) {
+		//	$(this).jstree('destroy').empty();
+		//}
+	});
+
+	$('#jstree').on('show', function() {
+		//alert(this.id);
+		//if ($(this).hasClass("jstree")) {
+		//	$(this).jstree('destroy').empty();
+		//}
+	});
+	
+// ********************************* on show/hide *************************************
+
 	_currentForm = "main-form";
 
-//	$('#attachmentTitles').on("click", function(event){
-//		$('#attachmentTitles>div>a').on("click", function(event){
-//				alert(this.getAttribute("data-id"));
-//		});
-//	});
-	
 	$('#application-form-link, #load-form-link').on("click", function(event){
 		_currentForm = this.getAttribute('data-form');
 
@@ -450,189 +472,7 @@ $(document).ready(function () {
 			language: 'en'
 		});	
 	}
-/*
-	$(function() {
-		var divGrid = $('#divGrid'), main_form = $('#main-form'), report_container = $('#report-container'), flexslider_container = $('#flexslider-container'), resourceManagement = $("#resourceManagement");
-			
-		$("#accordion").accordion({
-			//active: false,
-			collapsible: false,
-			heightStyle: 'content',
-			beforeActivate: function( event, ui ) {
-				switch (ui.newHeader.index()) {
-					case 0:
-						divGrid.show();
-						$('#' + _currentForm).hide();
-						report_container.hide();
-						flexslider_container.hide();
-						resourceManagement.hide();
-						break;
-					case 2:
-						$("#" + $('#' + _currentForm).attr('data-link')).click();
-						divGrid.hide();
-						report_container.hide();
-						flexslider_container.hide();
-						resourceManagement.hide();						
-						break;
-					case 4:
-						$('#' + _currentForm).hide();
-						var keyFieldValue = $("#" + $('#' + _currentForm).attr('data-key-field')).val();
-						
-						printReport(function(reportName) {
-							$.blockUI();
-							$('<img src=\"' + _jasperReportsURL + '?reportName=' + reportName + '&applicationNumber=' + _applicationNumber + '&keyFieldValue=' + keyFieldValue + '&renderAs=png\" onload="$.unblockUI()" />').appendTo('#report-container');
-						});
-						
-						report_container.show();
-						
-						$("#signatureImages .drag").each(function() {
-							$(this).draggable( "option", "disabled", false );
-						})
-					
-						$(".dragclone").each(function() {
-							$(this).attr('id').search(/([0-9]*)$/);
-							var id = RegExp.$1;
-							if ($(this).attr('id').search(_currentForm) != -1) {
-								$('#sign' + id).draggable( "option", "disabled", true );
-								$('#sign' + id).droppable( { accept: '#' + $(this).attr('id')} );
-							}	
-						})
-					
-						divGrid.hide();
-						flexslider_container.hide();
-						resourceManagement.hide();
-						break;						
-					case 6:
-						(function() {
-							if (_applicationNumber == "")
-								return;
-								
-							url = "json_db_pdo.php";
-							$.get(url, {"func":"getAttachmentList", "param":{applicationNumber: _applicationNumber}})
-								.done(function( data ) {
-									if (isAjaxError(data))
-										return;
-									
-									var o, result;
-									if (data.d == undefined)
-										result = data;
-									else
-										result = data.d.Data;
-									
-									$("#flexslider-container").append("<div class='slider'></div>");
-									$(".slider").html(_slider);
-							
-									$("#attachmentTitles>div").remove();
-									var lastRow;
-									var rand = Math.random();
-									result.forEach(function(r, index) {
-										$('<li><img src=\"fopen.php?applicationNumber=' + _applicationNumber + '&id=' + r.ID + '&thumb&rand=' + rand + '\" /></li>').appendTo('#carousel .slides');
-										$('<li><img data-id=\"' + r.ID + '\" src=\"fopen.php?applicationNumber=' + _applicationNumber + '&id=' + r.ID + '&thumb&rand=' + rand + '\" /></li>').appendTo('#slider .slides');
-										$('<div><a href="#" data-id=\"' + index + '\">' + r.Title + '</a><br/></div>').appendTo("#attachmentTitles");
-									});
 
-									$(function(){
-									  $('#carousel').flexslider({
-										animation: "slide",
-										controlNav: false,
-										animationLoop: false,
-										slideshow: false,
-										itemWidth: 160,
-										itemMargin: 5,
-										asNavFor: '#slider'
-									  });
-
-									  $('#slider').flexslider({
-										animation: "slide",
-										controlNav: false,
-										animationLoop: false,
-										slideshow: false,
-										sync: "#carousel",
-										start: function(slider){
-										  $('body').removeClass('loading');
-										}
-									  });
-									});
-
-									$('#slider .slides img').on("click", function(event){
-										var url = 'get_image.php?applicationNumber=' + _applicationNumber + '&id=' + this.getAttribute("data-id") + '&rand=' + rand;
-										window.open(url, '_blank');
-									});
-								})
-								.fail(function(jqXHR, textStatus, errorThrown) {
-									alert("getAttachmentList - error: " + errorThrown);
-								});
-						
-								$('#attachmentTitles>div>a').on("click", function(event){
-									$('#slider').flexslider(parseInt(this.getAttribute("data-id")));
-								});
-						})();
-						
-						flexslider_container.show();
-						divGrid.hide();
-						$('#' + _currentForm).hide();
-						report_container.hide();
-						resourceManagement.hide();
-						break;
-					case 8:
-						divGrid.hide();
-						$('#' + _currentForm).hide();
-						report_container.hide();
-						flexslider_container.hide();
-						resourceManagement.show();
-						break;
-				}
-			}
-		});
-		
-		disableAccordionTabs(true);
-		
-		$("#accordion").bind("keydown", function (event) {
-			//var keycode = (event.keyCode ? event.keyCode : (event.which ? event.which : event.charCode));
-			var keycode = event.keyCode || event.which;
-
-			if (keycode == 13) {
-				$('#getPicture').triggerHandler( "click" );
-				//document.getElementById(btnFocus).click();
-			}
-        });
-	});
-
-	(function() {
-		url = "json_db_pdo.php";
-		$.get(url, {"func":"getAreas", "param":{}})
-			.done(function( data ) {
-				if (isAjaxError(data))
-					return;
-			
-				areaNames = [];
-				var o, result;
-				if (data.d == undefined)
-					result = data;
-				else
-					result = data.d.Data;
-				
-				//data.d.Data.forEach(function(o) {
-				result.forEach(function(r) {
-					o = {};
-					o.id = r.ID;
-					o.label = r.AreaName;
-					areaNames.push(o);
-				});
-			})
-			.fail(function(jqXHR, textStatus, errorThrown) {
-				alert("getAreas - error: " + errorThrown);
-			});
-		
-		var area = $('#area, #area_search');
-		var selectedItem;
-		
-		area.autocomplete({
-			autoFocus: true,
-			source: areaNames,
-		});
-	})();
-*/	
 	$(".possibility").on("click", function(event){
 		if (this.id == "possibility-yes") {
 			//$(this).parent().siblings().children('input')).prop('checked', this.checked);
@@ -1043,10 +883,18 @@ function initAccordion() {
 					resourceManagement.hide();
 					break;
 				case 8:
+				case 10:
 					divGrid.hide();
 					$('#' + _currentForm).hide();
 					report_container.hide();
 					flexslider_container.hide();
+					if (ui.newHeader.index() == 8) {
+						$('#jstree_resourcelist').hide();
+						$('#jstree_userlist').show();
+					} else {
+						$('#jstree_userlist').hide();
+						$('#jstree_resourcelist').show();
+					}
 					resourceManagement.show();
 					break;
 			}
@@ -1333,9 +1181,11 @@ function start(userLoginName, actorsSource, func) {
 						getActorsStatus();
 						loadUserSignatures();
 						if (!$("#jstree").hasClass("jstree"))
-							userAssignment();
+							//userAssignment();
+							initDepartmentsTree();
 					} else {
-						userAssignment(actorsSource);
+						//userAssignment(actorsSource);
+						initDepartmentsTree(actorsSource);
 					}
 										
 /*					
@@ -2179,44 +2029,18 @@ toggleJsTree = function() {
 		}
 	})
 }
-/*
-openJsNodes = function() {
-	var found = false;
-	_superusers.some(function(name) {
-		if (userInfo[0].loginName == name) {
-			$("#jstree>ul>li").each(function(i) {
-				$("#jstree").jstree("open_node", this);
-			})
-			found = true;
-			return true;
-		}
-	})
-
-	if (!found) {
-		$("#jstree>ul>li").each(function(i) {
-			if (sectionId == $(this).attr('id')) {
-				$('#jstree').jstree("open_node", $("#jstree>ul>li:nth-child(" + (i + 1) + ")"));
-			} else
-				$("#jstree>ul>li:nth-child(" + (i + 1) + ")").hide();
-		})						
-	}
-}
-*/
-
-userAssignment = function(actorsSource) {
-	initUsersTree();
-	initDepartmentsTree(actorsSource);
-}
 
 initDepartmentsTree = function(actorsSource) {
-	if ($("#jstree").hasClass("jstree")) {
-		$("#jstree").jstree('destroy').empty();
+	var jstree = $('#jstree');
+
+	if (jstree.hasClass("jstree")) {
+		jstree.jstree('destroy').empty();
 		//$("#jstree>ul").remove();
 		//$("#jstree").append('<ul></ul>');
 	}
 
 	var managers, employees, val;
-	var departments_data = [];
+	var departments_data = [], managers_data = [], employees_data = [];
 
 	$(_rootActors).find('section').each(function(dindex) {
 		//$("#jstree>ul").append('<li data-jstree=\'{"type":"department"}\' id="' + $(this).attr('id') + '" data-name="' + $(this).attr('name') + '" data-arname="' + $(this).attr('arname') + '"><a href="#">' + (($("body[dir='ltr']").length) ? $(this).attr('name') : $(this).attr('arname')) + '</a></li>');
@@ -2233,7 +2057,7 @@ initDepartmentsTree = function(actorsSource) {
 			},
 		});
 		
-		var managers_data = [];
+		managers_data = [];
 		managers = $(this).find('manager');
 		if (managers.length != 0) {
 			//$("#jstree>ul>li:last-child").append('<ul></ul>');
@@ -2258,7 +2082,7 @@ initDepartmentsTree = function(actorsSource) {
 					},
 				});
 				
-				var employees_data = [];
+				employees_data = [];
 				employees = $(this).find('employee');
 				if (employees.length != 0) {
 					//$("#jstree>ul>li:last-child>ul>li:last-child").append('<ul></ul>');
@@ -2293,7 +2117,7 @@ initDepartmentsTree = function(actorsSource) {
 		
 	})
 
-	$("#jstree")
+	jstree
 		.on("ready.jstree", function (e, data) {
 			var idx = _superusers.indexOf(userInfo[0].loginName);
 			var nodes = data.instance.get_json("#", {flat:false});
@@ -2422,7 +2246,7 @@ initDepartmentsTree = function(actorsSource) {
 			},
 			"contextmenu" : {         
 				"items": function(node) {
-					var tree = $("#jstree").jstree(true);
+					var tree = jstree.jstree(true);
 
 					//return {
 					var items = {
@@ -2504,9 +2328,10 @@ initDepartmentsTree = function(actorsSource) {
 		});
 };
 
-function initUsersTree() {
-	if ($("#jstree_userlist").hasClass("jstree")) {
-		$("#jstree_userlist").jstree('destroy').empty();
+function initUserTree() {
+	var jstree = $('#jstree_userlist');
+	if (jstree.hasClass("jstree")) {
+		jstree.jstree('destroy').empty();
 		//$("#jstree_userlist>ul").remove();
 		//$("#jstree_userlist").append('<ul></ul>');
 	}
@@ -2526,7 +2351,7 @@ function initUsersTree() {
 	);
 
 	var idx, type;
-	var users_data = [];
+	var data = [];
 	a.forEach(function(name){
 		name = name.split('|');
 		idx = _superusers.indexOf(name[1]);
@@ -2535,7 +2360,7 @@ function initUsersTree() {
 		else
 			type = "employee";
 		
-		users_data.push({
+		data.push({
 			'id': $(this).attr('id'),
 			'type': (idx > -1) ? "superuser" : "employee",
 			'text': name[0],
@@ -2547,7 +2372,7 @@ function initUsersTree() {
 	})	
 		//$("#jstree_userlist>ul").append('<li data-jstree=\'{"type":"' + type + '"}\' data-loginname="' + name[1] + '">' + name[0] + '</li>');
 		
-	$("#jstree_userlist")
+	jstree
 		.on("create_node.jstree", function (e, data) {
 			//alert(data.node.data.data);
 			saveActors();
@@ -2559,7 +2384,7 @@ function initUsersTree() {
 			"core" : {
 				//"themes" : { "stripes" : true },
 				"multiple" : false,
-				"data" : users_data,
+				"data" : data,
 				"check_callback" : function (operation, node, node_parent, node_position, more) {
 					//console.log(operation);
 					switch(operation) {
@@ -2578,7 +2403,7 @@ function initUsersTree() {
 			},
 			"contextmenu" : {         
 				"items": function(node) {
-					var tree = $("#jstree_userlist").jstree(true);
+					var tree = jstree.jstree(true);
 					var items = {
 						add: {
 							"separator_before": false,
@@ -2665,8 +2490,86 @@ function initUsersTree() {
 			
 			"plugins" : [ "dnd", "types", "themes", "contextmenu" ]
 		});
+}
 
-	//return users_data;
+
+function initResourceTree() {
+	var jstree = $('#jstree_resourcelist');
+	
+	if (jstree.hasClass("jstree")) {
+		jstree.jstree('destroy').empty();
+		//$("#jstree_userlist>ul").remove();
+		//$("#jstree_userlist").append('<ul></ul>');
+	}
+	
+	var data = [], fields_data = [];
+	var forms = $('.forms');
+	forms.each(function(index) {
+		data.push({
+			'id': 'myjs_' + this.id,
+			'type': "form",
+			'text': $('#' + this.attributes['data-link'].value).text(),
+			'state' : { 'opened' : true, 'selected' : false },
+			//'data': {
+			//	'data-loginname': name[1],
+			//},
+		});
+		
+		fields_data = [];
+		var fields = $(this).find('input');
+		fields.each(function() {
+			fields_data.push({
+				'id': 'myjs_' + this.id,
+				'type': "field",
+				'text': this.id,
+				//'state' : { 'opened' : true, 'selected' : false },
+				//'data': {
+				//	'data-loginname': name[1],
+				//},
+			});
+			return false;
+		})
+
+		data[index].children = fields_data;
+	})	
+	
+	jstree
+		.on("open_node.jstree", function (e, data) {
+			return true;
+		})
+		.on("close_node.jstree", function (e, data) {
+			//e.preventDefault();
+			//e.stopImmediatePropagation();
+			//e.stopPropagation();
+			e.data = {"a":"b"};
+		})
+		.jstree({
+			"core" : {
+				//"themes" : { "stripes" : true },
+				"multiple" : false,
+				"data" : data,
+				"check_callback" : function (operation, node, node_parent, node_position, more) {
+					//console.log(operation);
+					return false;
+				}
+			},
+			"types" : {
+				"form" : {
+					"icon" : "images/form.png"
+				},
+				"field" : {
+					"icon" : "images/field.png"
+				}
+			},
+			"themes" : {
+				//"theme" : "classic",
+				"stripes" : true,
+				"dots" : true,
+				"icons" : true
+			},
+			
+			"plugins" : [ "types", "themes" ]
+		});
 }
 
 saveActors = function(actorsTarget) {	//actorsTarget == undefined - 'db'
@@ -3547,10 +3450,10 @@ function toggleLanguage(lang, dir) {
 			$("#usersImportButton").button({ label: $.i18n.prop('ImportUsers')});
 			$("#usersExportButton").button({ label: $.i18n.prop('ExportUsers')});
 
-			$("#usersLegend legend").text(($.i18n.prop('Legend')));
-			$("#usersLegend>span:nth-of-type(1)").text(($.i18n.prop('User')));
-			$("#usersLegend>span:nth-of-type(2)").text(($.i18n.prop('Manager')));
-			$("#usersLegend>span:nth-of-type(3)").text(($.i18n.prop('Superuser')));
+			$("#userLegend legend").text(($.i18n.prop('Legend')));
+			$("#userLegend>span:nth-of-type(1)").text(($.i18n.prop('User')));
+			$("#userLegend>span:nth-of-type(2)").text(($.i18n.prop('Manager')));
+			$("#userLegend>span:nth-of-type(3)").text(($.i18n.prop('Superuser')));
 
 			
 			$('#application-form-link').html($.i18n.prop('ApplicationForm'));

@@ -159,9 +159,9 @@ if ($idp == "SAML") {
 							<button id="usersImportButton">Import</button>
 							<button id="usersExportButton">Export</button>
 						</fieldset>
-<!--						<input id="newUserInput" style="margin: 3px 0 3px 13px;" type="text" value="" size="15" />
-						<button id="addUserButton">Add User</button>
-						<div class="clear"></div>	-->
+					</div>
+					<span>Resource Assignment</span>
+					<div>
 					</div>
 				</div>
             </section>
@@ -176,19 +176,10 @@ if ($idp == "SAML") {
 	</form>	
 
 <div id="resourceManagement" style="display:none">
-	<div id="jstree" dir="ltr" style="background-color:transparent;">
-	<!--	<ul></ul>	-->
-	</div>
-	<!--div id="???" style="display:none; position:absolute; left:20px; bottom:40px"> F2 rename, DEL - delete </div-->
-	<div id="jstree_userlist" dir="ltr">
-	<!--
-		<input style="margin: 3px 0 3px 13px;" type="text" value="" size="15" />
-		<button id="addUserButton">Add User</button>
-		<div class="clear"></div>
-	-->
-	<!--	<ul></ul>	-->
-	</div>
-	<fieldset id="usersLegend" dir="ltr">
+	<div id="jstree" dir="ltr"></div>
+	<div id="jstree_userlist" dir="ltr" style="display:none"></div>
+	<div id="jstree_resourcelist" dir="ltr" style="display:none"></div>	
+	<fieldset id="userLegend" dir="ltr" style="display:none">
 		<legend>Legend</legend>
 		<img src="images/user.png" alt="User"/><span style="vertical-align:top">User</span><br/>
 		<img src="images/manager.png" alt="Manager"/><span style="vertical-align:top">Manager</span><br/>
