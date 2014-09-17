@@ -1335,7 +1335,7 @@ function start(userLoginName, actorsSource, func) {
 						if (!$("#jstree").hasClass("jstree"))
 							userAssignment();
 					} else {
-						userAssignment();
+						userAssignment(actorsSource);
 					}
 										
 /*					
@@ -1627,18 +1627,18 @@ function fillUserLoginCombo() {
 	$(document).on("change", "#userLoginSelect", function(){
 		var val = this.options[this.selectedIndex].value;
 		setTimeout(function() {
-			//$("#userList").detach();
+			//$("#jstree_userlist").detach();
 			//$("#jstree").detach();
 			//$("#newForm").detach();
 			//$("#tabs").detach();
 
 			$("#resourceManagement").css("display", "none");
-			//$("#userList").css("display", "none");
+			//$("#jstree_userlist").css("display", "none");
 			//$("#jstree").css("display", "none");
 			//$("#newForm").css("display", "none");
 			
 			//$("body").append($("#resourceManagement"));
-			//$("body").append($("#userList"));
+			//$("body").append($("#jstree_userlist"));
 			//$("body").append($("#jstree"));
 			//$("body").append($("#newForm"));
 			
@@ -2165,7 +2165,7 @@ toggleJsTree = function() {
 	$(nodes).each(function() {
 		//if ($(this).filter( ":visible" )) {
 			this.data.refresh = true;		// true - do not save actors in a database
-			$('#jstree').jstree(true).rename_node(this, ($("body[dir='ltr']").length) ? this.li_attr["data-name"] : this.li_attr["data-arname"]);
+			$('#jstree').jstree(true).rename_node(this, ($("body[dir='ltr']").length) ? this.data["data-name"] : this.data["data-arname"]);
 			//$('#jstree').jstree(true).rename_node(this, ($("body[dir='ltr']").length) ? this.data.name : this.data.arname);
 		//}
 	})
@@ -2175,7 +2175,7 @@ toggleJsTree = function() {
 	$(nodes).each(function() {
 		if (idx > -1 || sectionId == this.id) {
 			this.data.refresh = true;		// true - do not save actors in a database
-			$('#jstree').jstree(true).rename_node(this, ($("body[dir='ltr']").length) ? this.li_attr["data-name"] : this.li_attr["data-arname"]);
+			$('#jstree').jstree(true).rename_node(this, ($("body[dir='ltr']").length) ? this.data["data-name"] : this.data["data-arname"]);
 		}
 	})
 }
@@ -2202,7 +2202,7 @@ openJsNodes = function() {
 	}
 }
 */
-userAssignment = function() {
+userAssignment = function(actorsSource) {
 	$(function() {
 		//fillUserList();
 		
@@ -2236,7 +2236,7 @@ userAssignment = function() {
 				'text': ($("body[dir='ltr']").length) ? $(this).attr('name') : $(this).attr('arname'),
 				//'state': { 'opened' : true, 'selected' : false },
 				'data': {},
-				'li_attr': {
+				'data': {
 					'data-name': $(this).attr('name'),
 					'data-arname': $(this).attr('arname'),
 				},
@@ -2262,7 +2262,7 @@ userAssignment = function() {
 					managers_data.push({
 						'type': 'manager',
 						'text': val,
-						'li_attr': {
+						'data': {
 							'data-loginname': $(this).attr('name'),
 						},
 					});
@@ -2286,7 +2286,7 @@ userAssignment = function() {
 							employees_data.push({
 								'type': 'employee',
 								'text': val,
-								'li_attr': {
+								'data': {
 									'data-loginname': $(this).text(),
 								},
 							});
@@ -2302,13 +2302,13 @@ userAssignment = function() {
 			
 		})
 
-		//$("#userList>ul>li").draggable({helper: "clone", cursor: "move", revert: "valid", scroll: false, opacity: 0.7, zIndex: 100  });
-		//$("#userList>div>div").draggable({helper: "clone", cursor: "move", revert: "valid", scroll: false, opacity: 0.7, zIndex: 100  });
+		//$("#jstree_userlist>ul>li").draggable({helper: "clone", cursor: "move", revert: "valid", scroll: false, opacity: 0.7, zIndex: 100  });
+		//$("#jstree_userlist>div>div").draggable({helper: "clone", cursor: "move", revert: "valid", scroll: false, opacity: 0.7, zIndex: 100  });
 		//$("#sortable>ul").disableSelection();
 		
-		$("#userList")
+		$("#jstree_userlist")
 		.on("create_node.jstree", function (e, data) {
-			//alert(data.node.data.li_attr);
+			//alert(data.node.data.data);
 			//data.node.data = {'login':'kuku'};
 			//var i = 0;
 			saveActors();
@@ -2339,7 +2339,7 @@ userAssignment = function() {
 			},
 			"contextmenu" : {         
 				"items": function(node) {
-					var tree = $("#userList").jstree(true);
+					var tree = $("#jstree_userlist").jstree(true);
 					var items = {
 						add: {
 							"separator_before": false,
@@ -2359,9 +2359,9 @@ userAssignment = function() {
 							"label": $.i18n.prop("Remove"),
 							"action": function (obj) {
 								userInfo.some(function(o, index) {
-									if (index != 0 && o.loginName == node.li_attr["data-loginname"]) {
+									if (index != 0 && o.loginName == node.data["data-loginname"]) {
 										userInfo.splice(index, 1);
-										var emp = $(_rootActors).find('employees>employee:contains("' + node.li_attr["data-loginname"] + '")');
+										var emp = $(_rootActors).find('employees>employee:contains("' + node.data["data-loginname"] + '")');
 										if (emp.length != 0)
 											emp.remove();
 										
@@ -2380,10 +2380,10 @@ userAssignment = function() {
 							"action": function (obj) {
 								if (node.type == 'employee') {
 									tree.set_type(node, "superuser");
-									_superusers.push(node.li_attr["data-loginname"]);
+									_superusers.push(node.data["data-loginname"]);
 								} else if (node.type == 'superuser') {
 									tree.set_type(node, "employee");
-									var idx = _superusers.indexOf(node.li_attr["data-loginname"]);
+									var idx = _superusers.indexOf(node.data["data-loginname"]);
 									if (idx > -1) {
 										_superusers.splice(idx, 1);
 									}									
@@ -2444,6 +2444,10 @@ userAssignment = function() {
 						$('#' + this.id).hide(); 
 				
 				})
+				
+				if (actorsSource == 'xml')
+					saveActors();
+				
 /*			
 				var found = false;
 				_superusers.some(function(name) {
@@ -2468,14 +2472,13 @@ userAssignment = function() {
 			})
 			.on("create_node.jstree", function (e, data) {
 				//var k = 0;
-				//saveActors();
 			})
 			.on("copy_node.jstree", function (e, data) {
-				//data.node.data = $.extend(true, {}, data.original.data);
 				//data.node.type = "manager";
 				//if (node_parent.type == "employee")
 				//var par = $.jstree._focused()._get_parent(data.node);
 				//var par = $("#" + data.node.parent); 
+				data.node.data = $.extend(true, {}, data.original.data);
 				var nd = data.instance.get_node($("#" + data.node.parent));
 				//var par = data.instance._get_parent(data.node);
 				if (nd.type == "department")
@@ -2487,10 +2490,10 @@ userAssignment = function() {
 			})
 			.on("rename_node.jstree", function (e, data) {
 				if ($("body[dir='ltr']").length)
-					data.node.li_attr["data-name"] = data.text;
+					data.node.data["data-name"] = data.text;
 					//data.node.data.name = data.text;
 				else
-					data.node.li_attr["data-arname"] = data.text;
+					data.node.data["data-arname"] = data.text;
 						//data.node.data.arname = data.text;
 
 				if (data.node.data != null && data.node.data.refresh != undefined && data.node.data.refresh == true) {
@@ -2500,10 +2503,10 @@ userAssignment = function() {
 				
 				if (data.old != data.text) {
 					//if ($("body[dir='ltr']").length)
-						//data.node.li_attr["data-name"] = data.text;
+						//data.node.data["data-name"] = data.text;
 						//data.node.data.name = data.text;
 					//else
-						//data.node.li_attr["data-arname"] = data.text;
+						//data.node.data["data-arname"] = data.text;
 						//data.node.data.arname = data.text;
 						
 					saveActors();
@@ -2609,13 +2612,13 @@ userAssignment = function() {
 							//case "move_node":
 							//	return false;
 							case "copy_node":
-								if (!node.li_attr["data-loginname"])
+								if (!node.data["data-loginname"])
 									return false;
 							
 								var exit = false;
 								var nodes = this.element.jstree(true).get_json("#", {flat:true});
 								nodes.some(function(o) {
-									if (o.type != "department" && o.li_attr["data-loginname"] == node.li_attr["data-loginname"]) {
+									if (o.type != "department" && o.data["data-loginname"] == node.data["data-loginname"]) {
 										exit = true;
 										return true;
 									}
@@ -2710,7 +2713,7 @@ userAssignment = function() {
 												return;
 											}
 											
-											node = tree.create_node(node, {'id':data[0], 'text':deptname, 'data':{}, 'type':'department', 'li_attr':{"data-name":deptname, "data-arname":deptname}}, "before");
+											node = tree.create_node(node, {'id':data[0], 'text':deptname, 'type':'department', 'data':{"data-name":deptname, "data-arname":deptname}}, "before");
 											tree.edit(node);
 /*											
 											var section = xmlHelper.createElementWithAttribute("section", 'id', data[0]);
@@ -2772,7 +2775,7 @@ userAssignment = function() {
 						};
 						
 						//if (node.data != null && node.data.loginname == undefined) {
-						//if (node.li_attr["data-loginname"] == undefined) {
+						//if (node.data["data-loginname"] == undefined) {
 						if (node.type != 'department') {
 							delete items.rename;
 							delete items.create;
@@ -2798,7 +2801,7 @@ userAssignment = function() {
 	})
 };
 
-saveActors = function(actorsTarget = 'db') {
+saveActors = function(actorsTarget) {	//actorsTarget == undefined - 'db'
 	var department, section, mamagers, manager, employee;
 	//var department = xmlHelper.createElementWithAttribute("department", 'superusers', $(_rootActors).find('department').attr('superusers'));
 	var department = xmlHelper.createElementWithAttribute("department", 'superusers', _superusers);
@@ -2812,13 +2815,13 @@ saveActors = function(actorsTarget = 'db') {
 		section = xmlHelper.createElementWithAttribute("section", 'id', this.id);
 		if ($("body[dir='ltr']").length) {
 			name = this.text.trim();
-			arname = this.li_attr["data-arname"].trim();
+			arname = this.data["data-arname"].trim();
 			//arName = this.data.arname;
 			//arName = $(_rootActors).find('section[id="' + this.id + '"]').attr('arName');
 		} else {
 			//name = $(_rootActors).find('section[id="' + this.id + '"]').attr('name');
 			//name = this.data.name;
-			name = this.li_attr["data-name"].trim();
+			name = this.data["data-name"].trim();
 			arname = this.text.trim();
 		}
 
@@ -2832,13 +2835,13 @@ saveActors = function(actorsTarget = 'db') {
 		//$(this).siblings('ul').children('li').children('a').each(function(index) {
 		$(this.children).each(function() {
 			xmlHelper.appendNewLineElement(managers, 4);
-			manager = xmlHelper.createElementWithAttribute("manager", 'name', this.li_attr["data-loginname"]);
+			manager = xmlHelper.createElementWithAttribute("manager", 'name', this.data["data-loginname"]);
 			//manager = xmlHelper.createElementWithAttribute("manager", 'name', this.data.loginname);
 			managers.appendChild(manager);
 			$(this.children).each(function() {
 			//$(this).siblings('ul').children('li').children('a').each(function(index) {
 				xmlHelper.appendNewLineElement(manager, 5);
-				employee = xmlHelper.createElement("employee", this.li_attr["data-loginname"]);
+				employee = xmlHelper.createElement("employee", this.data["data-loginname"]);
 				//employee = xmlHelper.createElement("employee", this.data.loginname);
 				manager.appendChild(employee);
 			})
@@ -2955,7 +2958,7 @@ $(function() {
 	$(document).on("click", "#addUserButton", function(){
 		//$("#addUserError").detach();
 		error("");
-		//var obj = $("#userList>input");
+		//var obj = $("#jstree_userlist>input");
 		var input = $("#newUserInput");
 		var loginname = input.val();
 		
@@ -3008,7 +3011,7 @@ $(function() {
 			employees.append(xmlHelper.createElement("employee", loginname));
 			//employees.append(xmlHelper.createNewLineElement(1));
 			
-			jstree.create_node("#", {'text':userInfo[index - 1].displayName, 'li_attr':{'data-loginname':userInfo[index - 1].loginName}}, "first");
+			jstree.create_node("#", {'text':userInfo[index - 1].displayName, 'data':{'data-loginname':userInfo[index - 1].loginName}}, "first");
 			//jstree.create_node("#", {'text':userInfo[index - 1].displayName, 'data-loginname':userInfo[index - 1].loginName}, "first");
 			//jstree.create_node("#", {'text':userInfo[index - 1].displayName}, "first");
 
@@ -3042,7 +3045,6 @@ $(function() {
 	
 	$(document).on("click", "#usersImportButton", function(){
 		start(_userLoginName, 'xml', null);		// 'xml' - get Actors from actors.xml file
-		saveActors();
 	});
 
 	$(document).on("click", "#usersExportButton", function(){
@@ -3052,10 +3054,10 @@ $(function() {
 })
 
 function fillUserList() {
-	if ($("#userList").hasClass("jstree")) {
-		$("#userList").jstree('destroy').empty();
-		//$("#userList>ul").remove();
-		//$("#userList").append('<ul></ul>');
+	if ($("#jstree_userlist").hasClass("jstree")) {
+		$("#jstree_userlist").jstree('destroy').empty();
+		//$("#jstree_userlist>ul").remove();
+		//$("#jstree_userlist").append('<ul></ul>');
 	}
 
 	var a = [];
@@ -3072,18 +3074,18 @@ function fillUserList() {
 		}
 	);
 
-	//$("#userList>ul>li").remove();
-	//$("#userList>div>div").remove();
+	//$("#jstree_userlist>ul>li").remove();
+	//$("#jstree_userlist>div>div").remove();
 	
 	var idx, type;
 	var users_data = [];
 	a.forEach(function(name){
 		name = name.split('|');
-		//$("#userList>div").append('<div class="ui-state-default jstree-draggable">' + name[0] + '<span class="userListHiddenElement">' + name[1] + '</span></div>');
-		//$("#userList>ul").append('<li class="ui-state-default jstree-draggable">' + name[0] + '<span class="userListHiddenElement">' + name[1] + '</span></li>');
-		//$("#userList>ul").append('<li class="ui-state-default jstree-draggable">' + name[0] + '<span class="userListHiddenElement">' + name[1] + '</span></li>');
-		//$("#userList>ul").append('<li class="jstree-node ui-state-default jstree-draggable ui-draggable">' + name[0] + '<span class="userListHiddenElement">' + name[1] + '</span></li>');
-		//$("#userList>ul").append('<li class="jstree-drop">' + name[0] + '<span class="userListHiddenElement">' + name[1] + '</span></li>');
+		//$("#jstree_userlist>div").append('<div class="ui-state-default jstree-draggable">' + name[0] + '<span class="userListHiddenElement">' + name[1] + '</span></div>');
+		//$("#jstree_userlist>ul").append('<li class="ui-state-default jstree-draggable">' + name[0] + '<span class="userListHiddenElement">' + name[1] + '</span></li>');
+		//$("#jstree_userlist>ul").append('<li class="ui-state-default jstree-draggable">' + name[0] + '<span class="userListHiddenElement">' + name[1] + '</span></li>');
+		//$("#jstree_userlist>ul").append('<li class="jstree-node ui-state-default jstree-draggable ui-draggable">' + name[0] + '<span class="userListHiddenElement">' + name[1] + '</span></li>');
+		//$("#jstree_userlist>ul").append('<li class="jstree-drop">' + name[0] + '<span class="userListHiddenElement">' + name[1] + '</span></li>');
 		
 		idx = _superusers.indexOf(name[1]);
 		if (idx > -1)
@@ -3096,13 +3098,13 @@ function fillUserList() {
 			'type': (idx > -1) ? "superuser" : "employee",
 			'text': name[0],
 			'state' : { 'opened' : true, 'selected' : false },
-			'li_attr': {
+			'data': {
 				'data-loginname': name[1],
 			},
 		});
 		
 		
-		//$("#userList>ul").append('<li data-jstree=\'{"type":"' + type + '"}\' data-loginname="' + name[1] + '">' + name[0] + '</li>');
+		//$("#jstree_userlist>ul").append('<li data-jstree=\'{"type":"' + type + '"}\' data-loginname="' + name[1] + '">' + name[0] + '</li>');
 	});
 	
 	return users_data;

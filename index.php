@@ -180,7 +180,7 @@ if ($idp == "SAML") {
 	<!--	<ul></ul>	-->
 	</div>
 	<!--div id="???" style="display:none; position:absolute; left:20px; bottom:40px"> F2 rename, DEL - delete </div-->
-	<div id="userList" dir="ltr">
+	<div id="jstree_userlist" dir="ltr">
 	<!--
 		<input style="margin: 3px 0 3px 13px;" type="text" value="" size="15" />
 		<button id="addUserButton">Add User</button>
