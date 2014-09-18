@@ -254,11 +254,13 @@ $(document).ready(function () {
 	_currentForm = "main-form";
 
 	$('#application-form-link, #load-form-link').on("click", function(event){
-		_currentForm = this.getAttribute('data-form');
+		var clickedForm = this.getAttribute('data-form');
 
-		if ($('#application-number').attr('readonly') == undefined && _currentForm == "load-form")
+		if ($('#application-number').attr('readonly') == undefined && clickedForm == "load-form")
 			return;
-		
+
+		_currentForm = clickedForm;
+			
 		if (_applicationNumber != "") {
 			var data;
 			if ("main-form" == _currentForm)
@@ -2418,12 +2420,19 @@ function initResourceTree() {
 	}
 	
 	var data = [], fields_data = [], node, id;
-	var forms = $('.forms');
+	var forms = $('.forms, #accordion>span');
 	forms.each(function(index) {
 		data.push({
-			'id': this.id,
-			'type': "form",
-			'text': $('#' + this.attributes['data-link'].value).text(),
+			'data': {
+				'id': this.id,
+			},
+			'type': (this.nodeName.toLowerCase() == "span") ? "tab" :"form",
+			'text': (function(obj){
+				if (obj.nodeName.toLowerCase() == "span")
+					return $(obj).text();
+				else
+					return $('#' + obj.attributes['data-link'].value).text();
+			})(this),
 			'state' : { 'opened' : true, 'selected' : false },
 			//'data': {
 			//	'data-loginname': name[1],
@@ -2431,12 +2440,17 @@ function initResourceTree() {
 		});
 		
 		fields_data = [];
-		var fields = $(this).find('input');
+		var fields = $(this).find('input, fieldset.access-control, table.access-control')
+							.not('fieldset.access-control input, table.access-control input');
 		var labelobj
 		fields.each(function() {
 			node = {
-				'id': (this.type == "radio" || this.type == "checkbox") ? this.name : (this.type == "text" && this.id == "" && this.attributes.class != undefined) ? this.attributes.class.value : this.id,
-				'type': "field",
+				'data': {
+					'id': (this.type == "radio" || this.type == "checkbox")	? this.name : 
+						(this.type == "fieldset" || this.type == "table") ? this.id :
+						(this.type == "text" && this.id == "" && this.attributes.class != undefined) ? this.attributes.class.value : this.id,
+				},
+				'type': (this.nodeName.toLowerCase() == "fieldset") ? "fieldset" : (this.nodeName.toLowerCase() == "table") ? "table" : "field",
 				'text': (function(obj){
 					if (obj.type == "radio" || obj.type == "checkbox") {
 						labelobj = $('label[for="' + obj.name + '"]');
@@ -2444,8 +2458,6 @@ function initResourceTree() {
 							return labelobj.text().replace(/:$/, "");
 						else
 							return $('fieldset[id="' + obj.name + '"] legend').text().replace(/:$/, "");
-					//} else if (obj.type == "checkbox") {
-					//	return $('label[for="' + obj.id + '"]').text().replace(/:$/, "");
 					} else if (obj.type == "text") {
 						labelobj = $('label[for="' + obj.id + '"]');
 						if (labelobj.length != 0)
@@ -2460,6 +2472,10 @@ function initResourceTree() {
 								}
 							}
 						}
+					} else if (obj.nodeName.toLowerCase() == "fieldset") {
+						return $('fieldset[id="' + obj.id + '"] legend').text().replace(/:$/, "");
+					} else if (obj.nodeName.toLowerCase() == "table") {
+						return $.i18n.prop(obj.attributes['data-label'].value);
 					}
 				})(this)
 				//'state' : { 'opened' : true, 'selected' : false },
@@ -2468,7 +2484,7 @@ function initResourceTree() {
 				//},
 			};
 
-			if (!fields_data.length || node.id != fields_data[fields_data.length-1].id)
+			if (!fields_data.length || node.data.id != fields_data[fields_data.length-1].data.id)
 				fields_data.push(node);
 		})
 
@@ -3401,7 +3417,7 @@ function toggleLanguage(lang, dir) {
 
 			
 			$('#application-form-link').html($.i18n.prop('ApplicationForm'));
-			$('#load-form-link').html($.i18n.prop('LoadsRequired'));
+			$('#load-form-link').html($.i18n.prop('LoadRequirements'));
 					
 			$($("#divGrid>form>div:first:nth-child(1)>span")[0]).text(($.i18n.prop('SearchByFileNumber')));
 			$($("#divGrid>form>div:first:nth-child(1)>span")[1]).text(($.i18n.prop('EnableAutosearch')));
@@ -3500,7 +3516,7 @@ function toggleLanguage(lang, dir) {
 			$('label[for="owner-name2"]').text($.i18n.prop('ConsumerName'));
 			$('label[for="feed-points2"]').text($.i18n.prop('FeedPoints2'));
 			
-			$('label[for="loads-required"]').text($.i18n.prop('LoadsRequired'));
+			$('label[for="load_required"]').text($.i18n.prop('load_required'));
 			
 			$('label[for="description"]').text($.i18n.prop('Description'));
 			$('label[for="connector-load"]').text($.i18n.prop('ConnectorLoad'));
