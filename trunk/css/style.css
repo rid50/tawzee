@@ -438,11 +438,13 @@ input[type='checkbox'] {
 	margin: 20px 0 20px 40px;
 
 	//text-align:center;
-	width: 300px;
+	width: 350px;
 	//height: inherit;
 	height: 382px;
 	//display: none;
 }
+
+
 /*
 #userList ul {
 	padding: 0 10px 5px 10px;

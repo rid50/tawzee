@@ -160,7 +160,7 @@ if ($idp == "SAML") {
 							<button id="usersExportButton">Export</button>
 						</fieldset>
 					</div>
-					<span>Resource Assignment</span>
+					<span>Access Control</span>
 					<div>
 					</div>
 				</div>
@@ -395,14 +395,14 @@ if ($idp == "SAML") {
 						<fieldset id="possibility-yes" class="possibility" style="text-align:left">
 							<legend>There is a possibility of delivering <br/> an electric current</legend>
 							<br/>
-							<p style="height:20px"><input id="station-no" type="checkbox" name="possibilityyes" />
+							<p style="height:20px"><input id="station-no" type="checkbox" name="possibility-yes" />
 							<label for="station-no">Station Number</label>(
 							<input type="text" id="station-number" style="width:80px; vertical-align:middle;"/>&nbsp;)</p>
 
-							<p style="height:20px"><input id="special-adapter" type="checkbox" name="possibilityyes" />
+							<p style="height:20px"><input id="special-adapter" type="checkbox" name="possibility-yes" />
 							<label for="special-adapter">Special Adapter</label></p>
 							
-							<p style="height:20px"><input id="private-station" type="checkbox" name="possibilityyes" />
+							<p style="height:20px"><input id="private-station" type="checkbox" name="possibility-yes" />
 							<label for="private-station">Private Station</label></p>
 
 						</fieldset>
@@ -411,13 +411,13 @@ if ($idp == "SAML") {
 						<fieldset id="possibility-no" class="possibility" style="text-align:left">
 							<legend>There is no a possibility of delivering <br/> an electric current</legend>
 							<br/>
-							<p style="height:20px"><input id="no-electric-grid-access" type="checkbox" name="possibilityno" />
+							<p style="height:20px"><input id="no-electric-grid-access" type="checkbox" name="possibility-no" />
 							<label for="no-electric-grid-access">There is no electric grid access</label>
 
-							<p style="height:20px"><input id="wanted-another-site" type="checkbox" name="possibilityno" />
+							<p style="height:20px"><input id="wanted-another-site" type="checkbox" name="possibility-no" />
 							<label for="wanted-another-site">Wanted site for a major transfer station</label></p>
 							
-							<p style="height:20px"><input id="required-secondary-site" type="checkbox" name="possibilityno" />
+							<p style="height:20px"><input id="required-secondary-site" type="checkbox" name="possibility-no" />
 							<label for="required-secondary-site">Required secondary transfer station site</label></p>
 
 						</fieldset>

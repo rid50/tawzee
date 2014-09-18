@@ -341,8 +341,8 @@ $(document).ready(function () {
 									setRadioButton('cable-size', r.CableSize);
 									setRadioButton('fuze', r.Fuze);
 									setRadioButton('meter', r.Meter);
-									setCheckBox('possibilityyes', r.PossibilityYes, 4);	//4(100) - bitmask
-									setCheckBox('possibilityno', r.PossibilityNo, 4);
+									setCheckBox('possibility-yes', r.PossibilityYes, 4);	//4(100) - bitmask
+									setCheckBox('possibility-no', r.PossibilityNo, 4);
 									
 									// $('input:radio[name=site-feeding-point]')[r.SiteFeedPoint].checked = true;
 									// $('input:radio[name=requirements]')[r.Requirements].checked = true;
@@ -1405,20 +1405,7 @@ function fillUserLoginCombo() {
 	$(document).on("change", "#userLoginSelect", function(){
 		var val = this.options[this.selectedIndex].value;
 		setTimeout(function() {
-			//$("#jstree_userlist").detach();
-			//$("#jstree").detach();
-			//$("#newForm").detach();
-			//$("#tabs").detach();
-
 			$("#resourceManagement").css("display", "none");
-			//$("#jstree_userlist").css("display", "none");
-			//$("#jstree").css("display", "none");
-			//$("#newForm").css("display", "none");
-			
-			//$("body").append($("#resourceManagement"));
-			//$("body").append($("#jstree_userlist"));
-			//$("body").append($("#jstree"));
-			//$("body").append($("#newForm"));
 			
 			start(val, 'db', function() {		// 'db' - get Actors from database
 				$("#accordion").accordion( "option", "active", 0 );				
@@ -2445,18 +2432,35 @@ function initResourceTree() {
 		
 		fields_data = [];
 		var fields = $(this).find('input');
+		var labelobj
 		fields.each(function() {
 			node = {
-				'id': (this.type == "radio") ? this.name : this.id,
+				'id': (this.type == "radio" || this.type == "checkbox") ? this.name : (this.type == "text" && this.id == "" && this.attributes.class != undefined) ? this.attributes.class.value : this.id,
 				'type': "field",
 				'text': (function(obj){
-					if (obj.type == "radio") {
-						if ($('label[for="' + obj.name + '"]').length != 0)
-							return $('label[for="' + obj.name + '"]').text().replace(/:$/, "");
+					if (obj.type == "radio" || obj.type == "checkbox") {
+						labelobj = $('label[for="' + obj.name + '"]');
+						if (labelobj.length != 0)
+							return labelobj.text().replace(/:$/, "");
 						else
 							return $('fieldset[id="' + obj.name + '"] legend').text().replace(/:$/, "");
-					} else if (obj.type == "text" || obj.type == "checkbox")
-						return $('label[for="' + obj.id + '"]').text().replace(/:$/, "");
+					//} else if (obj.type == "checkbox") {
+					//	return $('label[for="' + obj.id + '"]').text().replace(/:$/, "");
+					} else if (obj.type == "text") {
+						labelobj = $('label[for="' + obj.id + '"]');
+						if (labelobj.length != 0)
+							return labelobj.text().replace(/:$/, "");
+						else {
+							if (obj.attributes['class'] != undefined)
+								return obj.attributes['class'].value;
+							else {
+								if (obj.id == "station-number") {
+									fields_data.splice(-1,1);
+									return $('label[for="station-no"]').text();
+								}
+							}
+						}
+					}
 				})(this)
 				//'state' : { 'opened' : true, 'selected' : false },
 				//'data': {
@@ -3421,6 +3425,9 @@ function toggleLanguage(lang, dir) {
 
 			obj = $("#accordion>span:nth-child(9)").contents().filter(function() {return this.nodeType == 3;});
 			obj.get()[0].textContent = jQuery.i18n.prop('UserAssignment');
+
+			obj = $("#accordion>span:nth-child(11)").contents().filter(function() {return this.nodeType == 3;});
+			obj.get()[0].textContent = jQuery.i18n.prop('AccessControl');
 
 			$('label[for="application-number"]').html($.i18n.prop('ApplicationNumber'));
 			$('label[for="application-date"]').html($.i18n.prop('ApplicationDate'));
