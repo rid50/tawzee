@@ -276,7 +276,7 @@ if ($idp == "SAML") {
 			<input type="radio" id="build3" name="requirements" />
 			<label for="build3">Installing a power factor improvement</label><br/>
 				
-			<fieldset id="cable-size" style="display:inline">
+			<fieldset id="cable-size" class="access-control" style="display:inline">
 			<legend>Cable Size(mm2)</legend>
 			<!--label for="cable-size">Cable Size(mm2)</label-->
 			<input type="radio" id="cs35" name="cable-size" />
@@ -287,7 +287,7 @@ if ($idp == "SAML") {
 			<label for="cs300">300</label>
 			</fieldset>
 			
-			<fieldset id="fuze" style="display:inline">
+			<fieldset id="fuze" class="access-control" style="display:inline">
 			<legend>Fuze(amps)</legend>
 			<!--label for="fuze">Fuze(amps)</label-->
 			<input type="radio" id="f100" name="fuze" />
@@ -298,7 +298,7 @@ if ($idp == "SAML") {
 			<label for="f300">300</label>
 			</fieldset>
 			
-			<fieldset id="meter" style="display:block">
+			<fieldset id="meter" class="access-control" style="display:block">
 			<legend>Meter(amps)</legend>
 			<!--label for="meter">Meter(amps)</label-->
 			<input type="radio" id="m1" name="meter">
@@ -315,7 +315,7 @@ if ($idp == "SAML") {
 			<label for="m6">300/5</label>
 			</fieldset><br/>
 		
-			<table cellspacing="0" cellpadding="0">
+			<table id="table-application" class="access-control" data-label="Kqa" cellspacing="0" cellpadding="0">
 				<tr>
 					<td style="white-space:nowrap;">
 						<label for="switchCapacity">Switch</label>
@@ -389,7 +389,7 @@ if ($idp == "SAML") {
 			</table>
 			<button class="addRow" tabindex="-1" title="Add a new row"></button>
 			<hr/>
-			<table style="width: 100%">
+			<table id="table-possibility" class="access-control" data-label="possibility" style="width: 100%">
 				<tr>
 					<td style="border:0px" class="floatLeft">
 						<fieldset id="possibility-yes" class="possibility" style="text-align:left">
@@ -462,9 +462,9 @@ if ($idp == "SAML") {
 			<input type="text" id="feed-points2" readonly tabindex="-1" maxlength="10" size="10" class="text ui-widget-content ui-corner-all" /><br/>
 
 			<div style="text-align:center; font-size:1.1em">
-				<label for="loads-required" style="text-decoration:underline">Electrical Loads required by the Project</label>
+				<label for="load_required" style="text-decoration:underline">Electrical Loads required by the Project</label>
 			</div><br/>
-			<table cellspacing="0" cellpadding="0" style="margin:0 auto;">
+			<table id="table-load" class="access-control" data-label="load_required" cellspacing="0" cellpadding="0" style="margin:0 auto;">
 				<tr>
 					<td rowspan="2">
 						<label for="description">Description</label>
