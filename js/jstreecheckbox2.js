@@ -19,9 +19,9 @@
  */
 
 	var _i = document.createElement('I');
-	_i.className = 'jstree-icon jstree-checkbox checkbox1';
+	_i.className = 'jstree-icon jstree-checkbox';
 	var _i2 = document.createElement('I');
-	_i2.className = 'jstree-icon jstree-checkbox checkbox2';
+	_i2.className = 'jstree-icon jstree-checkbox2';
 	/**
 	 * stores all defaults for the checkbox plugin
 	 * @name $.jstree.defaults.checkbox
