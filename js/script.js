@@ -2423,10 +2423,19 @@ function initResourceTree() {
 	var forms = $('.forms, #accordion>span');
 	forms.each(function(index) {
 		data.push({
+			//"attr" : {"class" : "jstree-checked", "rel": "form" },
 			'data': {
 				'id': this.id,
 			},
 			'type': (this.nodeName.toLowerCase() == "span") ? "tab" :"form",
+/*			
+			'text': function() {
+				//if (obj.nodeName.toLowerCase() == "span")
+					return $(this).text();
+				//else
+				//	return $('#' + obj.attributes['data-link'].value).text();
+			},
+*/
 			'text': (function(obj){
 				if (obj.nodeName.toLowerCase() == "span")
 					return $(obj).text();
@@ -2506,13 +2515,29 @@ function initResourceTree() {
 		.jstree({
 			"core" : {
 				//"themes" : { "stripes" : true },
-				"multiple" : false,
+				//"multiple" : false,
 				"data" : data,
-				"check_callback" : function (operation, node, node_parent, node_position, more) {
-					//console.log(operation);
-					return false;
-				}
+				//"check_callback" : function (operation, node, node_parent, node_position, more) {
+				//	console.log(operation);
+				//	return false;
+				//}
 			},
+			//grid: {
+			//	columns: [
+			//		{width: 50, header: "Nodes"},
+			//		{width: 30, header: "Price"}
+			//	]
+			//},
+			
+			"checkbox" : {
+				"tie_selection"	: false,
+				"whole_node" : false,
+				"keep_selected_style" : true,
+				"three_state" : true
+			},
+			//"checkbox" : {
+			//	"keep_selected_style" : false
+			//},
 			"types" : {
 				"form" : {
 					"icon" : "images/form.png"
@@ -2521,14 +2546,15 @@ function initResourceTree() {
 					"icon" : "images/field.png"
 				}
 			},
-			"themes" : {
+			//"themes" : {
 				//"theme" : "classic",
-				"stripes" : true,
-				"dots" : true,
-				"icons" : true
-			},
+			//	"stripes" : true,
+			//	"dots" : true,
+			//	"icons" : true
+			//},
 			
-			"plugins" : [ "types", "themes" ]
+			"plugins" : [ "checkbox", "types", "themes" ]
+			//"plugins" : [ "checkbox", "types", "themes" ]
 		});
 }
 
