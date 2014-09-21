@@ -437,7 +437,7 @@
 					}
 				}
 				if(tmp) {
-					if(!this.settings.checkbox.tie_selection && this._model.data[obj.id].state.checked) { tmp.className += ' jstree-checked'; }
+					if(!this.settings.checkbox.tie_selection && this._model.data[obj.id].state.checked) { tmp.className += ' jstree-checked';  tmp.className += ' jstree-checked2'; }
 					tmp.insertBefore(_i2.cloneNode(false), tmp.childNodes[0]);
 					tmp.insertBefore(_i.cloneNode(false), tmp.childNodes[0]);
 				}
@@ -610,6 +610,7 @@
 			for(i = 0, j = this._data.checkbox.selected.length; i < j; i++) {
 				if(this._model.data[this._data.checkbox.selected[i]]) {
 					this._model.data[this._data.checkbox.selected[i]].state.checked = true;
+					this._model.data[this._data.checkbox.selected[i]].state.checked2 = true;
 				}
 			}
 			this.redraw(true);

@@ -2501,6 +2501,9 @@ function initResourceTree() {
 	})	
 	
 	jstree
+		.on("ready.jstree", function (e, data) {
+			data.instance.check_all();
+		})
 		.on("check_node.jstree", function (e, data) {
 			if ($(data.event.originalEvent.target).hasClass('jstree-checkbox'))
 				data.node.data.read = true;
