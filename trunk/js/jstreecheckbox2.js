@@ -1,4 +1,5 @@
 /*globals jQuery, define, exports, require, window, document */
+/*
 (function (factory) {
 	"use strict";
 	if (typeof define === 'function' && define.amd) {
@@ -10,9 +11,11 @@
 	else {
 		factory(jQuery);
 	}
-}(function ($) {
+}
+*/
+(function ($) {
 /**
- * ### Checkbox plugin
+ * ### Checkbox plugin	It's two horizontally alligned checkboxes plugin, my humble replacement to jstree checkbox plugin
  *
  * This plugin renders checkbox icons in front of each node, making multiple selection much easier. 
  * It also supports tri-state behavior, meaning that if a node has a few of its children checked it will be rendered as undetermined, and state will be propagated up.
@@ -206,7 +209,10 @@
 										this._data[ t ? 'core' : 'checkbox' ].selected.push(par.id);
 										tmp = this.get_node(par, true);
 										if(tmp && tmp.length) {
-											tmp.children('.jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked');
+											if ($(data.event.originalEvent.target).hasClass('jstree-checkbox'))
+												tmp.children('.jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked');
+											else if ($(data.event.originalEvent.target).hasClass('jstree-checkbox2'))
+												tmp.children('.jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked2');
 										}
 									}
 									else {
@@ -218,7 +224,10 @@
 
 							// apply down (process .children separately?)
 							if(s.indexOf('down') !== -1 && dom.length) {
-								dom.find('.jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked');
+								if ($(data.event.originalEvent.target).hasClass('jstree-checkbox'))
+									dom.find('.jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked');
+								else if ($(data.event.originalEvent.target).hasClass('jstree-checkbox2'))
+									dom.find('.jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked2');									
 							}
 						}, this))
 					.on(this.settings.checkbox.tie_selection ? 'deselect_all.jstree' : 'uncheck_all.jstree', $.proxy(function (e, data) {
@@ -481,13 +490,13 @@
 		};
 
 		this.activate_node = function (obj, e) {
-			if(this.settings.checkbox.tie_selection && (this.settings.checkbox.whole_node || $(e.target).hasClass('jstree-checkbox'))) {
+			if(this.settings.checkbox.tie_selection && (this.settings.checkbox.whole_node || $(e.target).hasClass('jstree-checkbox') || $(e.target).hasClass('jstree-checkbox2'))) {
 				e.ctrlKey = true;
 			}
-			if(this.settings.checkbox.tie_selection || (!this.settings.checkbox.whole_node && !$(e.target).hasClass('jstree-checkbox'))) {
+			if(this.settings.checkbox.tie_selection || (!this.settings.checkbox.whole_node && !$(e.target).hasClass('jstree-checkbox') && !$(e.target).hasClass('jstree-checkbox2'))) {
 				return parent.activate_node.call(this, obj, e);
 			}
-			if(this.is_checked(obj)) {
+			if(this.is_checked(obj, e)) {
 				this.uncheck_node(obj, e);
 			}
 			else {
@@ -518,11 +527,17 @@
 				return false;
 			}
 			dom = this.get_node(obj, true);
-			if(!obj.state.checked) {
-				obj.state.checked = true;
+			//if(!obj.state.checked) {
+				//obj.state.checked = true;
 				this._data.checkbox.selected.push(obj.id);
 				if(dom && dom.length) {
-					dom.children('.jstree-anchor').addClass('jstree-checked');
+					if ($(e.target).hasClass('jstree-checkbox')) {
+						obj.state.checked = true;
+						dom.children('.jstree-anchor').addClass('jstree-checked');
+					} else if ($(e.target).hasClass('jstree-checkbox2')) {
+						obj.state.checked2 = true;
+						dom.children('.jstree-anchor').addClass('jstree-checked2');
+					}
 				}
 				/**
 				 * triggered when an node is checked (only if tie_selection in checkbox settings is false)
@@ -534,7 +549,7 @@
 				 * @plugin checkbox
 				 */
 				this.trigger('check_node', { 'node' : obj, 'selected' : this._data.checkbox.selected, 'event' : e });
-			}
+			//}
 		};
 		/**
 		 * uncheck a node (only if tie_selection in checkbox settings is false, otherwise deselect_node will be called internally)
@@ -558,11 +573,17 @@
 				return false;
 			}
 			dom = this.get_node(obj, true);
-			if(obj.state.checked) {
-				obj.state.checked = false;
+			//if(obj.state.checked) {
+				//obj.state.checked = false;
 				this._data.checkbox.selected = $.vakata.array_remove_item(this._data.checkbox.selected, obj.id);
 				if(dom.length) {
-					dom.children('.jstree-anchor').removeClass('jstree-checked');
+					if ($(e.target).hasClass('jstree-checkbox')) {
+						obj.state.checked = false;
+						dom.children('.jstree-anchor').removeClass('jstree-checked');
+					} else if ($(e.target).hasClass('jstree-checkbox2')) {
+						obj.state.checked2 = false;
+						dom.children('.jstree-anchor').removeClass('jstree-checked2');
+					}
 				}
 				/**
 				 * triggered when an node is unchecked (only if tie_selection in checkbox settings is false)
@@ -574,7 +595,7 @@
 				 * @plugin checkbox
 				 */
 				this.trigger('uncheck_node', { 'node' : obj, 'selected' : this._data.checkbox.selected, 'event' : e });
-			}
+			//}
 		};
 		/**
 		 * checks all nodes in the tree (only if tie_selection in checkbox settings is false, otherwise select_all will be called internally)
@@ -634,11 +655,18 @@
 		 * @return {Boolean}
 		 * @plugin checkbox
 		 */
-		this.is_checked = function (obj) {
+		this.is_checked = function (obj, e) {
 			if(this.settings.checkbox.tie_selection) { return this.is_selected(obj); }
 			obj = this.get_node(obj);
 			if(!obj || obj.id === '#') { return false; }
-			return obj.state.checked;
+			
+			if ($(e.target).hasClass('jstree-checkbox')) {
+				return obj.state.checked;
+			} else if ($(e.target).hasClass('jstree-checkbox2')) {
+				return obj.state.checked2;
+			}
+		
+			//return obj.state.checked;
 		};
 		/**
 		 * get an array of all checked nodes (if tie_selection is on in the settings this function will return the same as get_selected)
@@ -702,4 +730,5 @@
 
 	// include the checkbox plugin by default
 	// $.jstree.defaults.plugins.push("checkbox");
-}));
+})(jQuery);
+//}));
