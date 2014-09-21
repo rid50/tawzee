@@ -49,7 +49,8 @@ if ($idp == "SAML") {
     <link rel="stylesheet" media="print" type="text/css" href="css/style.css"/>
 
 	<link rel="stylesheet" href="css/flexslider.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="js/themes/default/style.css" />	
+	<link rel="stylesheet" href="js/themes/default/style.css" />
+	<link rel="stylesheet" href="js/themes/default/style2.css" />
 	
     <script src="js/jquery-1.11.0.min.js" type="text/javascript"></script>
     
@@ -162,7 +163,8 @@ if ($idp == "SAML") {
 						</fieldset>
 					</div>
 					<span>Access Control</span>
-					<div>
+					<div style="text-align:center;">
+						<button id="saveAccessControlSettings">Save Settings</button>
 					</div>
 				</div>
             </section>

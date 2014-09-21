@@ -2427,7 +2427,7 @@ function initResourceTree() {
 			'data': {
 				'id': this.id,
 			},
-			'type': (this.nodeName.toLowerCase() == "span") ? "tab" :"form",
+			'type': (this.nodeName.toLowerCase() == "span") ? "accordion" :"form",
 /*			
 			'text': function() {
 				//if (obj.nodeName.toLowerCase() == "span")
@@ -2501,10 +2501,19 @@ function initResourceTree() {
 	})	
 	
 	jstree
-	/*
-		.on("open_node.jstree", function (e, data) {
-			return true;
+		.on("check_node.jstree", function (e, data) {
+			if ($(data.event.originalEvent.target).hasClass('jstree-checkbox'))
+				data.node.data.read = true;
+			else if ($(data.event.originalEvent.target).hasClass('jstree-checkbox2'))
+				data.node.data.write = true;
 		})
+		.on("uncheck_node.jstree", function (e, data) {
+			if ($(data.event.originalEvent.target).hasClass('jstree-checkbox'))
+				data.node.data.read = false;
+			else if ($(data.event.originalEvent.target).hasClass('jstree-checkbox2'))
+				data.node.data.write = false;
+		})
+	/*
 		.on("close_node.jstree", function (e, data) {
 			//e.preventDefault();
 			//e.stopImmediatePropagation();
@@ -2533,8 +2542,9 @@ function initResourceTree() {
 				"tie_selection"	: false,
 				"whole_node" : false,
 				"keep_selected_style" : true,
-				"three_state" : true
+				"three_state" : false
 			},
+
 			//"checkbox" : {
 			//	"keep_selected_style" : false
 			//},
@@ -2542,9 +2552,25 @@ function initResourceTree() {
 				"form" : {
 					"icon" : "images/form.png"
 				},
+				"table" : {
+					"icon" : "images/table.png"
+				},
 				"field" : {
 					"icon" : "images/field.png"
+				},
+				"fieldset" : {
+					"icon" : "images/fieldset.png"
+				},
+				"radio" : {
+					"icon" : "images/radio.png"
+				},				
+				"checkbox" : {
+					"icon" : "images/checkbox_yes.png"
+				},				
+				"accordion" : {
+					"icon" : "images/accordion.png"
 				}
+				
 			},
 			//"themes" : {
 				//"theme" : "classic",
@@ -3441,6 +3467,7 @@ function toggleLanguage(lang, dir) {
 			$("#userLegend>span:nth-of-type(2)").text(($.i18n.prop('Manager')));
 			$("#userLegend>span:nth-of-type(3)").text(($.i18n.prop('Superuser')));
 
+			$("#saveAccessControlSettings").button({ label: $.i18n.prop('SaveACSettings')});
 			
 			$('#application-form-link').html($.i18n.prop('ApplicationForm'));
 			$('#load-form-link').html($.i18n.prop('LoadRequirements'));

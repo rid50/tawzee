@@ -1,0 +1,62 @@
+.jstree-default .jstree-no-checkboxes .jstree-checkbox2 {
+  display: none !important;
+}
+.jstree-default .jstree-checkbox2 {
+  background-position: -164px -4px;
+}
+.jstree-default .jstree-checkbox2:hover {
+  background-position: -164px -36px;
+}
+.jstree-default.jstree-checkbox-selection .jstree-clicked > .jstree-checkbox2,
+.jstree-default .jstree-checked2 > .jstree-checkbox2 {
+  background-position: -228px -4px;
+}
+.jstree-default.jstree-checkbox-selection .jstree-clicked > .jstree-checkbox2:hover,
+.jstree-default .jstree-checked2 > .jstree-checkbox2:hover {
+  background-position: -228px -36px;
+}
+.jstree-default-small .jstree-checkbox2 {
+  background-position: -167px -7px;
+}
+.jstree-default-small .jstree-checkbox2:hover {
+  background-position: -167px -39px;
+}
+.jstree-default-small.jstree-checkbox-selection .jstree-clicked > .jstree-checkbox2,
+.jstree-default-small .jstree-checked2 > .jstree-checkbox2 {
+  background-position: -231px -7px;
+}
+.jstree-default-small.jstree-checkbox-selection .jstree-clicked > .jstree-checkbox2:hover,
+.jstree-default-small .jstree-checked2 > .jstree-checkbox2:hover {
+  background-position: -231px -39px;
+}
+.jstree-default-large .jstree-checkbox2 {
+  background-position: -160px 0px;
+}
+.jstree-default-large .jstree-checkbox2:hover {
+  background-position: -160px -32px;
+}
+.jstree-default-large.jstree-checkbox-selection .jstree-clicked > .jstree-checkbox2,
+.jstree-default-large .jstree-checked2 > .jstree-checkbox2 {
+  background-position: -224px 0px;
+}
+.jstree-default-large.jstree-checkbox-selection .jstree-clicked > .jstree-checkbox2:hover,
+.jstree-default-large .jstree-checked2 > .jstree-checkbox2:hover {
+  background-position: -224px -32px;
+}
+  .jstree-default-responsive .jstree-checkbox2 {
+    background-size: 120px 240px;
+  }
+  .jstree-default-responsive .jstree-checkbox2,
+  .jstree-default-responsive .jstree-checkbox2:hover {
+    background-position: -40px -80px;
+  }
+  .jstree-default-responsive.jstree-checkbox-selection .jstree-clicked > .jstree-checkbox2,
+  .jstree-default-responsive.jstree-checkbox-selection .jstree-clicked > .jstree-checkbox2:hover,
+  .jstree-default-responsive .jstree-checked2 > .jstree-checkbox2,
+  .jstree-default-responsive .jstree-checked2 > .jstree-checkbox2:hover {
+    background-position: 0 -80px;
+  }
+  .jstree-default-responsive .jstree-checkbox2 {
+    background-image: url("40px.png");
+    background-size: 120px 240px;
+  }
