@@ -2502,19 +2502,57 @@ function initResourceTree() {
 	
 	jstree
 		.on("ready.jstree", function (e, data) {
-			data.instance.check_all();
+			//data.instance.check_all();
 		})
 		.on("check_node.jstree", function (e, data) {
-			if ($(data.event.originalEvent.target).hasClass('jstree-checkbox'))
-				data.node.data.read = true;
-			else if ($(data.event.originalEvent.target).hasClass('jstree-checkbox2'))
-				data.node.data.write = true;
+			var node = $('#jstree').jstree(true).get_selected(true);
+			if (node.length != 0) {
+				node = node[0];
+				var prop = node.type == "department" ? node.id : node.data["data-loginname"];
+				if (data.node.data[prop]) {
+					if ($(data.event.originalEvent.target).hasClass('jstree-checkbox')) {
+						if (data.node.data[prop].read)
+							delete data.node.data[prop].read;
+					} else if ($(data.event.originalEvent.target).hasClass('jstree-checkbox2')) {
+						if (data.node.data[prop].write)
+							delete data.node.data[prop].write;
+					}
+				}
+				/*
+				var result = "";
+				var obj = data.node.data[prop];
+				for (var i in obj) {
+					if (obj.hasOwnProperty(i)) {
+						result += i + " = " + obj[i] + "\n";
+					}
+				}
+				*/
+				var i = 0;
+			}
 		})
 		.on("uncheck_node.jstree", function (e, data) {
-			if ($(data.event.originalEvent.target).hasClass('jstree-checkbox'))
-				data.node.data.read = false;
-			else if ($(data.event.originalEvent.target).hasClass('jstree-checkbox2'))
-				data.node.data.write = false;
+			var node = $('#jstree').jstree(true).get_selected(true);
+			if (node.length != 0) {
+				node = node[0];
+				var prop = node.type == "department" ? node.id : node.data["data-loginname"];
+				data.node.data[prop] = {};
+				if ($(data.event.originalEvent.target).hasClass('jstree-checkbox'))
+					data.node.data[prop].read = false;
+				else if ($(data.event.originalEvent.target).hasClass('jstree-checkbox2'))
+					data.node.data[prop].write = false;
+				
+				var result = "";
+				var obj = data.node.data[prop];
+				for (var i in obj) {
+					if (obj.hasOwnProperty(i)) {
+						result += i + " = " + obj[i] + "\n";
+					}
+				}
+					
+					
+					
+				var i = 0;
+			}
 		})
 	/*
 		.on("close_node.jstree", function (e, data) {
