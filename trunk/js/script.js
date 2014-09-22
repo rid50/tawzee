@@ -2108,9 +2108,7 @@ initDepartmentsTree = function(actorsSource) {
 						})
 					}
 				})
-				var i = 0;
 			}
-			
 		})
 		.on("rename_node.jstree", function (e, data) {
 			if ($("body[dir='ltr']").length)
@@ -2574,11 +2572,35 @@ function initResourceTree() {
 			if (node.length != 0) {
 				node = node[0];
 				var prop = node.type == "department" ? node.id : node.data["data-loginname"];
+				var obj = {}; obj.id = data.node.data.id; obj[prop] = {};
+				if ($(data.event.originalEvent.target).hasClass('jstree-checkbox'))
+					obj[prop].read = false;
+				else if ($(data.event.originalEvent.target).hasClass('jstree-checkbox2'))
+					obj[prop].write = false;
+				
+				var exit = false;
+				_acl.some(function(obj2) {
+					if (prop in obj2) {
+						if ("read" in obj[prop])
+							obj2[prop].read = false;
+						if ("write" in obj[prop])
+							obj2[prop].write = false;
+						
+						exit = true;
+						return true;
+					}
+				})
+				
+				if (!exit)
+					_acl.push(obj);
+					
+				/*
 				data.node.data[prop] = data.node.data[prop] || {};
 				if ($(data.event.originalEvent.target).hasClass('jstree-checkbox'))
 					data.node.data[prop].read = false;
 				else if ($(data.event.originalEvent.target).hasClass('jstree-checkbox2'))
 					data.node.data[prop].write = false;
+				*/
 			}
 			var i = 0;
 		})
