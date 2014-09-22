@@ -158,8 +158,8 @@ if ($idp == "SAML") {
 					<div>
 						<fieldset id="usersImportExport" style="text-align:center;">
 							<legend>Users</legend>
-							<button id="usersImportButton">Import</button>
-							<button id="usersExportButton">Export</button>
+							<button id="userImportButton">Import</button>
+							<button id="userExportButton">Export</button>
 						</fieldset>
 					</div>
 					<span>Access Control</span>

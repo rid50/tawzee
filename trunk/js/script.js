@@ -9,6 +9,7 @@ var _superusers;
 var _userLoginName = "";
 
 var userInfo;
+var _acl;
 var _rootActors;
 var actor;
 var sectionId;				// id of  section of the department, like: follow_up, ac...
@@ -245,6 +246,7 @@ $(document).ready(function () {
 		if (e.target === this) {
 			if ($(this).hasClass("jstree")) {
 				$(this).jstree('destroy').empty();
+				_acl = undefined;
 			}
 		}
 	});
@@ -2082,6 +2084,34 @@ initDepartmentsTree = function(actorsSource) {
 				data.instance.set_type(data.node, "manager");
 			saveActors();
 		})
+		.on("select_node.jstree", function (e, data) {
+			if (_acl) {
+				var jstree = $('#jstree_resourcelist').jstree(true);
+				var nodes =	jstree.get_json("#", {flat:true});
+				jstree.check_all(true);
+
+				_acl.forEach(function(obj) {
+					var selectedItem = data.node.data["data-loginname"];		// selected department/manager/employee
+					if (obj && selectedItem in obj) {
+						nodes.some(function(node) {
+							if (obj.id == node.data.id) {
+								node = jstree.get_node(node, true);	//get dom
+								if ('read' in obj[selectedItem]) {
+									node.children('.jstree-anchor').removeClass('jstree-checked');
+								}
+								if ('write' in obj[selectedItem]) {
+									node.children('.jstree-anchor').removeClass('jstree-checked2');
+								}
+								
+								return true;
+							}
+						})
+					}
+				})
+				var i = 0;
+			}
+			
+		})
 		.on("rename_node.jstree", function (e, data) {
 			if ($("body[dir='ltr']").length)
 				data.node.data["data-name"] = data.text;
@@ -2502,6 +2532,20 @@ function initResourceTree() {
 	
 	jstree
 		.on("ready.jstree", function (e, data) {
+			$('#jstree').jstree(true).deselect_all(true);
+			$.get('acl.json')
+				.done(function( data ) {
+					if (isAjaxError(data))
+						return;
+						
+					_acl = data;
+				})
+				.fail(function(jqXHR, textStatus, errorThrown) {
+					_acl = undefined;
+					errorFound = true;
+					alert("Get Access Control List - error: " + errorThrown);
+				});
+			
 			//data.instance.check_all();
 		})
 		.on("check_node.jstree", function (e, data) {
@@ -2509,86 +2553,45 @@ function initResourceTree() {
 			if (node.length != 0) {
 				node = node[0];
 				var prop = node.type == "department" ? node.id : node.data["data-loginname"];
+				//data.node.data[prop] = data.node.data[prop] || {};
+
 				if (data.node.data[prop]) {
 					if ($(data.event.originalEvent.target).hasClass('jstree-checkbox')) {
-						if (data.node.data[prop].read)
+						//data.node.data[prop].read = true;
+						if ('read' in data.node.data[prop])
 							delete data.node.data[prop].read;
 					} else if ($(data.event.originalEvent.target).hasClass('jstree-checkbox2')) {
-						if (data.node.data[prop].write)
+						//data.node.data[prop].write = true;
+						if ('write' in data.node.data[prop])
 							delete data.node.data[prop].write;
 					}
 				}
-				/*
-				var result = "";
-				var obj = data.node.data[prop];
-				for (var i in obj) {
-					if (obj.hasOwnProperty(i)) {
-						result += i + " = " + obj[i] + "\n";
-					}
-				}
-				*/
-				var i = 0;
 			}
+			var i = 0;
 		})
 		.on("uncheck_node.jstree", function (e, data) {
 			var node = $('#jstree').jstree(true).get_selected(true);
 			if (node.length != 0) {
 				node = node[0];
 				var prop = node.type == "department" ? node.id : node.data["data-loginname"];
-				data.node.data[prop] = {};
+				data.node.data[prop] = data.node.data[prop] || {};
 				if ($(data.event.originalEvent.target).hasClass('jstree-checkbox'))
 					data.node.data[prop].read = false;
 				else if ($(data.event.originalEvent.target).hasClass('jstree-checkbox2'))
 					data.node.data[prop].write = false;
-				
-				var result = "";
-				var obj = data.node.data[prop];
-				for (var i in obj) {
-					if (obj.hasOwnProperty(i)) {
-						result += i + " = " + obj[i] + "\n";
-					}
-				}
-					
-					
-					
-				var i = 0;
 			}
+			var i = 0;
 		})
-	/*
-		.on("close_node.jstree", function (e, data) {
-			//e.preventDefault();
-			//e.stopImmediatePropagation();
-			//e.stopPropagation();
-			//e.data = {"a":"b"};
-		})
-	*/
 		.jstree({
 			"core" : {
-				//"themes" : { "stripes" : true },
-				//"multiple" : false,
 				"data" : data,
-				//"check_callback" : function (operation, node, node_parent, node_position, more) {
-				//	console.log(operation);
-				//	return false;
-				//}
 			},
-			//grid: {
-			//	columns: [
-			//		{width: 50, header: "Nodes"},
-			//		{width: 30, header: "Price"}
-			//	]
-			//},
-			
 			"checkbox" : {
 				"tie_selection"	: false,
 				"whole_node" : false,
 				"keep_selected_style" : true,
 				"three_state" : false
 			},
-
-			//"checkbox" : {
-			//	"keep_selected_style" : false
-			//},
 			"types" : {
 				"form" : {
 					"icon" : "images/form.png"
@@ -2613,15 +2616,7 @@ function initResourceTree() {
 				}
 				
 			},
-			//"themes" : {
-				//"theme" : "classic",
-			//	"stripes" : true,
-			//	"dots" : true,
-			//	"icons" : true
-			//},
-			
-			"plugins" : [ "checkbox", "types", "themes" ]
-			//"plugins" : [ "checkbox", "types", "themes" ]
+			"plugins" : [ "checkbox", "types" ]
 		});
 }
 
@@ -2712,8 +2707,8 @@ saveActors = function(actorsTarget) {	//actorsTarget == undefined - 'db'
 	
 	var url = 'json_db_pdo.php', param = {'func':'saveActors', 'param' : $.xml(department)};
 	if (actorsTarget == 'xml') {
-		url = 'xml-write.php';
-		param = {'fileName': 'actors.xml', 'xml' : $.xml(department)};
+		url = 'save_file.php';
+		param = {'fileName': 'actors.xml', 'param' : $.xml(department)};
 	}
 	
 	$.post(url, param)
@@ -2867,12 +2862,52 @@ $(function() {
 		});
 	});
 	
-	$(document).on("click", "#usersImportButton", function(){
+	$(document).on("click", "#userImportButton", function(){
 		start(_userLoginName, 'xml', null);		// 'xml' - get Actors from actors.xml file
 	});
 
-	$(document).on("click", "#usersExportButton", function(){
+	$(document).on("click", "#userExportButton", function(){
 		saveActors('xml');
+	});
+	
+	$(document).on("click", "#saveAccessControlSettings", function(){
+		_acl = [];
+		var nodes = $('#jstree_resourcelist').jstree(true).get_json("#", {flat:true});
+		var result = "";
+		//var obj = data.node.data[prop];
+		nodes.forEach(function(node) {
+			node = node.data;
+			if (node) {
+				for (var prop in node) {
+					//if (if prop != "id" && node.hasOwnProperty(prop)) {
+					if (prop && prop != "id") {
+						_acl.push(node);
+						break;
+						
+						//if (node.hasOwnProperty(prop)) {
+						//	for (var prop2 in node[prop]) {
+						//		//var i = 0;
+						//		//result += node['id'] + " : " + prop2 + " = " + node[prop][prop2] + ";\n";
+						//	}
+						//}
+					}
+				}
+			}
+		})
+		
+		if (_acl.length != 0) {
+			$.post('save_file.php', {'fileName': 'acl.json', 'param' : JSON.stringify(_acl)})
+				.done(function( data ) {
+					if (isAjaxError(data))
+						return;
+				})
+				.fail(function(jqXHR, textStatus, errorThrown) {
+					errorFound = true;
+					alert("Save Access Control List - error: " + errorThrown);
+				});
+		}
+		
+		//alert(result);
 	});
 	
 })
@@ -3499,9 +3534,9 @@ function toggleLanguage(lang, dir) {
 			$('.deleteRow').attr({title: $.i18n.prop('DeleteRow')});
 			$('#sync').attr({title: $.i18n.prop('GoToLastSelectedRow')});
 			
-			$("#usersImportExport legend").text(($.i18n.prop('Users')));
-			$("#usersImportButton").button({ label: $.i18n.prop('ImportUsers')});
-			$("#usersExportButton").button({ label: $.i18n.prop('ExportUsers')});
+			$("#userImportExport legend").text(($.i18n.prop('Users')));
+			$("#userImportButton").button({ label: $.i18n.prop('ImportUsers')});
+			$("#userExportButton").button({ label: $.i18n.prop('ExportUsers')});
 
 			$("#userLegend legend").text(($.i18n.prop('Legend')));
 			$("#userLegend>span:nth-of-type(1)").text(($.i18n.prop('User')));

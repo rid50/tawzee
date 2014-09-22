@@ -7,9 +7,9 @@
 	//print_r($_POST);
 	
 	$fileName = $_POST['fileName'];
-	$xml = $_POST['xml'];
+	$param = $_POST['param'];
 	$file = fopen($fileName,"w");
-	fwrite($file, $xml);
+	fwrite($file, $param);
 	fclose($file);
 	//echo $_SERVER['LOGON_USER']
 
