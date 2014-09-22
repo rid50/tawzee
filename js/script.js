@@ -116,7 +116,6 @@ $(document).ready(function () {
 			searchInterval = data.searchInterval;
 		});
 	
-
 	$("#flagKuwait").off("click").on("click", function(event){
 		if ($("body[dir='ltr']").length) {
 			lang = 'ar';
@@ -246,7 +245,6 @@ $(document).ready(function () {
 		if (e.target === this) {
 			if ($(this).hasClass("jstree")) {
 				$(this).jstree('destroy').empty();
-				_acl = undefined;
 			}
 		}
 	});
@@ -689,6 +687,36 @@ $(document).ready(function () {
 		//$("#resourceManagement").show();
 
 	}
+/*	
+	_acl = {};
+	$.get('acl.json')
+		.done(function( data ) {
+			if (isAjaxError(data))
+				return;
+			
+			var idx = _superusers.indexOf(userInfo[0].loginName);
+			data.forEach(function(obj) {
+				if (idx === -1) {
+					if (userInfo[0].loginName in obj) {
+						_acl[obj.id] = {};
+						_acl[obj.id][userInfo[0].loginName] = obj[userInfo[0].loginName];
+					}
+				} else {
+					_acl[obj.id] = {};
+					for (var prop in obj) {
+						if (prop != "id")
+							_acl[obj.id][prop] = obj[prop];
+					}
+				}
+			})
+			
+			_acl = data;
+		})
+		.fail(function(jqXHR, textStatus, errorThrown) {
+			errorFound = true;
+			alert("Get Access Control List - error: " + errorThrown);
+		});
+*/		
 });
 
 function initAccordion() {
@@ -2531,18 +2559,6 @@ function initResourceTree() {
 	jstree
 		.on("ready.jstree", function (e, data) {
 			$('#jstree').jstree(true).deselect_all(true);
-			$.get('acl.json')
-				.done(function( data ) {
-					if (isAjaxError(data))
-						return;
-						
-					_acl = data;
-				})
-				.fail(function(jqXHR, textStatus, errorThrown) {
-					_acl = undefined;
-					errorFound = true;
-					alert("Get Access Control List - error: " + errorThrown);
-				});
 			
 			//data.instance.check_all();
 		})
