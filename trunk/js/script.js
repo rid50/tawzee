@@ -624,33 +624,7 @@ $(document).ready(function () {
 	});
 
 	setEventToDeleteRowButtons();
-	
-	//userLoginName = "ridavidenko";
-/*
-    $(function(){
-      $('#carousel').flexslider({
-        animation: "slide",
-        controlNav: false,
-        animationLoop: false,
-        slideshow: false,
-        itemWidth: 160,
-        itemMargin: 5,
-        asNavFor: '#slider'
-      });
-
-      $('#slider').flexslider({
-        animation: "slide",
-        controlNav: false,
-        animationLoop: false,
-        slideshow: false,
-        sync: "#carousel",
-        start: function(slider){
-          $('body').removeClass('loading');
-        }
-      });
-    });
-*/	
-		
+			
 	start(_userLoginName, 'db', null);	// 'db' - get Actors from database
 
 	if (!$("#main-div").hasClass("accessRejected")) {
@@ -687,13 +661,15 @@ $(document).ready(function () {
 		//$("#resourceManagement").show();
 
 	}
-/*	
+});
+
+function getAcl() {
 	_acl = {};
 	$.get('acl.json')
 		.done(function( data ) {
 			if (isAjaxError(data))
 				return;
-			
+/*			
 			var idx = _superusers.indexOf(userInfo[0].loginName);
 			data.forEach(function(obj) {
 				if (idx === -1) {
@@ -709,15 +685,14 @@ $(document).ready(function () {
 					}
 				}
 			})
-			
+*/			
 			_acl = data;
 		})
 		.fail(function(jqXHR, textStatus, errorThrown) {
 			errorFound = true;
 			alert("Get Access Control List - error: " + errorThrown);
 		});
-*/		
-});
+}
 
 function initAccordion() {
 	var divGrid = $('#divGrid'), main_form = $('#main-form'), report_container = $('#report-container'), flexslider_container = $('#flexslider-container'), resourceManagement = $("#resourceManagement");
@@ -1067,28 +1042,11 @@ function start(userLoginName, actorsSource, func) {
 			param = {};
 		}
 		
-		//$.get('json_db_pdo.php', {'func':'getActors'})
 		$.get(url, param)
-		
-		//$.get("actors.xml")    // sync request
-		//$.get('json_db_pdo.php', {'func':'getActors'})
 			.done(function(data) {
 				if (isAjaxError(data))
 					return;
-				
-				// if (data && data.constructor == Array) {
-					// if (data[0] && data[0].error != undefined) {
-						// alert (data[0].error);
-						// return;
-					// }
-				// }
-				
-				//if (data.d == undefined)
-				//	_rootActors = data;
-				//else
-				//	_rootActors = data.d.Data;
 
-			//.success(function(data) {
 				_rootActors = data;
 
 				var found = false;
@@ -1101,16 +1059,7 @@ function start(userLoginName, actorsSource, func) {
 
 				if (found || actorsSource == 'xml') {
 					$("#main-div").removeClass("accessRejected");
-/*
-					getActorsStatus();
-					if (!$("#jstree").hasClass("jstree"))
-						userAssignment();
-
-					loadUserSignatures();
-*/					
-					//$("#main-div>section").show();
 				} else {
-					//$("#main-div>section").hide();
 					$("#main-div").addClass("accessRejected");
 					return;
 				}
@@ -1134,37 +1083,19 @@ function start(userLoginName, actorsSource, func) {
 					personInfo.loginName = name;
 					loginNames.push(personInfo);
 				});
-				
+
 				getUserIdentities("GetUserInfo", loginNames, function() {
 					if (actorsSource != 'xml') {
+						getAcl();
 						fillUserLoginCombo();
 						getActorsStatus();
 						loadUserSignatures();
 						if (!$("#jstree").hasClass("jstree"))
-							//userAssignment();
 							initDepartmentsTree();
 					} else {
-						//userAssignment(actorsSource);
 						initDepartmentsTree(actorsSource);
 					}
-										
-/*					
-					if (found) {
-						$("#main-div").removeClass("accessRejected");
-						getActorsStatus();
-						if (!$("#jstree").hasClass("jstree"))
-							userAssignment();
 
-						loadUserSignatures();
-						
-						//initTabs();
-						//getDocs();
-						$("#main-div>section").show();
-					} else {
-						$("#main-div>section").hide();
-						$("#main-div").addClass("accessRejected");
-					}
-*/					
 					if (func != null) {
 						func();
 					}
@@ -1176,99 +1107,7 @@ function start(userLoginName, actorsSource, func) {
 			});
 	});	
 }
-/*
-function getActors(xml, func) {
-//	rootDoc = null;
-	_rootActors = null;
-//	userInfo = [];
 
-//	getUserIdentities("GetUserInfo", [{loginName:userLoginName}], function() {
-//		var found = false;
-		//$.get("actors.xml")    // sync request
-		var url = 'json_db_pdo.php', param = {'func':'getActors'};
-		if (xml) {
-			url = 'actors.xml';
-			param = {};
-		}
-		
-		//$.get('json_db_pdo.php', {'func':'getActors'})
-		$.get(url, param)
-			.done(function(data) {
-				var found = false;
-				if (isAjaxError(data))
-					return;
-				
-				// if (data && data.constructor == Array) {
-					// if (data[0] && data[0].error != undefined) {
-						// alert (data[0].error);
-						// return;
-					// }
-				// }
-				
-				//if (data.d == undefined)
-				//	_rootActors = data;
-				//else
-				//	_rootActors = data.d.Data;
-
-			//.success(function(data) {
-				_rootActors = data;
-				if ($(data).find('department').attr('superusers') != undefined)
-					_superusers = $(data).find('department').attr('superusers').split(',');
-				else
-					_superusers = [];
-					
-				$(data).find('managers>manager, managers employee').each(function() {
-					if ((this.nodeName == "manager" && $(this).attr("name") == userInfo[0].loginName) || userInfo[0].loginName == $(this).text()) {
-						found = true;
-						return;
-					}
-				});
-				
-				var a = [], name;
-				$(data).find('employees employee').each(function() {
-					name = $(this).text();
-						
-					if (a.indexOf(name) == -1)
-						a.push(name);
-				});
-
-				var loginNames = [];
-				a.forEach(function(name){
-					var personInfo = {};
-					personInfo.loginName = name;
-					loginNames.push(personInfo);
-				});
-				
-				getUserIdentities("GetUserInfo", loginNames, function() {
-					fillUserLoginCombo();
-					
-					if (found) {
-						$(".customBody").removeClass("accessRejected");
-						getActorsStatus();
-						if (!$("#jstree").hasClass("jstree"))
-							userAssignment();
-
-						loadUserSignatures();
-						
-						//initTabs();
-						//getDocs();
-						$(".customBody>div").show();
-					} else {
-						$(".customBody>div").hide();
-						$(".customBody").addClass("accessRejected");
-					}
-					if (func != null) {
-						func();
-					}
-				});
-			})
-			.fail(function() {
-				alert("getActors - error");
-				//console.log("getActors - error");
-			});
-	//});
-}
-*/	
 function getUserIdentities(url, json, func) {
 	var	contentType, data;
 	contentType = "application/x-www-form-urlencoded; charset=UTF-8";
@@ -1354,7 +1193,6 @@ function getUserIdentities(url, json, func) {
 			else
 				result = data.d.Data;
 			
-			//data.d.Data.forEach(function(o) {
 			result.forEach(function(o) {
 				v = new Object();
 				v.loginName = o.LoginName;
@@ -1490,13 +1328,6 @@ function loadUserSignatures() {
 		.done(function( data ) {
 			if (isAjaxError(data))
 				return;
-		
-			// if (data && data.constructor == Array) {
-				// if (data[0] && data[0].error != undefined) {
-					// alert (data[0].error);
-					// return;
-				// }
-			// }
 			
 			var o, result;
 			if (data.d == undefined)
@@ -1616,26 +1447,8 @@ function loadUserSignatures() {
 }
 
 function loadStampedSignatures() {
-	//if ($('#' + _currentForm + ' .dragclone').length != 0)
-	//	return;
-/*		
-	$(".dragclone").each(function() {
-		$(this).attr('id').search(/([0-9]*)$/);
-		var id = RegExp.$1;
-		if ($(this).attr('id').search(_currentForm) != -1) {
-			$('#sign' + id).draggable( "option", "disabled", true );
-			$('#sign' + id).droppable( { accept: '#' + $(this).attr('id')} );
-			
-			//$('#sign' + id).droppable( "option", "accept", '#' + $(this).attr('id'));
-		}	
-	})
-*/		
-		
 	var target = "#report-container";
-
-	//$(target + ' .dragclone').remove();
 	$(target + ' div').remove();
-	//$('#' + _currentForm + ' .dragclone').remove();
 	$.get("json_db_pdo.php", {'func':'getStampedSignatures',
 		'param': {
 			'schema': _currentForm,
@@ -1733,13 +1546,6 @@ function setUserSignatureAsDroppable(ui, cloneId) {
 				.done(function( data ) {
 					if (isAjaxError(data))
 						return;
-				
-					// if (data && data.constructor == Array) {
-						// if (data[0] && data[0].error != undefined) {
-							// alert (data[0].error);
-							// return;
-						// }
-					// }
 				});
 
 			//$(this).attr('id').search(/sign([0-9]*)/);
@@ -1768,13 +1574,6 @@ function saveSignature(id, top, left) {
 		.done(function( data ) {
 			if (isAjaxError(data))
 				return;
-		
-			// if (data && data.constructor == Array) {
-				// if (data[0] && data[0].error != undefined) {
-					// alert (data[0].error);
-					// return;
-				// }
-			// }
 		});
 }
 
@@ -1824,47 +1623,9 @@ function printReport(func) {
 	
 	var timeoutID = window.setTimeout(onTimeOutHandler, 5000);
 	CheckConnection(timeoutID, onTimeOutHandler);
-	//if (_jasperReportsServerConnection) {
-	//	window.clearTimeout(timeoutID);
-	//	onTimeOutHandler();
-	//}
 }
 
 function CheckConnection(timeoutID, func) {
-/*
-	var errBox;
-	//if ($('#divGrid').filter( ":visible" )) {
-	if ($('#divGrid').css('display') != 'none') {
-		$('#divGrid').append('<input type="text" id="error-box2" tabindex="-1" />');
-		errBox = $('#error-box2');
-	} else {
-		errBox = $('#error-box');
-	}
-*/
-	//errBox.val("");
-
-	//$('#error-box').val("");
-
-	//var xhrTimeout = window.setTimeout(onTimeOutHandler, 5000);
-	
-	//var retCode = false;
-	//var xhrTimeout;
-/*	
-	function onLoadHandler() {
-		if (xhr.status != 200) {
-			$('#error-box').val("Error connecting to Jetty Reporting Service: " + xhr.status);
-			return false;
-		}
-		return true;
-	}
-	
-	function onTimeOutHandler() {
-		xhr.abort();
-		clearTimeout(xhrTimeout);
-		$('#error-box').val("Error connecting to Jetty Reporting Service (timeout)");	
-	}
-*/	
-	//var xhr;
 	var xhr = new XMLHttpRequest();
 	//try {
 	var url = _jasperReportsURL + "?CheckConnection&r=" + Math.random();
@@ -1912,25 +1673,8 @@ function CheckConnection(timeoutID, func) {
 	}
 	*/
 	xhr.send();
-
-	//wait(5000);
-	//return retCode;
-	//alert("Status: " + xmlHttp.status);
-	//if (xhr.status != 200) {
-	//	$('#error-box').val("Error connecting to Jetty Reporting Service: " + xhr.status);
-	//	return false;
-	//}
-	//} catch (e) {
-	//		errBox.val("Check if Jetty Reporting Service started");
-//	//$.post("json_db_pdo.php", {"func": "startWebServer"});
-//	$('#error-box').val("Check if Jetty Reporting Service started");
-//	return false;	
-	//}
-
-//return true;
 }
 
-//function showError(error) {
 function error(error) {
 	if (error == "") {
 		if ($('#error-box').length != 0)
@@ -1941,32 +1685,9 @@ function error(error) {
 		
 		$('#error-box').val(error);
 	}
-	
-/*	
-	var errBox;
-	//if ($('#divGrid').filter( ":visible" )) {
-	if ($('#divGrid').css('display') != 'none') {
-		$('#divGrid').append('<input type="text" id="error-box2" tabindex="-1" />');
-		errBox = $('#error-box2');
-	} else {
-		errBox = $('#error-box');
-	}
-	
-	errBox.val(error);
-*/	
 }
 
 toggleJsTree = function() {
-/*
-	var nodes = $('#jstree').jstree(true).get_json("#", {flat:false});
-	$(nodes).each(function() {
-		//if ($(this).filter( ":visible" )) {
-			this.data.refresh = true;		// true - do not save actors in a database
-			$('#jstree').jstree(true).rename_node(this, ($("body[dir='ltr']").length) ? this.data["data-name"] : this.data["data-arname"]);
-			//$('#jstree').jstree(true).rename_node(this, ($("body[dir='ltr']").length) ? this.data.name : this.data.arname);
-		//}
-	})
-*/	
 	var idx = _superusers.indexOf(userInfo[0].loginName);
 	var nodes = $('#jstree').jstree(true).get_json("#", {flat:false});
 	$(nodes).each(function() {
@@ -2113,29 +1834,30 @@ initDepartmentsTree = function(actorsSource) {
 			saveActors();
 		})
 		.on("select_node.jstree", function (e, data) {
-			if (_acl) {
-				var jstree = $('#jstree_resourcelist').jstree(true);
+			var jstree = $('#jstree_resourcelist');
+			if (_acl && jstree.is(":visible")) {
+				jstree = jstree.jstree(true);
 				var nodes =	jstree.get_json("#", {flat:true});
 				jstree.check_all(true);
 
-				_acl.forEach(function(obj) {
-					var selectedItem = data.node.data["data-loginname"];		// selected department/manager/employee
-					if (obj && selectedItem in obj) {
+				var loggedUser = data.node.data["data-loginname"];		// selected department/manager/employee
+				for (var prop in _acl) {
+					if (loggedUser in _acl[prop]) {
 						nodes.some(function(node) {
-							if (obj.id == node.data.id) {
+							if (prop == node.data.id) {
 								node = jstree.get_node(node, true);	//get dom
-								if ('read' in obj[selectedItem]) {
-									node.children('.jstree-anchor').removeClass('jstree-checked');
+								if ('read' in _acl[prop][loggedUser]) {
+									node.children('.jstree-anchor').find('.jstree-checkbox').click();
 								}
-								if ('write' in obj[selectedItem]) {
-									node.children('.jstree-anchor').removeClass('jstree-checked2');
+								if ('write' in _acl[prop][loggedUser]) {
+									node.children('.jstree-anchor').find('.jstree-checkbox2').click();
 								}
 								
 								return true;
 							}
 						})
 					}
-				})
+				}
 			}
 		})
 		.on("rename_node.jstree", function (e, data) {
@@ -2221,7 +1943,6 @@ initDepartmentsTree = function(actorsSource) {
 				"items": function(node) {
 					var tree = jstree.jstree(true);
 
-					//return {
 					var items = {
 						create : {
 							"separator_before": false,
@@ -2275,8 +1996,6 @@ initDepartmentsTree = function(actorsSource) {
 						}
 					};
 					
-					//if (node.data != null && node.data.loginname == undefined) {
-					//if (node.data["data-loginname"] == undefined) {
 					if (node.type != 'department') {
 						delete items.rename;
 						delete items.create;
@@ -2305,8 +2024,6 @@ function initUserTree() {
 	var jstree = $('#jstree_userlist');
 	if (jstree.hasClass("jstree")) {
 		jstree.jstree('destroy').empty();
-		//$("#jstree_userlist>ul").remove();
-		//$("#jstree_userlist").append('<ul></ul>');
 	}
 
 	var a = [];
@@ -2471,27 +2188,16 @@ function initResourceTree() {
 	
 	if (jstree.hasClass("jstree")) {
 		jstree.jstree('destroy').empty();
-		//$("#jstree_userlist>ul").remove();
-		//$("#jstree_userlist").append('<ul></ul>');
 	}
 	
 	var data = [], fields_data = [], node, id;
 	var forms = $('.forms, #accordion>span');
 	forms.each(function(index) {
 		data.push({
-			//"attr" : {"class" : "jstree-checked", "rel": "form" },
 			'data': {
 				'id': this.id,
 			},
 			'type': (this.nodeName.toLowerCase() == "span") ? "accordion" :"form",
-/*			
-			'text': function() {
-				//if (obj.nodeName.toLowerCase() == "span")
-					return $(this).text();
-				//else
-				//	return $('#' + obj.attributes['data-link'].value).text();
-			},
-*/
 			'text': (function(obj){
 				if (obj.nodeName.toLowerCase() == "span")
 					return $(obj).text();
@@ -2499,9 +2205,6 @@ function initResourceTree() {
 					return $('#' + obj.attributes['data-link'].value).text();
 			})(this),
 			'state' : { 'opened' : true, 'selected' : false },
-			//'data': {
-			//	'data-loginname': name[1],
-			//},
 		});
 		
 		fields_data = [];
@@ -2543,10 +2246,6 @@ function initResourceTree() {
 						return $.i18n.prop(obj.attributes['data-label'].value);
 					}
 				})(this)
-				//'state' : { 'opened' : true, 'selected' : false },
-				//'data': {
-				//	'data-loginname': name[1],
-				//},
 			};
 
 			if (!fields_data.length || node.data.id != fields_data[fields_data.length-1].data.id)
@@ -2559,66 +2258,32 @@ function initResourceTree() {
 	jstree
 		.on("ready.jstree", function (e, data) {
 			$('#jstree').jstree(true).deselect_all(true);
-			
-			//data.instance.check_all();
 		})
 		.on("check_node.jstree", function (e, data) {
-			var node = $('#jstree').jstree(true).get_selected(true);
-			if (node.length != 0) {
+			if (data.event.originalEvent) {
+				_acl[data.node.data.id] = _acl[data.node.data.id] || {};
+				var node = $('#jstree').jstree(true).get_selected(true);
 				node = node[0];
 				var prop = node.type == "department" ? node.id : node.data["data-loginname"];
-				//data.node.data[prop] = data.node.data[prop] || {};
-
-				if (data.node.data[prop]) {
-					if ($(data.event.originalEvent.target).hasClass('jstree-checkbox')) {
-						//data.node.data[prop].read = true;
-						if ('read' in data.node.data[prop])
-							delete data.node.data[prop].read;
-					} else if ($(data.event.originalEvent.target).hasClass('jstree-checkbox2')) {
-						//data.node.data[prop].write = true;
-						if ('write' in data.node.data[prop])
-							delete data.node.data[prop].write;
-					}
-				}
+				_acl[data.node.data.id][prop] = _acl[data.node.data.id][prop] || {};
+				if ($(data.event.target).hasClass('jstree-checkbox'))
+					delete _acl[data.node.data.id][prop].read;
+				else if ($(data.event.target).hasClass('jstree-checkbox2'))
+					delete _acl[data.node.data.id][prop].write;
 			}
-			var i = 0;
 		})
 		.on("uncheck_node.jstree", function (e, data) {
-			var node = $('#jstree').jstree(true).get_selected(true);
-			if (node.length != 0) {
+			if (data.event.originalEvent) {
+				_acl[data.node.data.id] = _acl[data.node.data.id] || {};
+				var node = $('#jstree').jstree(true).get_selected(true);
 				node = node[0];
 				var prop = node.type == "department" ? node.id : node.data["data-loginname"];
-				var obj = {}; obj.id = data.node.data.id; obj[prop] = {};
-				if ($(data.event.originalEvent.target).hasClass('jstree-checkbox'))
-					obj[prop].read = false;
-				else if ($(data.event.originalEvent.target).hasClass('jstree-checkbox2'))
-					obj[prop].write = false;
-				
-				var exit = false;
-				_acl.some(function(obj2) {
-					if (prop in obj2) {
-						if ("read" in obj[prop])
-							obj2[prop].read = false;
-						if ("write" in obj[prop])
-							obj2[prop].write = false;
-						
-						exit = true;
-						return true;
-					}
-				})
-				
-				if (!exit)
-					_acl.push(obj);
-					
-				/*
-				data.node.data[prop] = data.node.data[prop] || {};
-				if ($(data.event.originalEvent.target).hasClass('jstree-checkbox'))
-					data.node.data[prop].read = false;
-				else if ($(data.event.originalEvent.target).hasClass('jstree-checkbox2'))
-					data.node.data[prop].write = false;
-				*/
+				_acl[data.node.data.id][prop] = _acl[data.node.data.id][prop] || {};
+				if ($(data.event.target).hasClass('jstree-checkbox'))
+					_acl[data.node.data.id][prop].read = false;
+				else if ($(data.event.target).hasClass('jstree-checkbox2'))
+					_acl[data.node.data.id][prop].write = false;
 			}
-			var i = 0;
 		})
 		.jstree({
 			"core" : {
@@ -2909,6 +2574,7 @@ $(function() {
 	});
 	
 	$(document).on("click", "#saveAccessControlSettings", function(){
+/*	
 		_acl = [];
 		var nodes = $('#jstree_resourcelist').jstree(true).get_json("#", {flat:true});
 		var result = "";
@@ -2932,8 +2598,8 @@ $(function() {
 				}
 			}
 		})
-		
-		if (_acl.length != 0) {
+*/		
+		if (_acl) {
 			$.post('save_file.php', {'fileName': 'acl.json', 'param' : JSON.stringify(_acl)})
 				.done(function( data ) {
 					if (isAjaxError(data))

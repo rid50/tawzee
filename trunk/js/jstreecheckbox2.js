@@ -530,7 +530,7 @@
 			//if(!obj.state.checked) {
 				//obj.state.checked = true;
 				this._data.checkbox.selected.push(obj.id);
-				if(dom && dom.length) {
+				if(dom && dom.length && e) {
 					if ($(e.target).hasClass('jstree-checkbox')) {
 						obj.state.checked = true;
 						dom.children('.jstree-anchor').addClass('jstree-checked');
@@ -576,7 +576,7 @@
 			//if(obj.state.checked) {
 				//obj.state.checked = false;
 				this._data.checkbox.selected = $.vakata.array_remove_item(this._data.checkbox.selected, obj.id);
-				if(dom.length) {
+				if(dom.length && e) {
 					if ($(e.target).hasClass('jstree-checkbox')) {
 						obj.state.checked = false;
 						dom.children('.jstree-anchor').removeClass('jstree-checked');
