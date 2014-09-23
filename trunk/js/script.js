@@ -239,10 +239,12 @@ $(document).ready(function () {
 	$('#jstree_resourcelist').on('show', function(e) {
 		if (e.target === this)
 			initResourceTree();
+			$('#aclLegend').show();
 	});
 
 	$('#jstree_resourcelist').on('hide', function(e) {
 		if (e.target === this) {
+			$('#aclLegend').hide();
 			if ($(this).hasClass("jstree")) {
 				$(this).jstree('destroy').empty();
 			}
@@ -425,15 +427,43 @@ $(document).ready(function () {
 							}
 						}
 					}
-					
-					//loadStampedSignatures();
-					
 				})
 				.fail(function(jqXHR, textStatus, errorThrown) {
 					alert("getLoad - error: " + errorThrown);
 				});
 		}
-	
+
+		for (var id in _acl) {
+			$('#' + id).removeAttr('disabled');
+			//$('label[for="' + id + '"]').css('display', 'initial');
+			//$('#' + id).css('display', 'initial');
+			$('label[for="' + id + '"]').css('visibility', 'initial');
+			$('#' + id).css('visibility', 'initial');
+			if (userInfo[0].loginName in _acl[id]) {
+				if ("write" in _acl[id][userInfo[0].loginName]) {
+					if (!_acl[id][userInfo[0].loginName].write) {
+						if (!$('#' + id).attr('readonly')) {
+							$('#' + id).attr('disabled', 'disabled');
+							var i = 0;
+						}
+					}
+					
+					var i = 0;
+				}
+				if ("read" in _acl[id][userInfo[0].loginName]) {
+					if (!_acl[id][userInfo[0].loginName].read) {
+							$('label[for="' + id + '"]').css('visibility', 'hidden');
+							$('#' + id).css('visibility', 'hidden');
+							//$('label[for="' + id + '"]').css('display', 'none');
+							//$('#' + id).css('display', 'none');
+							var i = 0;
+					}
+					
+					var i = 0;
+				}				
+			}
+		}
+		
 		//var errBox = '<input type="text" id="error-box" tabindex="-1" />';
 		$('.forms').each(function() {
 			if (this.id == _currentForm) {
@@ -2637,70 +2667,8 @@ function updateForm(that) {
 }
 
 function saveForm(that, func) {
-/*
-	//var bValid = true;
-
-	var file_number = $( "#file_number" ),
-		area = $( "#area" ),
-		block = $( "#block" ),
-		plot = $( "#plot" ),
-		//building = $( "#building" ),
-		//paci_number = $( "#paci_number" ),
-		title = $( "#title" ),
-		allFields = $( [] ).add(file_number).add(area).add(block).add(plot).add(title),
-		//allFields = $( [] ).add(file_number).add(area).add(block).add(street).add(building).add(paci_number).add(title),
-		tips = $( "#validateTips" );
-
-	var bValid = true;
-	allFields.removeClass( "ui-state-error" );
-	//bValid = bValid && checkLength( file_number, "File Number", 5, 5 );
-	//bValid = bValid && checkLength( file_number, $.i18n.prop("FileNumber"), 5, 5 );
-	//bValid = bValid && checkRegexp( file_number, /^([0-9])+$/, "File Number field only allows : 0-9" );
-	bValid = bValid && isRequired( file_number, $.i18n.prop("FileNumber") );
-	bValid = bValid && checkRegexp( file_number, /^[^:;]+$/, ($.i18n.prop("FieldOnlyAllows")).format($.i18n.prop("FileNumber"), " : 0-9")); //File Number field only allows : 0-9" 
-	
-	//bValid = bValid && isRequired( area, "Area" );
-	//bValid = bValid && checkRegexp( area, /^[^:;]+$/, "Area field does not allow ':' ';'" );
-	bValid = bValid && isRequired( area, $.i18n.prop("Area") );
-	bValid = bValid && checkRegexp( area, /^[^:;]+$/, ($.i18n.prop("FieldOnlyAllows")).format($.i18n.prop("Area"), " ':' ';'"));
-
-	//bValid = bValid && isRequired( block, "Block" );
-	//bValid = bValid && checkRegexp( block, /^[^:;]+$/, "Block field does not allow ':' ';'" );
-	bValid = bValid && isRequired( block, $.i18n.prop("Block") );
-	bValid = bValid && checkRegexp( block, /^[^:;]+$/, ($.i18n.prop("FieldOnlyAllows")).format($.i18n.prop("Block"), " ':' ';'"));
-
-	//bValid = bValid && isRequired( street, $.i18n.prop("Street") );
-	//bValid = bValid && checkRegexp( street, /^[^:;]+$/, ($.i18n.prop("FieldOnlyAllows")).format($.i18n.prop("Street"), " ':' ';'"));
-	//bValid = bValid && isRequired( plot, $.i18n.prop("Plot") );
-	bValid = bValid && checkRegexp( plot, /^[^:;]+$/, ($.i18n.prop("FieldOnlyAllows")).format($.i18n.prop("Plot"), " ':' ';'"));
-
-	//bValid = bValid && isRequired( building, $.i18n.prop("Building") );
-	//bValid = bValid && checkRegexp( building, /^[^:;]+$/, ($.i18n.prop("FieldOnlyAllows")).format($.i18n.prop("Building"), " ':' ';'"));
-	
-	////bValid = bValid && checkRegexp( paci_number, /^([0-9]){8}$/, "PACI Number field only allows : 0-9 , length is 8" );
-	//bValid = bValid && checkRegexp( paci_number, /^([0-9]){8}$/, ($.i18n.prop("FieldOnlyAllows")).format($.i18n.prop("PACINumber"), $.i18n.prop("LengthIs8")));
-	
-	//bValid = bValid && isRequired( title, "Title" );
-	bValid = bValid && isRequired( title, $.i18n.prop("Title") );
-
-	
-	//bValid = bValid && checkRegexp( name, /^[a-z]([0-9a-z_])+$/i, "User name may consist of a-z, 0-9, underscores, begin with a letter." );
-	//// From jquery.validate.js (by joern), contributed by Scott Gonzalez: http://projects.scottsplayground.com/email_address_validation/
-	//bValid = bValid && checkRegexp( email, /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i, "Wrong e-mail address." );
-	//bValid = bValid && checkRegexp( password, /^([0-9a-zA-Z])+$/, "Password field only allow : a-z 0-9" );
-	
-	//var form = $(that.form);							// form context
-	//var file_number_val = form.find("#file_number").val();
-	//var area_val = form.find("#area").val();
-	//var block_val = form.find("#block").val();
-	//var street_val = form.find("#street").val();
-	//var building_val = form.find("#building").val();
-	//var paci_number_val = form.find("#paci_number").val();
-	//var title_val = form.find("#title").val();
-*/	
-
 	var currForm = $('#' + _currentForm);
-
+	
 	var formFields, radioFields, checkboxFields; //, tableFields;
 	var param = {};
 
