@@ -2261,28 +2261,39 @@ function initResourceTree() {
 		})
 		.on("check_node.jstree", function (e, data) {
 			if (data.event.originalEvent) {
-				_acl[data.node.data.id] = _acl[data.node.data.id] || {};
 				var node = $('#jstree').jstree(true).get_selected(true);
-				node = node[0];
-				var prop = node.type == "department" ? node.id : node.data["data-loginname"];
-				_acl[data.node.data.id][prop] = _acl[data.node.data.id][prop] || {};
-				if ($(data.event.target).hasClass('jstree-checkbox'))
-					delete _acl[data.node.data.id][prop].read;
-				else if ($(data.event.target).hasClass('jstree-checkbox2'))
-					delete _acl[data.node.data.id][prop].write;
+				if (node.length) {
+					node = node[0];
+					var prop = node.type == "department" ? node.id : node.data["data-loginname"];
+					_acl[data.node.data.id] = _acl[data.node.data.id] || {};
+					_acl[data.node.data.id][prop] = _acl[data.node.data.id][prop] || {};
+					if ($(data.event.target).hasClass('jstree-checkbox'))
+						delete _acl[data.node.data.id][prop].read;
+					else if ($(data.event.target).hasClass('jstree-checkbox2'))
+						delete _acl[data.node.data.id][prop].write;
+						
+					if (Object.keys(_acl[data.node.data.id][prop]).length === 0) {
+						delete _acl[data.node.data.id][prop];
+						if (Object.keys(_acl[data.node.data.id]).length === 0) {
+							delete _acl[data.node.data.id];
+						}
+					}
+				}
 			}
 		})
 		.on("uncheck_node.jstree", function (e, data) {
 			if (data.event.originalEvent) {
-				_acl[data.node.data.id] = _acl[data.node.data.id] || {};
 				var node = $('#jstree').jstree(true).get_selected(true);
-				node = node[0];
-				var prop = node.type == "department" ? node.id : node.data["data-loginname"];
-				_acl[data.node.data.id][prop] = _acl[data.node.data.id][prop] || {};
-				if ($(data.event.target).hasClass('jstree-checkbox'))
-					_acl[data.node.data.id][prop].read = false;
-				else if ($(data.event.target).hasClass('jstree-checkbox2'))
-					_acl[data.node.data.id][prop].write = false;
+				if (node.length) {
+					node = node[0];
+					var prop = node.type == "department" ? node.id : node.data["data-loginname"];
+					_acl[data.node.data.id] = _acl[data.node.data.id] || {};
+					_acl[data.node.data.id][prop] = _acl[data.node.data.id][prop] || {};
+					if ($(data.event.target).hasClass('jstree-checkbox'))
+						_acl[data.node.data.id][prop].read = false;
+					else if ($(data.event.target).hasClass('jstree-checkbox2'))
+						_acl[data.node.data.id][prop].write = false;
+				}
 			}
 		})
 		.jstree({
