@@ -188,6 +188,14 @@ if ($idp == "SAML") {
 		<img src="images/manager.png" alt="Manager"/><span style="vertical-align:top">Manager</span><br/>
 		<img src="images/superuser.png" alt="Superuser"/><span style="vertical-align:top">Superuser</span><br/>
 	</fieldset>
+	<fieldset id="aclLegend" class="jstree-default" dir="ltr" style="display:none">
+		<legend>Legend</legend>
+		<span>Read Write</span><br/>
+		<div class="jstree-checked">
+			<i class="jstree-icon jstree-checkbox"></i>&nbsp;&nbsp;
+			<i class="jstree-icon jstree-checkbox"></i>
+		</div>
+	</fieldset>
 	
 </div>
 
@@ -446,23 +454,23 @@ if ($idp == "SAML") {
 			<input type="text" id="load-date" maxlength="10" style="width:110px;" class="rid50-datepicker text ui-widget-content ui-corner-all" data-is-required="true" /><br/>
 
 			<label for="project-name2">Project Name</label>
-			<input type="text" id="project-name2" readonly tabindex="-1" maxlength="24" class="text ui-widget-content ui-corner-all" /><br/>
+			<input type="text" id="project-name2" readonly="readonly" tabindex="-1" maxlength="24" class="text ui-widget-content ui-corner-all" /><br/>
 
 			<label for="area2">Area</label>
-			<input type="text" id="area2" readonly tabindex="-1" maxlength="15" size="10" class="text ui-widget-content ui-corner-all" />
+			<input type="text" id="area2" readonly="readonly" tabindex="-1" maxlength="15" size="10" class="text ui-widget-content ui-corner-all" />
 			<label for="block2">Block</label>
-			<input type="text" id="block2" readonly tabindex="-1" maxlength="5" size="5" class="text ui-widget-content ui-corner-all" />
+			<input type="text" id="block2" readonly="readonly" tabindex="-1" maxlength="5" size="5" class="text ui-widget-content ui-corner-all" />
 			<label for="plot2">Plot</label>
-			<input type="text" id="plot2" readonly tabindex="-1" maxlength="8" size="8" class="text ui-widget-content ui-corner-all" />
+			<input type="text" id="plot2" readonly="readonly" tabindex="-1" maxlength="8" size="8" class="text ui-widget-content ui-corner-all" />
 			
 			<label for="construction-exp-date2">Expiration Date</label>
-			<input type="text" id="construction-exp-date2" readonly tabindex="-1" maxlength="10" size="10" class="text ui-widget-content ui-corner-all" /><br/>
+			<input type="text" id="construction-exp-date2" readonly="readonly" tabindex="-1" maxlength="10" size="10" class="text ui-widget-content ui-corner-all" /><br/>
 			
 			<label for="owner-name2">Owner Name</label>
-			<input type="text" id="owner-name2" readonly tabindex="-1" maxlength="20"  size="20" class="text ui-widget-content ui-corner-all" />
+			<input type="text" id="owner-name2" readonly="readonly" tabindex="-1" maxlength="20"  size="20" class="text ui-widget-content ui-corner-all" />
 
 			<label for="feed-points2">The Number of Feed Points</label>
-			<input type="text" id="feed-points2" readonly tabindex="-1" maxlength="10" size="10" class="text ui-widget-content ui-corner-all" /><br/>
+			<input type="text" id="feed-points2" readonly="readonly" tabindex="-1" maxlength="10" size="10" class="text ui-widget-content ui-corner-all" /><br/>
 
 			<div style="text-align:center; font-size:1.1em">
 				<label for="load_required" style="text-decoration:underline">Electrical Loads required by the Project</label>
@@ -521,13 +529,13 @@ if ($idp == "SAML") {
 						<label for="total-load">Total</label>
 					</td>					
 					<td colspan="2">
-						<input type="text" readonly tabindex="-1" style="width:100px;" />
+						<input type="text" readonly="readonly" tabindex="-1" style="width:100px;" />
 					</td>
 					<td>
-						<input type="text" readonly tabindex="-1" style="width:100px;" />
+						<input type="text" readonly="readonly" tabindex="-1" style="width:100px;" />
 					</td>
 					<td>
-						<input type="text" readonly tabindex="-1" style="width:100px;" />
+						<input type="text" readonly="readonly" tabindex="-1" style="width:100px;" />
 					</td>
 					<td colspan="2">
 					</td>
