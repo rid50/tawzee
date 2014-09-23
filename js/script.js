@@ -1864,6 +1864,9 @@ initDepartmentsTree = function(actorsSource) {
 			saveActors();
 		})
 		.on("select_node.jstree", function (e, data) {
+			if (data.node.type == "department")
+				return false;
+				
 			var jstree = $('#jstree_resourcelist');
 			if (_acl && jstree.is(":visible")) {
 				jstree = jstree.jstree(true);
@@ -2037,6 +2040,7 @@ initDepartmentsTree = function(actorsSource) {
 			"types" : {
 				"department" : {
 					"icon" : "jstree-folder",
+					"select_node" : false
 				},
 				"manager" : {
 					"icon" : "images/manager.png",
