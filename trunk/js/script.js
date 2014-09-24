@@ -255,9 +255,14 @@ $(document).ready(function () {
 
 	_currentForm = "main-form";
 
-	$('#application-form-link, #load-form-link').on("click", function(event){
+	$('#application-form-link, #load-form-link').on("click", function(e){
 		var clickedForm = this.getAttribute('data-form');
 
+		if (this.attributes["disabled"] && this.attributes["disabled"].value == "disabled") {
+			e.preventDefault();
+			return;
+		}
+		
 		if ($('#application-number').attr('readonly') == undefined && clickedForm == "load-form")
 			return;
 
@@ -435,37 +440,39 @@ $(document).ready(function () {
 
 		for (var id in _acl) {
 			var el = $('#' + id);
-			if (el.length == 0)
-				el = $('input[name="' + id + '"]');
-				
-			//var nodeName = el[0].nodeName.toLowerCase();
-			var nodeType = (el[0].type) ? el[0].type.toLowerCase() : el[0].nodeName.toLowerCase();
-			
-			if (nodeType == "table") {
-				el.find('input').removeAttr('disabled');
-			} else if (nodeType == "div") {
-				//$('#' + el.attr('data-link')).removeAttr('disabled');
-				$('#' + el.attr('data-link')).fadeTo("fast", 1.0).attr("href", "#"); 
-			} else
-				el.removeAttr('disabled');
-				
-			//$('label[for="' + id + '"]').css('display', 'initial');
-			//$('#' + id).css('display', 'initial');
-			if (nodeType == "text") {
-				$('label[for="' + id + '"]').css('visibility', 'initial');
-			} else if (nodeType == "radio" || nodeType == "checkbox") {
-				$('label[for="' + id + '"]').css('visibility', 'initial');
-				el.each(function() {
-					$('label[for="' + this.id + '"]').css('visibility', 'initial');
-				})
-			} else if (nodeType == "table") {
-				el.find('button').css('visibility', 'initial');
-				//$('.addRow').css('visibility', 'initial');
-			}
-			
-			el.css('visibility', 'initial');
-			
 			if (userInfo[0].loginName in _acl[id]) {
+			
+				if (el.length == 0)
+					el = $('input[name="' + id + '"]');
+					
+				//var nodeName = el[0].nodeName.toLowerCase();
+				var nodeType = (el[0].type) ? el[0].type.toLowerCase() : el[0].nodeName.toLowerCase();
+				
+				if (nodeType == "table") {
+					el.find('input').removeAttr('disabled');
+				} else if (nodeType == "div") {
+					$('#' + el.attr('data-link')).removeAttr('disabled');
+					$('#' + el.attr('data-link')).fadeTo("fast", 1.0).attr("href", "#"); 
+				} else
+					el.removeAttr('disabled');
+					
+				//$('label[for="' + id + '"]').css('display', 'initial');
+				//$('#' + id).css('display', 'initial');
+				if (nodeType == "text") {
+					$('label[for="' + id + '"]').css('visibility', 'initial');
+				} else if (nodeType == "radio" || nodeType == "checkbox") {
+					$('label[for="' + id + '"]').css('visibility', 'initial');
+					el.each(function() {
+						$('label[for="' + this.id + '"]').css('visibility', 'initial');
+					})
+				} else if (nodeType == "table") {
+					el.find('button').css('visibility', 'initial');
+					//$('.addRow').css('visibility', 'initial');
+				}
+				
+				el.css('visibility', 'initial');
+			
+//			if (userInfo[0].loginName in _acl[id]) {
 				if ("write" in _acl[id][userInfo[0].loginName]) {
 					if (!_acl[id][userInfo[0].loginName].write) {
 						if (!el.attr('readonly')) {
@@ -484,6 +491,7 @@ $(document).ready(function () {
 					
 					var i = 0;
 				}
+				
 				if ("read" in _acl[id][userInfo[0].loginName]) {
 					if (!_acl[id][userInfo[0].loginName].read) {
 						if (nodeType == "text") {
@@ -496,7 +504,7 @@ $(document).ready(function () {
 						} else if (nodeType == "table") {
 							el.find('button').css('visibility', 'hidden');
 						} else if (nodeType == "div") {
-							//$('#' + el.attr('data-link')).attr('disabled', 'disabled');
+							$('#' + el.attr('data-link')).attr('disabled', 'disabled');
 							$('#' + el.attr('data-link')).fadeTo("fast", .5).removeAttr("href"); 
 							
 						}
@@ -2530,13 +2538,6 @@ saveActors = function(actorsTarget) {	//actorsTarget == undefined - 'db'
 		.done(function( data ) {
 			if (isAjaxError(data))
 				return;
-		
-			// if (data && data.constructor == Array) {
-				// if (data[0] && data[0].error != undefined) {
-					// alert (data[0].error);
-					// return;
-				// }
-			// }
 		})
 		.fail(function(jqXHR, textStatus, errorThrown) {
 			errorFound = true;
