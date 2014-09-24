@@ -370,7 +370,11 @@ if ($idp == "SAML") {
 						<label for="amp">(AMP)</label>
 					</td>
 				</tr>
-				<tr></tr>
+				<tr>
+					<td>
+						<button class="addRow" tabindex="-1" title="Add a new row"></button>
+					</td>
+				</tr>
 				<tr class="tr-application-detail">
 					<td>
 						<input type="text" class="Switch" style="width:80px;" data-is-required="true" />
@@ -398,7 +402,6 @@ if ($idp == "SAML") {
 					</td>
 				</tr>
 			</table>
-			<button class="addRow" tabindex="-1" title="Add a new row"></button>
 			<hr/>
 			<table id="table-possibility" class="access-control" data-label="possibility" style="width: 100%">
 				<tr>

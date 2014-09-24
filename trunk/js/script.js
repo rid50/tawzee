@@ -434,16 +434,50 @@ $(document).ready(function () {
 		}
 
 		for (var id in _acl) {
-			$('#' + id).removeAttr('disabled');
+			var el = $('#' + id);
+			if (el.length == 0)
+				el = $('input[name="' + id + '"]');
+				
+			//var nodeName = el[0].nodeName.toLowerCase();
+			var nodeType = (el[0].type) ? el[0].type.toLowerCase() : el[0].nodeName.toLowerCase();
+			
+			if (nodeType == "table") {
+				el.find('input').removeAttr('disabled');
+			} else if (nodeType == "div") {
+				//$('#' + el.attr('data-link')).removeAttr('disabled');
+				$('#' + el.attr('data-link')).fadeTo("fast", 1.0).attr("href", "#"); 
+			} else
+				el.removeAttr('disabled');
+				
 			//$('label[for="' + id + '"]').css('display', 'initial');
 			//$('#' + id).css('display', 'initial');
-			$('label[for="' + id + '"]').css('visibility', 'initial');
-			$('#' + id).css('visibility', 'initial');
+			if (nodeType == "text") {
+				$('label[for="' + id + '"]').css('visibility', 'initial');
+			} else if (nodeType == "radio" || nodeType == "checkbox") {
+				$('label[for="' + id + '"]').css('visibility', 'initial');
+				el.each(function() {
+					$('label[for="' + this.id + '"]').css('visibility', 'initial');
+				})
+			} else if (nodeType == "table") {
+				el.find('button').css('visibility', 'initial');
+				//$('.addRow').css('visibility', 'initial');
+			}
+			
+			el.css('visibility', 'initial');
+			
 			if (userInfo[0].loginName in _acl[id]) {
 				if ("write" in _acl[id][userInfo[0].loginName]) {
 					if (!_acl[id][userInfo[0].loginName].write) {
-						if (!$('#' + id).attr('readonly')) {
-							$('#' + id).attr('disabled', 'disabled');
+						if (!el.attr('readonly')) {
+							if (nodeType == "table") {
+								el.find('input').attr('disabled', 'disabled');
+								el.find('button').css('visibility', 'hidden');
+								//$('.addRow').css('visibility', 'hidden');
+							} else if (nodeType == "div") {
+								//$('#' + el.attr('data-link')).attr('disabled', 'disabled');
+								//$('#' + el.attr('data-link')).fadeTo("fast", .5).removeAttr("href"); 
+							} else
+								el.attr('disabled', 'disabled');
 							var i = 0;
 						}
 					}
@@ -452,11 +486,22 @@ $(document).ready(function () {
 				}
 				if ("read" in _acl[id][userInfo[0].loginName]) {
 					if (!_acl[id][userInfo[0].loginName].read) {
+						if (nodeType == "text") {
 							$('label[for="' + id + '"]').css('visibility', 'hidden');
-							$('#' + id).css('visibility', 'hidden');
-							//$('label[for="' + id + '"]').css('display', 'none');
-							//$('#' + id).css('display', 'none');
-							var i = 0;
+						} else if (nodeType == "radio" || nodeType == "checkbox") {
+							$('label[for="' + id + '"]').css('visibility', 'hidden');
+							el.each(function() {
+								$('label[for="' + this.id + '"]').css('visibility', 'hidden');
+							})
+						} else if (nodeType == "table") {
+							el.find('button').css('visibility', 'hidden');
+						} else if (nodeType == "div") {
+							//$('#' + el.attr('data-link')).attr('disabled', 'disabled');
+							$('#' + el.attr('data-link')).fadeTo("fast", .5).removeAttr("href"); 
+							
+						}
+
+						el.css('visibility', 'hidden');
 					}
 					
 					var i = 0;
