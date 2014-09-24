@@ -635,10 +635,12 @@
 			for(i = 0, j = this._data.checkbox.selected.length; i < j; i++) {
 				if(this._model.data[this._data.checkbox.selected[i]]) {
 					this._model.data[this._data.checkbox.selected[i]].state.checked = false;
+					this._model.data[this._data.checkbox.selected[i]].state.checked2 = false;
 				}
 			}
 			this._data.checkbox.selected = [];
 			this.element.find('.jstree-checked').removeClass('jstree-checked');
+			this.element.find('.jstree-checked2').removeClass('jstree-checked2');
 			/**
 			 * triggered when all nodes are unchecked (only if tie_selection in checkbox settings is false)
 			 * @event
