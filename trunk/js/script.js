@@ -1864,14 +1864,26 @@ initDepartmentsTree = function(actorsSource) {
 			saveActors();
 		})
 		.on("select_node.jstree", function (e, data) {
-			if (data.node.type == "department")
-				return false;
-				
 			var jstree = $('#jstree_resourcelist');
-			if (_acl && jstree.is(":visible")) {
+			if (jstree.is(":visible")) {
 				jstree = jstree.jstree(true);
+				if (data.node.type == "department") {
+					//jstree.find('li>a>i').attr("disabled", "disabled");
+					//jstree.disable_node(jstree.get_node($('#j2_1')));
+					if (!jstree.element.find('ul').hasClass('jstree-no-checkboxes')) {
+						jstree.hide_checkboxes();
+						jstree.uncheck_all();
+						data.instance.deselect_node(data.node, true);
+						return;
+					}
+				} else {
+					if (jstree.element.find('ul').hasClass('jstree-no-checkboxes')) {
+						jstree.show_checkboxes();
+					}
+				}
+
 				var nodes =	jstree.get_json("#", {flat:true});
-				jstree.check_all(true);
+				jstree.check_all();
 
 				var loggedUser = data.node.data["data-loginname"];		// selected department/manager/employee
 				for (var prop in _acl) {
@@ -1980,9 +1992,12 @@ initDepartmentsTree = function(actorsSource) {
 						create : {
 							"separator_before": false,
 							"separator_after": false,
-							"label": $.i18n.prop("CreateDepartment"),
+							"label": $.i18n.prop("CreateOffice"),
+							"_disabled": function (obj) {
+								return $('#jstree_resourcelist').is(":visible") ? true : false;
+							},															
 							"action": function (obj) {
-								var deptname = 'New department';
+								var deptname = 'New office';
 								$.post("json_db_pdo.php", {'func':'createOU', 'param':{'name':deptname}})	// OU - Organizational Unit
 									.done(function(data){
 										if (isAjaxError(data)) {
@@ -2007,6 +2022,9 @@ initDepartmentsTree = function(actorsSource) {
 							//"shortcut_label"	: 'F2',
 							//"icon"				: "glyphicon glyphicon-leaf",
 							"label": $.i18n.prop("Rename"),
+							"_disabled": function (obj) {
+								return $('#jstree_resourcelist').is(":visible") ? true : false;
+							},								
 							"action": function (obj) { 
 								tree.edit(node);
 							}
@@ -2018,7 +2036,7 @@ initDepartmentsTree = function(actorsSource) {
 							//"shortcut_label"	: 'Del',
 							//"icon"				: "glyphicon glyphicon-leaf",
 							"_disabled": function (obj) { 
-								if (node.children.length != 0)
+								if ($('#jstree_resourcelist').is(":visible") || node.children.length != 0)
 									return true;
 							},								
 							//disabled: node.children.length != 0,
@@ -2034,6 +2052,10 @@ initDepartmentsTree = function(actorsSource) {
 						delete items.create;
 					}
 
+//					if ($('#jstree_resourcelist').is(":visible")) {
+//						items.create._disabled = true;
+//					}
+					
 					return items;
 				}
 			},
@@ -3225,10 +3247,11 @@ function toggleLanguage(lang, dir) {
 			$("#userImportButton").button({ label: $.i18n.prop('ImportUsers')});
 			$("#userExportButton").button({ label: $.i18n.prop('ExportUsers')});
 
-			$("#userLegend legend").text(($.i18n.prop('Legend')));
+			$("#userLegend legend, #aclLegend legend").text(($.i18n.prop('Legend')));
 			$("#userLegend>span:nth-of-type(1)").text(($.i18n.prop('User')));
 			$("#userLegend>span:nth-of-type(2)").text(($.i18n.prop('Manager')));
 			$("#userLegend>span:nth-of-type(3)").text(($.i18n.prop('Superuser')));
+			$("#aclLegend>span").text(($.i18n.prop('ReadWrite')));
 
 			$("#saveAccessControlSettings").button({ label: $.i18n.prop('SaveACSettings')});
 			
