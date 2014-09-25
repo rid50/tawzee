@@ -438,85 +438,6 @@ $(document).ready(function () {
 				});
 		}
 
-		for (var id in _acl) {
-			var el = $('#' + id);
-			if (userInfo[0].loginName in _acl[id]) {
-			
-				if (el.length == 0)
-					el = $('input[name="' + id + '"]');
-					
-				//var nodeName = el[0].nodeName.toLowerCase();
-				var nodeType = (el[0].type) ? el[0].type.toLowerCase() : el[0].nodeName.toLowerCase();
-				
-				if (nodeType == "table") {
-					el.find('input').removeAttr('disabled');
-				} else if (nodeType == "div") {
-					$('#' + el.attr('data-link')).removeAttr('disabled');
-					$('#' + el.attr('data-link')).fadeTo("fast", 1.0).attr("href", "#"); 
-				} else
-					el.removeAttr('disabled');
-					
-				//$('label[for="' + id + '"]').css('display', 'initial');
-				//$('#' + id).css('display', 'initial');
-				if (nodeType == "text") {
-					$('label[for="' + id + '"]').css('visibility', 'initial');
-				} else if (nodeType == "radio" || nodeType == "checkbox") {
-					$('label[for="' + id + '"]').css('visibility', 'initial');
-					el.each(function() {
-						$('label[for="' + this.id + '"]').css('visibility', 'initial');
-					})
-				} else if (nodeType == "table") {
-					el.find('button').css('visibility', 'initial');
-					//$('.addRow').css('visibility', 'initial');
-				}
-				
-				el.css('visibility', 'initial');
-			
-//			if (userInfo[0].loginName in _acl[id]) {
-				if ("write" in _acl[id][userInfo[0].loginName]) {
-					if (!_acl[id][userInfo[0].loginName].write) {
-						if (!el.attr('readonly')) {
-							if (nodeType == "table") {
-								el.find('input').attr('disabled', 'disabled');
-								el.find('button').css('visibility', 'hidden');
-								//$('.addRow').css('visibility', 'hidden');
-							} else if (nodeType == "div") {
-								//$('#' + el.attr('data-link')).attr('disabled', 'disabled');
-								//$('#' + el.attr('data-link')).fadeTo("fast", .5).removeAttr("href"); 
-							} else
-								el.attr('disabled', 'disabled');
-							var i = 0;
-						}
-					}
-					
-					var i = 0;
-				}
-				
-				if ("read" in _acl[id][userInfo[0].loginName]) {
-					if (!_acl[id][userInfo[0].loginName].read) {
-						if (nodeType == "text") {
-							$('label[for="' + id + '"]').css('visibility', 'hidden');
-						} else if (nodeType == "radio" || nodeType == "checkbox") {
-							$('label[for="' + id + '"]').css('visibility', 'hidden');
-							el.each(function() {
-								$('label[for="' + this.id + '"]').css('visibility', 'hidden');
-							})
-						} else if (nodeType == "table") {
-							el.find('button').css('visibility', 'hidden');
-						} else if (nodeType == "div") {
-							$('#' + el.attr('data-link')).attr('disabled', 'disabled');
-							$('#' + el.attr('data-link')).fadeTo("fast", .5).removeAttr("href"); 
-							
-						}
-
-						el.css('visibility', 'hidden');
-					}
-					
-					var i = 0;
-				}				
-			}
-		}
-		
 		//var errBox = '<input type="text" id="error-box" tabindex="-1" />';
 		$('.forms').each(function() {
 			if (this.id == _currentForm) {
@@ -546,6 +467,8 @@ $(document).ready(function () {
 				$(this).hide();
 			}
 		});
+		
+		applyAcl();
 	});
 	
 	if (lang == "ar") {
@@ -770,11 +693,124 @@ function getAcl() {
 			})
 */			
 			_acl = data;
+			 applyAcl();
 		})
 		.fail(function(jqXHR, textStatus, errorThrown) {
 			errorFound = true;
 			alert("Get Access Control List - error: " + errorThrown);
 		});
+}
+
+function applyAcl(accordion) {
+	for (var id in _acl) {
+		var el = $('#' + id);
+		//if (userInfo[0].loginName in _acl[id]) {
+		
+			if (el.length == 0) {
+				el = $('input[name="' + id + '"]');		// group of radio/checkbox tags
+				if (!accordion && el.length == 0)
+					continue;								// accordion tab
+			}
+			
+			//var nodeName = el[0].nodeName.toLowerCase();
+			//var nodeType = (el[0].type) ? el[0].type.toLowerCase() : el[0].nodeName.toLowerCase();
+			var nodeType = (el[0].nodeName.toLowerCase() == "input") ? el[0].type.toLowerCase() : el[0].nodeName.toLowerCase();
+
+			if (accordion && nodeType != "span")
+				continue;
+
+			if (nodeType == "span") {
+				if (!el.hasClass('ui-accordion-header'))
+					continue;
+				
+				if (el.hasClass( "my-ui-state-disabled" )) {
+					el.removeClass( "ui-state-disabled" );
+					el.removeClass( "my-ui-state-disabled" );
+				}
+			} else if (nodeType == "table") {
+				//$('.addRow').css('visibility', 'initial');
+				el.find('button').css('visibility', 'initial');
+				el.find('input').removeAttr('disabled');
+			} else if (nodeType == "div") {
+				$('#' + el.attr('data-link')).removeAttr('disabled');
+				$('#' + el.attr('data-link')).fadeTo("fast", 1.0).attr("href", "#");
+				$('#formButtonSet button').not('#print').fadeTo("fast", 1.0).removeAttr('disabled');
+			} else if (nodeType == "text") {
+				$('label[for="' + id + '"]').css('visibility', 'initial');
+				el.removeAttr('disabled');
+			} else if (nodeType == "radio" || nodeType == "checkbox") {
+				$('label[for="' + id + '"]').css('visibility', 'initial');
+				el.each(function() {
+					$('label[for="' + this.id + '"]').css('visibility', 'initial');
+				})
+				el.removeAttr('disabled');
+			} else if (nodeType == "fieldset") {
+				el.removeAttr('disabled');
+			} else if (nodeType == "button") {
+				$('#formButtonSet #print').fadeTo("fast", 1.0).removeAttr('disabled');
+				el.fadeTo("fast", 1.0).removeAttr('disabled');
+			} 
+			//else
+				//el.removeAttr('disabled');
+			
+			el.css('visibility', 'initial');
+		
+		if (userInfo[0].loginName in _acl[id]) {
+			if ("write" in _acl[id][userInfo[0].loginName]) {
+				if (!_acl[id][userInfo[0].loginName].write) {
+					if (!el.attr('readonly')) {
+						if (nodeType == "span") {
+							if (!el.hasClass( "ui-state-disabled" )) {
+								el.addClass( "ui-state-disabled" );
+								el.addClass( "my-ui-state-disabled" );
+							}
+						} if (nodeType == "table") {
+							el.find('input').attr('disabled', 'disabled');
+							el.find('button').css('visibility', 'hidden');
+							//$('.addRow').css('visibility', 'hidden');
+						} else if (nodeType == "div") {
+							el.find('#formButtonSet button').not('#print').fadeTo("fast", .5).attr('disabled', 'disabled');
+							//$('#' + el.attr('data-link')).attr('disabled', 'disabled');
+							//$('#' + el.attr('data-link')).fadeTo("fast", .5).removeAttr("href"); 
+						} else if (nodeType == "button") {
+							$('#formButtonSet #print').fadeTo("fast", .5).attr('disabled', 'disabled');
+							el.fadeTo("fast", .5).attr('disabled', 'disabled');
+						} else
+							el.attr('disabled', 'disabled');
+					}
+				}
+			}
+			
+			if ("read" in _acl[id][userInfo[0].loginName]) {
+				if (!_acl[id][userInfo[0].loginName].read) {
+					if (nodeType == "span") {
+						if (!el.hasClass( "ui-state-disabled" )) {
+							el.addClass( "ui-state-disabled" );
+							el.addClass( "my-ui-state-disabled" );
+						}
+					} if (nodeType == "table") {
+						el.find('button').css('visibility', 'hidden');
+					} if (nodeType == "text") {
+						$('label[for="' + id + '"]').css('visibility', 'hidden');
+					} else if (nodeType == "radio" || nodeType == "checkbox") {
+						$('label[for="' + id + '"]').css('visibility', 'hidden');
+						el.each(function() {
+							$('label[for="' + this.id + '"]').css('visibility', 'hidden');
+						})
+					} else if (nodeType == "div") {
+						$('#' + el.attr('data-link')).attr('disabled', 'disabled');
+						$('#' + el.attr('data-link')).fadeTo("fast", .5).removeAttr("href"); 
+					} else if (nodeType == "button") {
+						$('#formButtonSet #print').fadeTo("fast", .5).attr('disabled', 'disabled');
+						el.fadeTo("fast", .5).attr('disabled', 'disabled');
+					}
+
+					if (nodeType != "button")
+						el.css('visibility', 'hidden');
+				}
+			}				
+		}
+	}
 }
 
 function initAccordion() {
@@ -784,6 +820,9 @@ function initAccordion() {
 		//active: false,
 		collapsible: false,
 		heightStyle: 'content',
+		create: function( event, ui ) {
+			applyAcl(true); 	// true - check for accordion access control list
+		},
 		beforeActivate: function( event, ui ) {
 			switch (ui.newHeader.index()) {
 				case 0:
@@ -1103,8 +1142,12 @@ function disableAccordionTabs(flag) {
 		$(accTabs[2]).addClass( "ui-state-disabled" );
 		$(accTabs[3]).addClass( "ui-state-disabled" );
 	} else {
-		$(accTabs[2]).removeClass( "ui-state-disabled" );
-		$(accTabs[3]).removeClass( "ui-state-disabled" );
+		if (!$(accTabs[2]).hasClass( "my-ui-state-disabled" )) {
+			$(accTabs[2]).removeClass( "ui-state-disabled" );
+		}
+		if (!$(accTabs[3]).hasClass( "my-ui-state-disabled" )) {
+			$(accTabs[3]).removeClass( "ui-state-disabled" );
+		}
 	}
 }
 
@@ -1362,7 +1405,8 @@ function fillUserLoginCombo() {
 			
 			start(val, 'db', function() {		// 'db' - get Actors from database
 				$("#accordion").accordion( "option", "active", 0 );				
-			
+				//applyAcl(true); 	// true - check for accordion access control list
+
 				var found = false;
 				_superusers.some(function(name) {
 					if (userInfo[0].loginName == name) {
@@ -2301,15 +2345,18 @@ function initResourceTree() {
 	
 	var data = [], fields_data = [], node, id;
 	var forms = $('.forms, #accordion>span');
+	forms.push($('#printForm')[0]);
 	forms.each(function(index) {
 		data.push({
 			'data': {
 				'id': this.id,
 			},
-			'type': (this.nodeName.toLowerCase() == "span") ? "accordion" :"form",
+			'type': (this.nodeName.toLowerCase() == "span") ? "accordion" : (this.nodeName.toLowerCase() == "button") ? "print_button" : "form",
 			'text': (function(obj){
 				if (obj.nodeName.toLowerCase() == "span")
 					return $(obj).text();
+				if (obj.nodeName.toLowerCase() == "button")
+					return obj.title;
 				else
 					return $('#' + obj.attributes['data-link'].value).text();
 			})(this),
@@ -2436,6 +2483,9 @@ function initResourceTree() {
 				},				
 				"accordion" : {
 					"icon" : "images/accordion.png"
+				},
+				"print_button" : {
+					"icon" : "images/print16.png"
 				}
 				
 			},
@@ -2687,31 +2737,6 @@ $(function() {
 	});
 	
 	$(document).on("click", "#saveAccessControlSettings", function(){
-/*	
-		_acl = [];
-		var nodes = $('#jstree_resourcelist').jstree(true).get_json("#", {flat:true});
-		var result = "";
-		//var obj = data.node.data[prop];
-		nodes.forEach(function(node) {
-			node = node.data;
-			if (node) {
-				for (var prop in node) {
-					//if (if prop != "id" && node.hasOwnProperty(prop)) {
-					if (prop && prop != "id") {
-						_acl.push(node);
-						break;
-						
-						//if (node.hasOwnProperty(prop)) {
-						//	for (var prop2 in node[prop]) {
-						//		//var i = 0;
-						//		//result += node['id'] + " : " + prop2 + " = " + node[prop][prop2] + ";\n";
-						//	}
-						//}
-					}
-				}
-			}
-		})
-*/		
 		if (_acl) {
 			$.post('save_file.php', {'fileName': 'acl.json', 'param' : JSON.stringify(_acl)})
 				.done(function( data ) {
@@ -2723,8 +2748,6 @@ $(function() {
 					alert("Save Access Control List - error: " + errorThrown);
 				});
 		}
-		
-		//alert(result);
 	});
 	
 })
@@ -3106,7 +3129,7 @@ function updateLoadForm() {										// id="load-form"
 	$('#plot2').val($('#plot').val());
 	$('#construction-exp-date2').val($('#construction-exp-date').val());
 	$('#feed-points2').val($('#feed-points').val());
-	
+
 	var s = jQuery('#grid').jqGrid('getGridParam','selrow');
 	if (s != null)
 		disableAccordionTabs(false);
