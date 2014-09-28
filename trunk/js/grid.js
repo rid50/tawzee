@@ -133,7 +133,7 @@ Grid = {
 				_page = $grid.jqGrid("getGridParam", "page");
 				
 				fillFormFields(this, rowId);
-				disableAccordionTabs(false);
+				setAccordionState();
 				_currentForm = "main-form";
 				//$(".dragclone").remove();
             },

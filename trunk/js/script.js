@@ -675,24 +675,20 @@ function getAcl() {
 		.done(function( data ) {
 			if (isAjaxError(data))
 				return;
-/*			
-			var idx = _superusers.indexOf(userInfo[0].loginName);
-			data.forEach(function(obj) {
-				if (idx === -1) {
-					if (userInfo[0].loginName in obj) {
-						_acl[obj.id] = {};
-						_acl[obj.id][userInfo[0].loginName] = obj[userInfo[0].loginName];
-					}
-				} else {
-					_acl[obj.id] = {};
-					for (var prop in obj) {
-						if (prop != "id")
-							_acl[obj.id][prop] = obj[prop];
+			
+			//var idx = _superusers.indexOf(userInfo[0].loginName);
+			if (_superusers.indexOf(userInfo[0].loginName) != -1) {
+				_acl = data;
+			} else {
+				//$(data).each(function(obj) {
+				for (var prop in data) {
+					if (userInfo[0].loginName in data[prop]) {
+						_acl[prop] = {};
+						_acl[prop][userInfo[0].loginName] = data[prop][userInfo[0].loginName];
 					}
 				}
-			})
-*/			
-			_acl = data;
+			}
+//			_acl = data;
 			 applyAcl();
 		})
 		.fail(function(jqXHR, textStatus, errorThrown) {
@@ -701,30 +697,29 @@ function getAcl() {
 		});
 }
 
-function applyAcl(accordion) {
+function applyAcl() {
 	for (var id in _acl) {
 		var el = $('#' + id);
 		//if (userInfo[0].loginName in _acl[id]) {
 		
 			if (el.length == 0) {
 				el = $('input[name="' + id + '"]');		// group of radio/checkbox tags
-				if (!accordion && el.length == 0)
-					continue;								// accordion tab
+				if (el.length == 0)
+					continue;							// happens when accordion is not visible yet
 			}
 			
 			//var nodeName = el[0].nodeName.toLowerCase();
 			//var nodeType = (el[0].type) ? el[0].type.toLowerCase() : el[0].nodeName.toLowerCase();
 			var nodeType = (el[0].nodeName.toLowerCase() == "input") ? el[0].type.toLowerCase() : el[0].nodeName.toLowerCase();
 
-			if (accordion && nodeType != "span")
-				continue;
+			//if (accordion && nodeType != "span")
+			//	continue;
 
 			if (nodeType == "span") {
 				if (!el.hasClass('ui-accordion-header'))
 					continue;
 				
 				if (el.hasClass( "my-ui-state-disabled" )) {
-					el.removeClass( "ui-state-disabled" );
 					el.removeClass( "my-ui-state-disabled" );
 				}
 			} else if (nodeType == "table") {
@@ -760,10 +755,7 @@ function applyAcl(accordion) {
 				if (!_acl[id][userInfo[0].loginName].write) {
 					if (!el.attr('readonly')) {
 						if (nodeType == "span") {
-							if (!el.hasClass( "ui-state-disabled" )) {
-								el.addClass( "ui-state-disabled" );
-								el.addClass( "my-ui-state-disabled" );
-							}
+							el.addClass( "my-ui-state-disabled" );
 						} if (nodeType == "table") {
 							el.find('input').attr('disabled', 'disabled');
 							el.find('button').css('visibility', 'hidden');
@@ -784,10 +776,7 @@ function applyAcl(accordion) {
 			if ("read" in _acl[id][userInfo[0].loginName]) {
 				if (!_acl[id][userInfo[0].loginName].read) {
 					if (nodeType == "span") {
-						if (!el.hasClass( "ui-state-disabled" )) {
-							el.addClass( "ui-state-disabled" );
-							el.addClass( "my-ui-state-disabled" );
-						}
+						el.addClass( "my-ui-state-disabled" );
 					} if (nodeType == "table") {
 						el.find('button').css('visibility', 'hidden');
 					} if (nodeType == "text") {
@@ -808,9 +797,11 @@ function applyAcl(accordion) {
 					if (nodeType != "button")
 						el.css('visibility', 'hidden');
 				}
-			}				
+			}
 		}
 	}
+	
+	setAccordionState();
 }
 
 function initAccordion() {
@@ -821,7 +812,9 @@ function initAccordion() {
 		collapsible: false,
 		heightStyle: 'content',
 		create: function( event, ui ) {
-			applyAcl(true); 	// true - check for accordion access control list
+			applyAcl();
+			//setAccordionState();
+			//applyAcl(true); 	// true - check for accordion access control list
 		},
 		beforeActivate: function( event, ui ) {
 			switch (ui.newHeader.index()) {
@@ -833,6 +826,10 @@ function initAccordion() {
 					resourceManagement.hide();
 					break;
 				case 2:
+					if (ui.newHeader.hasClass( "my-ui-state-disabled" )) {
+						return false;
+					}
+				
 					$("#" + $('#' + _currentForm).attr('data-link')).click();
 					divGrid.hide();
 					report_container.hide();
@@ -958,7 +955,7 @@ function initAccordion() {
 		}
 	});
 	
-	disableAccordionTabs(true);
+//	setAccordionState();
 	
 	$("#accordion").bind("keydown", function (event) {
 		//var keycode = (event.keyCode ? event.keyCode : (event.which ? event.which : event.charCode));
@@ -1135,20 +1132,27 @@ function getAreaName(areaId) {
 	return areaName;
 }
 
-
-function disableAccordionTabs(flag) {
+function setAccordionState() {
 	var accTabs = $("#accordion > span");
-	if (flag) {
-		$(accTabs[2]).addClass( "ui-state-disabled" );
-		$(accTabs[3]).addClass( "ui-state-disabled" );
-	} else {
-		if (!$(accTabs[2]).hasClass( "my-ui-state-disabled" )) {
-			$(accTabs[2]).removeClass( "ui-state-disabled" );
-		}
-		if (!$(accTabs[3]).hasClass( "my-ui-state-disabled" )) {
-			$(accTabs[3]).removeClass( "ui-state-disabled" );
-		}
+	if (!$(accTabs[0]).hasClass('ui-accordion-header'))
+		return;
+
+	accTabs.each(function(idx) {
+		if ($(this).hasClass( "my-ui-state-disabled" ))
+			$(this).addClass( "ui-state-disabled" );
+		else
+			$(this).removeClass( "ui-state-disabled" );
+	})
+		
+	var s = jQuery('#grid').jqGrid('getGridParam','selrow');
+	if (!s) {
+		$(accTabs[2]).addClass( "ui-state-disabled" );			// report preview tab
+		$(accTabs[3]).addClass( "ui-state-disabled" );			// drawings and scanned images tab
 	}
+	
+	if (_superusers.indexOf(userInfo[0].loginName) == -1)
+		$(accTabs[5]).addClass( "ui-state-disabled" );			// access control tab
+
 }
 
 function start(userLoginName, actorsSource, func) {
@@ -1404,7 +1408,9 @@ function fillUserLoginCombo() {
 			$("#resourceManagement").css("display", "none");
 			
 			start(val, 'db', function() {		// 'db' - get Actors from database
-				$("#accordion").accordion( "option", "active", 0 );				
+				$("#accordion").accordion( "option", "active", 0 );
+				applyAcl();
+				//setAccordionState();
 				//applyAcl(true); 	// true - check for accordion access control list
 
 				var found = false;
@@ -3130,11 +3136,7 @@ function updateLoadForm() {										// id="load-form"
 	$('#construction-exp-date2').val($('#construction-exp-date').val());
 	$('#feed-points2').val($('#feed-points').val());
 
-	var s = jQuery('#grid').jqGrid('getGridParam','selrow');
-	if (s != null)
-		disableAccordionTabs(false);
-	else
-		disableAccordionTabs(true);
+	setAccordionState();
 }
 
 function alert(text) {
