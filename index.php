@@ -121,7 +121,7 @@ if ($idp == "SAML") {
 					<span>Application</span>
 					<div>
 						<button id="sync" class="floatLeft" title="Go to last selected row"></button>
-						<div><span>App</span>#&nbsp;<input type="text" id="app-number-search" maxlength="10" size="10" class="text ui-widget-content ui-corner-all" value="" /></div>
+						<div><span>App</span>#&nbsp;<input type="text" id="app-number-search" readonly="readonly" maxlength="10" size="10" class="text ui-widget-content ui-corner-all" value="" /></div>
 						<br/>
 						<button id="newForm" title="Add a new form"></button>
 						<button id="editForm" title="Edit form"></button>
@@ -687,7 +687,7 @@ if ($idp == "SAML") {
 	<form>
 		<div>
 			<span>Search File#:</span>
-			<input type="text" id="grid_search_field" onkeydown="doSearch(arguments[0]||event)" style="direction:ltr; text-align:left; float:none; padding:0;" />
+			<input type="text" id="grid_search_field" onkeydown="doSearch(arguments[0]||event)" style="direction:ltr; text-align:left; float:none; padding:0;" class="text ui-widget-content ui-corner-all" />
 			<button onclick="gridReload()" id="gridSubmitButton">Go</button>
 			<input type="checkbox" id="autosearch" onclick="enableAutosubmit(this.checked)" style="padding: 0; float:none; width:auto; border: 0" />
 			<span>Enable Autosearch</span>
