@@ -856,7 +856,7 @@ function initAccordion() {
 						var id = RegExp.$1;
 						if ($(this).attr('id').search(_currentForm) != -1) {
 							$('#sign' + id).draggable( "option", "disabled", true );
-							$('#sign' + id).droppable( { accept: '#' + $(this).attr('id')} );
+							//$('#sign' + id).droppable( { accept: '#' + $(this).attr('id')} );
 						}	
 					})
 				
@@ -1501,6 +1501,7 @@ function loadUserSignatures() {
 						return;
 						
 					$(objName).css({
+						"border": "1px dotted green",
 						"left": pos.left - pos2.left,
 						"top": pos.top - pos2.top,
 						"position": "absolute"
@@ -1515,8 +1516,7 @@ function loadUserSignatures() {
 					//saveSignature(ui.helper.find('img').attr('data-id'), pos.top - pos2.top, pos.left - pos2.left, percentTop, percentLeft);
 					saveSignature(ui.helper.find('img').attr('data-id'), pos.top - pos2.top, pos.left - pos2.left);
 
-					$(objName).draggable({
-						containment: "document", revert: "invalid", cursor: "auto", scroll: false,
+					$(objName).draggable({containment: "document", revert: "invalid", cursor: "auto", scroll: false,
 						stop: function (ev, ui) {
 							var target = "#report-container";
 							var pos = $(ui.helper).offset();
@@ -1614,6 +1614,7 @@ function loadStampedSignatures() {
 						//"left": ($('#' + _currentForm).width() * r.LeftPos / 100).toString() + "px",
 						//"top": $('#' + _currentForm).height() * r.TopPos / 100 + "px",
 					element.css({
+						"border": "1px dotted green",					
 						"left": r.LeftPos + "px",
 						"top": r.TopPos + "px",
 						"position": "absolute"
