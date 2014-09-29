@@ -1584,6 +1584,7 @@ class DatabaseRepository {
 			$tableName = "ApplicationLoadSignature";
 			
 		try {
+			//throw new Exception(" DELETE FROM {$tableName} WHERE 
 			$dbh->exec(" DELETE FROM {$tableName} WHERE 
 					{$this->hyphensToCamel($param['data-key-field'])}  =  '{$param['data-key-field-val']}'  AND
 					SignatureID = '{$param['signature-id']}' ");

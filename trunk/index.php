@@ -43,7 +43,15 @@ if ($idp == "SAML") {
 	
 	<link rel="shortcut icon" type="image/vnd.microsoft.icon" href="favicon.ico" />
 
-	<link rel="stylesheet" media="all" href="themes/smoothness/jquery-ui-1.10.3.custom.min.css" />	
+	<!--link rel="stylesheet" media="all" href="themes/smoothness/jquery-ui-1.10.3.custom.min.css" /-->	
+	<!--link rel="stylesheet" media="all" href="themes/uilightness/jquery-ui.min.css" /-->	
+	<!--link rel="stylesheet" media="all" href="themes/smoothness/jquery-ui.min.css" /-->
+	<!--link id="stylesheet" rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" /-->
+	<link id="stylesheet" rel="stylesheet" href="http://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.min.css" />
+	
+	<!--link rel="stylesheet" media="all" href="themes/redmond/jquery-ui.min.css" /-->
+	
+	
 	<link rel="stylesheet" media="all" href="css/ui.jqgrid.css" />	
     <link rel="stylesheet" media="screen" type="text/css" href="css/style.css"/>
     <link rel="stylesheet" media="print" type="text/css" href="css/style.css"/>
@@ -52,7 +60,13 @@ if ($idp == "SAML") {
 	<link rel="stylesheet" href="js/themes/default/style.css" />
 	<link rel="stylesheet" href="js/themes/default/style2.css" />
 	
-    <script src="js/jquery-1.11.0.min.js" type="text/javascript"></script>
+    <!--script src="js/jquery-1.11.0.min.js" type="text/javascript"></script-->
+	<!--script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script--> 
+	<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script> 
+
+	<!--script src="js/jquery-ui.min.js" type="text/javascript"></script-->
+	<!--script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script-->
+	<script src="http://code.jquery.com/ui/1.10.4/jquery-ui.min.js" type="text/javascript"></script>
     
     <script src="js/jqGridJs/i18n/grid.locale-ar.js" type="text/javascript"></script>
     <script src="js/jqGridJs/i18n/grid.locale-en.js" type="text/javascript"></script>
@@ -61,12 +75,10 @@ if ($idp == "SAML") {
 	
 	<script src="js/jquery.blockUI.js" type="text/javascript"></script>
     <!--script src="js/jquery.hotkeys.js" type="text/javascript"></script-->
-	<!--script src="js/jstree.min.js" type="text/javascript"></script-->
-	<!--script src="js/jquery.jstree.js" type="text/javascript"></script-->
-	<script src="js/jstree.js" type="text/javascript"></script>
+	
+	<script src="js/jstree.min.js" type="text/javascript"></script>
 	<script src="js/jstreecheckbox2.js" type="text/javascript"></script>
-	<!--script src="js/jquery-ui-1.10.2.custom.min.js" type="text/javascript"></script-->
-	<script src="js/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+	
 	<script src="js/jquery.ui.datepicker-ar.js" type="text/javascript"></script>
 	<script src="js/jquery.i18n.properties-min-1.0.9.js" type="text/javascript"></script>
     <script src="js/script.js" type="text/javascript"></script>
@@ -687,11 +699,11 @@ if ($idp == "SAML") {
 	<form>
 		<div>
 			<span>Search File#:</span>
-			<input type="text" id="grid_search_field" onkeydown="doSearch(arguments[0]||event)" style="direction:ltr; text-align:left; float:none; padding:0;" class="text ui-widget-content ui-corner-all" />
+			<input type="text" id="grid_search_field" onkeydown="doSearch(arguments[0]||event)" style="direction:ltr; text-align:left;" class="text ui-widget-content ui-corner-all" />
 			<button onclick="gridReload()" id="gridSubmitButton">Go</button>
-			<input type="checkbox" id="autosearch" onclick="enableAutosubmit(this.checked)" style="padding: 0; float:none; width:auto; border: 0" />
+			<input type="checkbox" id="autosearch" onclick="enableAutosubmit(this.checked)" />
 			<span>Enable Autosearch</span>
-			<div id="grid_search_hidden_field" style="visibility: hidden; width:10px; height: 10px"></div>
+			<!--div id="grid_search_hidden_field" style="visibility: hidden;"></div-->
 		</div>
 
 		<div id="myjqGrid">
