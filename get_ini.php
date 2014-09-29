@@ -6,7 +6,7 @@ $ds = $ini["documentSource"];
 
 preg_match('/^[a-zA-Z]{2}/', $_SERVER['HTTP_ACCEPT_LANGUAGE'], $accepted_language);
 
-$json = json_encode(array("admin" => $ini["admin"], "IdP" => $idp, "IdPSource" => $idpSource, "documentSource" => $ds, "lang" => $ini["lang"], "searchInterval" => $ini["searchInterval"], "accepted_language" => $accepted_language[0]));
+$json = json_encode(array("admin" => $ini["admin"], "jquery_theme" => $ini["jquery_theme"], "IdP" => $idp, "IdPSource" => $idpSource, "documentSource" => $ds, "lang" => $ini["lang"], "searchInterval" => $ini["searchInterval"], "accepted_language" => $accepted_language[0]));
 
 header('Content-type: application/json; charset=utf-8');
 header('Cache-Control: no-cache, must-revalidate');

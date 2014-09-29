@@ -114,6 +114,17 @@ $(document).ready(function () {
 			documentSource = data.documentSource;
 			lang = data.lang;
 			searchInterval = data.searchInterval;
+			
+			switch (data.jquery_theme) {
+				case "uilightness":
+					$("#stylesheet").attr({href : "http://code.jquery.com/ui/1.11.1/themes/ui-lightness/jquery-ui.min.css"});
+					break;
+				case "redmond":
+					$("#stylesheet").attr({href : "http://code.jquery.com/ui/1.11.1/themes/redmond/jquery-ui.min.css"});
+					break;
+				//default:
+					//$("#stylesheet").attr({href : "http://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css"});
+			}
 		});
 	
 	$("#flagKuwait").off("click").on("click", function(event){
@@ -651,6 +662,11 @@ $(document).ready(function () {
 			toggleGrid(lang);
 			$("#divGrid").show();
 		}
+
+		if (_admin != userInfo[0].loginName) {
+			$('#userImportButton').attr('disabled', 'disabled');		// user assignment tab
+			$('#userExportButton').attr('disabled', 'disabled');		// user assignment tab
+		}
 		
 		$('#accordion').show();
 	} else if (_admin == userInfo[0].loginName) {
@@ -659,13 +675,9 @@ $(document).ready(function () {
 		initAccordion();
 		var accTabs = $("#accordion > span");
 		accTabs.addClass( "ui-state-disabled" );
-		//$(accTabs[0]).addClass( "ui-state-disabled" );
-		//$(accTabs[1]).addClass( "ui-state-disabled" );
+		
 		$("#accordion").accordion( "option", "active", 4 );				
 		$('#accordion').show();
-		
-		//$("#resourceManagement").show();
-
 	}
 });
 
@@ -845,12 +857,12 @@ function initAccordion() {
 						$('<img src=\"' + _jasperReportsURL + '?reportName=' + reportName + '&applicationNumber=' + _applicationNumber + '&keyFieldValue=' + keyFieldValue + '&renderAs=png\" onload="$.unblockUI()" />').appendTo('#report-container');
 					});
 					
-					report_container.show();
-					
 					$("#signatureImages .drag").each(function() {
 						$(this).draggable( "option", "disabled", false );
 					})
-				
+					
+					report_container.show();
+				/*
 					$(".dragclone").each(function() {
 						$(this).attr('id').search(/([0-9]*)$/);
 						var id = RegExp.$1;
@@ -859,7 +871,7 @@ function initAccordion() {
 							//$('#sign' + id).droppable( { accept: '#' + $(this).attr('id')} );
 						}	
 					})
-				
+				*/
 					divGrid.hide();
 					flexslider_container.hide();
 					resourceManagement.hide();
@@ -1488,7 +1500,7 @@ function loadUserSignatures() {
 
 			//$("#signatureImages").droppable( { accept: '.dragclone'} );
 			$("#signatureImages>div").draggable({containment: "document", helper: "clone", revert: "invalid", cursor: "auto", scroll: false, opacity: 0.7,
-				stop: function (ev, ui) {
+				stop: function (event, ui) {
 					var target = "#report-container";
 					var pos = $(ui.helper).offset();
 					var pos2 = $(target).offset();
@@ -1501,6 +1513,7 @@ function loadUserSignatures() {
 						return;
 						
 					$(objName).css({
+						//"z-index": 1000,
 						"border": "1px dotted green",
 						"left": pos.left - pos2.left,
 						"top": pos.top - pos2.top,
@@ -1517,7 +1530,7 @@ function loadUserSignatures() {
 					saveSignature(ui.helper.find('img').attr('data-id'), pos.top - pos2.top, pos.left - pos2.left);
 
 					$(objName).draggable({containment: "document", revert: "invalid", cursor: "auto", scroll: false,
-						stop: function (ev, ui) {
+						stop: function (event, ui) {
 							var target = "#report-container";
 							var pos = $(ui.helper).offset();
 							var pos2 = $(target).offset();
@@ -1527,7 +1540,8 @@ function loadUserSignatures() {
 					
 							//saveSignature(ui.helper.find('img').attr('data-id'), percentHeght, percentWidth);							
 							//saveSignature(ui.helper.find('img').attr('data-id'), pos.top - pos2.top, pos.left - pos2.left, percentTop, percentLeft);
-							saveSignature(ui.helper.find('img').attr('data-id'), pos.top - pos2.top, pos.left - pos2.left);
+							if (pos.top > 0)
+								saveSignature(ui.helper.find('img').attr('data-id'), pos.top - pos2.top, pos.left - pos2.left);
 						}
 					});
 					
@@ -1535,7 +1549,16 @@ function loadUserSignatures() {
 			});
 
 			$("#report-container").droppable({
-				drop: function( event, ui ) {
+				//over: function (event, ui) {
+					//$(this).draggable( "option", "disabled", false );
+					//$(ui.draggable).css("position","absolute");
+				//},
+				//out: function (event, ui) {
+					//$(ui.draggable).css("position","static");
+				//var i = 0;
+					//$(this).draggable( "option", "disabled", true );
+				//},
+				drop: function(event, ui) {
 					ui.draggable.attr('id').search(/sign([0-9]*)/);
 					var elementId = _currentForm + RegExp.$1;
 					//if (ui.draggable.hasClass('drag')) {
@@ -1581,7 +1604,11 @@ function loadUserSignatures() {
 
 function loadStampedSignatures() {
 	var target = "#report-container";
-	$(target + ' div').remove();
+	if ($(target + ' div').length != 0) {
+		$(target + ' div').remove();
+		$(target + ' img').remove();
+	}
+	
 	$.get("json_db_pdo.php", {'func':'getStampedSignatures',
 		'param': {
 			'schema': _currentForm,
@@ -1601,14 +1628,17 @@ function loadStampedSignatures() {
 			// }
 			
 			//$('#' + _currentForm + ' .dragclone')
-			var element;
+			var element, signObj;
 			var rand = Math.random();
 			data.forEach(function(r, index) {
-				if ($('#sign' + r.SignatureID).length != 0) {
-					$('#sign' + r.SignatureID).draggable( "option", "disabled", false );
-					element = $('#sign' + r.SignatureID).clone();
+				signObj = $('#sign' + r.SignatureID);
+				//if ($('#sign' + r.SignatureID).length != 0) {
+				if (signObj.length != 0) {
+					//element = $('#sign' + r.SignatureID).clone();
+					element = signObj.clone();
 					element.attr("id", _currentForm + r.SignatureID);
 					element.addClass("dragclone");
+					signObj.draggable( "option", "disabled", true );
 					
 					//var formWidth = document.getElementById(_currentForm).style.width;
 						//"left": ($('#' + _currentForm).width() * r.LeftPos / 100).toString() + "px",
@@ -1641,11 +1671,13 @@ function loadStampedSignatures() {
 						
 							//saveSignature(ui.helper.find('img').attr('data-id'), percentHeght, percentWidth);							
 							//saveSignature(ui.helper.find('img').attr('data-id'), pos.top - pos2.top, pos.left - pos2.left, percentTop, percentLeft);
-							saveSignature(ui.helper.find('img').attr('data-id'), pos.top - pos2.top, pos.left - pos2.left);
+							if (pos.top > 0)
+								saveSignature(ui.helper.find('img').attr('data-id'), pos.top - pos2.top, pos.left - pos2.left);
 						}
 					});
 					
-					setUserSignatureAsDroppable($('#sign' + r.SignatureID), _currentForm + r.SignatureID);
+					setUserSignatureAsDroppable(signObj, _currentForm + r.SignatureID);
+					//setUserSignatureAsDroppable($('#sign' + r.SignatureID), _currentForm + r.SignatureID);
 				} else {
 					$('<div id="foreign' + r.SignatureID + '"><li><img class="img-signature" data-id="' + r.SignatureID + '" src="fopen.php?id=' + r.SignatureID + '&rand=' + rand + '" /></li></div>').appendTo(target);
 
@@ -1668,6 +1700,12 @@ function loadStampedSignatures() {
 
 function setUserSignatureAsDroppable(ui, cloneId) {
 	ui.droppable({ accept: '#' + cloneId,
+		over: function (event, ui) {
+			$(this).draggable( "option", "disabled", false );
+		},
+		out: function (event, ui) {
+			$(this).draggable( "option", "disabled", true );
+		},
 		drop: function( event, ui ) {
 			$.post("json_db_pdo.php", {'func':'deleteSignature',
 				'param': {
@@ -2759,7 +2797,6 @@ $(function() {
 	
 })
 
-//jstree-node ui-state-default jstree-draggable ui-draggable 
 function insertForm(that) {
 	saveForm(that, "insertForm");
 }
