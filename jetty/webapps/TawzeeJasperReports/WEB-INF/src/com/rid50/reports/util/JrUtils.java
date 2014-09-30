@@ -91,7 +91,7 @@ public class JrUtils {
 			InputStream in = new ByteArrayInputStream(imageInByte);
 			BufferedImage bImage = ImageIO.read(in);
 
-            ImageIO.write(bImage, "png", new File("bImage.png"));
+            //ImageIO.write(bImage, "png", new File("bImage.png"));
 			
 			if (scale) {
 				BufferedImage scaledBufImage = new BufferedImage(bImage.getWidth() * JAPER_REPORTS_DPI / resolution, bImage.getHeight() * JAPER_REPORTS_DPI / resolution, bImage.getTransparency()); // BufferedImage.TRANSLUCENT
@@ -104,7 +104,7 @@ public class JrUtils {
 	            
 	            g2d.drawImage(bImage, 0, 0, bImage.getWidth() * JAPER_REPORTS_DPI / resolution, bImage.getHeight() * JAPER_REPORTS_DPI / resolution, null);
 	
-	            ImageIO.write(scaledBufImage, "png", new File("scaledBufImage.png"));
+	            //ImageIO.write(scaledBufImage, "png", new File("scaledBufImage.png"));
 
 				//Image bImage2 = bImage.getScaledInstance(677 * 72 /300, 500 * 72 /300, Image.SCALE_SMOOTH);
 				//LOG.info("Height: " + bImage.getHeight());

@@ -5,7 +5,7 @@ var searchInterval;
 
 var _admin;
 
-var _superusers;
+var _directors;
 var _userLoginName = "";
 
 var userInfo;
@@ -688,8 +688,8 @@ function getAcl() {
 			if (isAjaxError(data))
 				return;
 			
-			//var idx = _superusers.indexOf(userInfo[0].loginName);
-			if (_superusers.indexOf(userInfo[0].loginName) != -1) {
+			//var idx = _directors.indexOf(userInfo[0].loginName);
+			if (_directors.indexOf(userInfo[0].loginName) != -1) {
 				_acl = data;
 			} else {
 				//$(data).each(function(obj) {
@@ -1162,7 +1162,7 @@ function setAccordionState() {
 		$(accTabs[3]).addClass( "ui-state-disabled" );			// drawings and scanned images tab
 	}
 	
-	if (_superusers.indexOf(userInfo[0].loginName) == -1)
+	if (_directors.indexOf(userInfo[0].loginName) == -1)
 		$(accTabs[5]).addClass( "ui-state-disabled" );			// access control tab
 
 }
@@ -1206,10 +1206,10 @@ function start(userLoginName, actorsSource, func) {
 					return;
 				}
 
-				if ($(data).find('department').attr('superusers') != undefined)
-					_superusers = $(data).find('department').attr('superusers').split(',');
+				if ($(data).find('department').attr('directors') != undefined)
+					_directors = $(data).find('department').attr('directors').split(',');
 				else
-					_superusers = [];
+					_directors = [];
 					
 				var a = [], name;
 				$(data).find('employees employee').each(function() {
@@ -1233,9 +1233,9 @@ function start(userLoginName, actorsSource, func) {
 						getActorsStatus();
 						loadUserSignatures();
 						if (!$("#jstree").hasClass("jstree"))
-							initDepartmentsTree();
+							initDepartmentTree();
 					} else {
-						initDepartmentsTree(actorsSource);
+						initDepartmentTree(actorsSource);
 					}
 
 					if (func != null) {
@@ -1426,7 +1426,7 @@ function fillUserLoginCombo() {
 				//applyAcl(true); 	// true - check for accordion access control list
 
 				var found = false;
-				_superusers.some(function(name) {
+				_directors.some(function(name) {
 					if (userInfo[0].loginName == name) {
 						$("#jstree>ul>li").show();
 						//$("#jstree").jstree("open_all");
@@ -1540,8 +1540,11 @@ function loadUserSignatures() {
 					
 							//saveSignature(ui.helper.find('img').attr('data-id'), percentHeght, percentWidth);							
 							//saveSignature(ui.helper.find('img').attr('data-id'), pos.top - pos2.top, pos.left - pos2.left, percentTop, percentLeft);
-							if (pos.top > 0)
+							//if (pos.top > 0)
+							if (!$(ui.helper).hasClass( "my-droppable-out" )) {
 								saveSignature(ui.helper.find('img').attr('data-id'), pos.top - pos2.top, pos.left - pos2.left);
+								var i = 0;
+							}
 						}
 					});
 					
@@ -1549,15 +1552,17 @@ function loadUserSignatures() {
 			});
 
 			$("#report-container").droppable({
-				//over: function (event, ui) {
+				over: function (event, ui) {
+					$(ui.draggable).removeClass( "my-droppable-out" );
 					//$(this).draggable( "option", "disabled", false );
 					//$(ui.draggable).css("position","absolute");
-				//},
-				//out: function (event, ui) {
+				},
+				out: function (event, ui) {
+					$(ui.draggable).addClass( "my-droppable-out" );
 					//$(ui.draggable).css("position","static");
 				//var i = 0;
 					//$(this).draggable( "option", "disabled", true );
-				//},
+				},
 				drop: function(event, ui) {
 					ui.draggable.attr('id').search(/sign([0-9]*)/);
 					var elementId = _currentForm + RegExp.$1;
@@ -1671,7 +1676,8 @@ function loadStampedSignatures() {
 						
 							//saveSignature(ui.helper.find('img').attr('data-id'), percentHeght, percentWidth);							
 							//saveSignature(ui.helper.find('img').attr('data-id'), pos.top - pos2.top, pos.left - pos2.left, percentTop, percentLeft);
-							if (pos.top > 0)
+							//if (pos.top > 0)
+							if (!$(ui.helper).hasClass( "my-droppable-out" ))
 								saveSignature(ui.helper.find('img').attr('data-id'), pos.top - pos2.top, pos.left - pos2.left);
 						}
 					});
@@ -1860,7 +1866,7 @@ function error(error) {
 }
 
 toggleJsTree = function() {
-	var idx = _superusers.indexOf(userInfo[0].loginName);
+	var idx = _directors.indexOf(userInfo[0].loginName);
 	var nodes = $('#jstree').jstree(true).get_json("#", {flat:false});
 	$(nodes).each(function() {
 		if (idx > -1 || sectionId == this.id) {
@@ -1870,7 +1876,7 @@ toggleJsTree = function() {
 	})
 }
 
-initDepartmentsTree = function(actorsSource) {
+initDepartmentTree = function(actorsSource) {
 	var jstree = $('#jstree');
 
 	if (jstree.hasClass("jstree")) {
@@ -1959,7 +1965,7 @@ initDepartmentsTree = function(actorsSource) {
 
 	jstree
 		.on("ready.jstree", function (e, data) {
-			var idx = _superusers.indexOf(userInfo[0].loginName);
+			var idx = _directors.indexOf(userInfo[0].loginName);
 			var nodes = data.instance.get_json("#", {flat:false});
 			$(nodes).each(function() {
 				if (idx > -1)
@@ -1976,7 +1982,7 @@ initDepartmentsTree = function(actorsSource) {
 			
 /*			
 			var found = false;
-			_superusers.some(function(name) {
+			_directors.some(function(name) {
 				if (userInfo[0].loginName == name) {
 					$("#jstree>ul>li").each(function(i) {
 						$("#jstree").jstree("open_node", this);
@@ -2001,8 +2007,15 @@ initDepartmentsTree = function(actorsSource) {
 		.on("copy_node.jstree", function (e, data) {
 			data.node.data = $.extend(true, {}, data.original.data);
 			var nd = data.instance.get_node($("#" + data.node.parent));
-			if (nd.type == "department")
+			if (nd.type == "department") {
 				data.instance.set_type(data.node, "manager");
+			} else {
+				data.instance.set_type(data.node, "employee");
+				data.instance.open_node(nd);
+			}
+			
+			data.original.instance.disable_node(data.original);
+			
 			saveActors();
 		})
 		.on("select_node.jstree", function (e, data) {
@@ -2065,6 +2078,18 @@ initDepartmentsTree = function(actorsSource) {
 			}
 		})
 		.on("delete_node.jstree", function (e, data) {
+			var inst = $('#jstree_userlist').jstree(true);
+			var nodes = inst.get_json("#", {flat:true});
+			nodes.some(function(node) {
+				if (node.data["data-loginname"] == data.node.data["data-loginname"]) {
+					inst.enable_node(node);
+					return true;
+				}
+			});
+			
+			//inst.enable_node($('#j2_18'));
+			//data.node.data["data-loginname"]
+			//inst.enable_node(inst.get_node(, true));
 			saveActors();
 		})
 		.on("refresh.jstree", function (e, data) {
@@ -2116,9 +2141,10 @@ initDepartmentsTree = function(actorsSource) {
 
 							return true;
 							break;
-						case "delete_node":
-							return true;
+						case "move_node":
+							return false;
 							break;
+						case "delete_node":
 						case "rename_node":
 							return true;
 							break;
@@ -2206,6 +2232,9 @@ initDepartmentsTree = function(actorsSource) {
 					"icon" : "jstree-folder",
 					"select_node" : false
 				},
+				"director" : {
+					"icon" : "images/director.png"
+				},				
 				"manager" : {
 					"icon" : "images/manager.png",
 				},
@@ -2240,19 +2269,30 @@ function initUserTree() {
 
 	var idx, type;
 	var data = [];
+	var nodes = $('#jstree').jstree(true).get_json("#", {flat:true});
 	a.forEach(function(name){
 		name = name.split('|');
-		idx = _superusers.indexOf(name[1]);
+		idx = _directors.indexOf(name[1]);
 		if (idx > -1)
-			type = "superuser";
+			type = "director";
 		else
 			type = "employee";
 		
 		data.push({
 			'id': $(this).attr('id'),
-			'type': (idx > -1) ? "superuser" : "employee",
+			'type': (idx > -1) ? "director" : "employee",
 			'text': name[0],
-			'state' : { 'opened' : true, 'selected' : false },
+			'state' : (function() {
+					var state = { 'opened' : true, 'selected' : false};
+					nodes.some(function(node) {
+						if (node.data["data-loginname"] == name[1]) {
+							state.disabled = true;
+							return true;
+						}
+					})
+
+					return state;
+			})(),
 			'data': {
 				'data-loginname': name[1],
 			},
@@ -2261,6 +2301,9 @@ function initUserTree() {
 		//$("#jstree_userlist>ul").append('<li data-jstree=\'{"type":"' + type + '"}\' data-loginname="' + name[1] + '">' + name[0] + '</li>');
 		
 	jstree
+		.on("ready.jstree", function (e, data) {
+			//jstree.jstree(true).deselect_all(true);
+		})
 		.on("create_node.jstree", function (e, data) {
 			//alert(data.node.data.data);
 			saveActors();
@@ -2331,13 +2374,13 @@ function initUserTree() {
 							"label": "Set",
 							"action": function (obj) {
 								if (node.type == 'employee') {
-									tree.set_type(node, "superuser");
-									_superusers.push(node.data["data-loginname"]);
-								} else if (node.type == 'superuser') {
+									tree.set_type(node, "director");
+									_directors.push(node.data["data-loginname"]);
+								} else if (node.type == 'director') {
 									tree.set_type(node, "employee");
-									var idx = _superusers.indexOf(node.data["data-loginname"]);
+									var idx = _directors.indexOf(node.data["data-loginname"]);
 									if (idx > -1) {
-										_superusers.splice(idx, 1);
+										_directors.splice(idx, 1);
 									}									
 								}
 								
@@ -2346,15 +2389,17 @@ function initUserTree() {
 						},
 					};
 					
-					if (node.type == 'employee') {
-						items.set.label = $.i18n.prop("PromoteToSuperuser");
-					} else if (node.type == 'superuser') {
-						items.set.label = $.i18n.prop("DemoteToEmployee");
+					if (_directors.indexOf(userInfo[0].loginName) != -1) {
+						if (node.type == 'employee')
+							items.set.label = $.i18n.prop("PromoteToDirector");
+						else if (node.type == 'director')
+							items.set.label = $.i18n.prop("DemoteToEmployee");
 					} else {
-						delete item.set;
+						delete items.add;
+						delete items.remove;
+						delete items.set;
 					}
 
-				
 					return items;
 				}
 			},
@@ -2365,8 +2410,8 @@ function initUserTree() {
 				"employee" : {
 					"icon" : "images/user.png"
 				},
-				"superuser" : {
-					"icon" : "images/superuser.png"
+				"director" : {
+					"icon" : "images/director.png"
 				}
 			},
 			"themes" : {
@@ -2540,8 +2585,8 @@ function initResourceTree() {
 
 saveActors = function(actorsTarget) {	//actorsTarget == undefined - 'db'
 	var department, section, mamagers, manager, employee;
-	//var department = xmlHelper.createElementWithAttribute("department", 'superusers', $(_rootActors).find('department').attr('superusers'));
-	var department = xmlHelper.createElementWithAttribute("department", 'superusers', _superusers);
+	//var department = xmlHelper.createElementWithAttribute("department", 'directorss', $(_rootActors).find('department').attr('directorss'));
+	var department = xmlHelper.createElementWithAttribute("department", 'directors', _directors);
 	xmlHelper.appendNewLineElement(department, 1);
 	var sections = document.createElementNS("", "sections");
 	department.appendChild(sections);
@@ -3359,7 +3404,7 @@ function toggleLanguage(lang, dir) {
 			$("#userLegend legend, #aclLegend legend").text(($.i18n.prop('Legend')));
 			$("#userLegend>span:nth-of-type(1)").text(($.i18n.prop('User')));
 			$("#userLegend>span:nth-of-type(2)").text(($.i18n.prop('Manager')));
-			$("#userLegend>span:nth-of-type(3)").text(($.i18n.prop('Superuser')));
+			$("#userLegend>span:nth-of-type(3)").text(($.i18n.prop('Director')));
 			$("#aclLegend>span").text(($.i18n.prop('ReadWrite')));
 
 			$("#saveAccessControlSettings").button({ label: $.i18n.prop('SaveACSettings')});
