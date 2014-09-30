@@ -222,7 +222,7 @@ CREATE TABLE EmployeeList (
   EmployeeId varchar(45) NOT NULL,
   ManagerId varchar(45) DEFAULT NULL,
   OfficeId SMALLINT UNSIGNED DEFAULT NULL,
-  SuperUser tinyint NOT NULL DEFAULT '0',
+  Director tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (EmployeeId),
   KEY FK_OfficeId_idx (OfficeId),
   CONSTRAINT FK_OfficeId FOREIGN KEY (OfficeId) REFERENCES OfficeList (OfficeId) ON DELETE SET NULL ON UPDATE CASCADE

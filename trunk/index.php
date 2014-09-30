@@ -1,9 +1,11 @@
 <?php
 session_start();
-require_once('c:/simplesaml/lib/_autoload.php');
-//require_once('/var/www/html/simplesamlphp/lib/_autoload.php');
 
-//require_once('/home/y...../public_html/simplesamlphp/lib/_autoload.php');
+if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+	require_once('c:/simplesaml/lib/_autoload.php');
+else
+	require_once('/var/www/html/simplesamlphp/lib/_autoload.php');
+	//require_once('/home/y...../public_html/simplesamlphp/lib/_autoload.php');
 
 //$url = 'http://mewdesigncomps/index.html';
 
@@ -60,7 +62,6 @@ if ($idp == "SAML") {
 	<link rel="stylesheet" href="js/themes/default/style.css" />
 	<link rel="stylesheet" href="js/themes/default/style2.css" />
 	
-    <!--script src="js/jquery-1.11.0.min.js" type="text/javascript"></script-->
 	<!--script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script--> 
 	<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script> 
 
@@ -198,7 +199,7 @@ if ($idp == "SAML") {
 		<legend>Legend</legend>
 		<img src="images/user.png" alt="User"/><span style="vertical-align:top">User</span><br/>
 		<img src="images/manager.png" alt="Manager"/><span style="vertical-align:top">Manager</span><br/>
-		<img src="images/superuser.png" alt="Superuser"/><span style="vertical-align:top">Superuser</span><br/>
+		<img src="images/director.png" alt="Director"/><span style="vertical-align:top">Director</span><br/>
 	</fieldset>
 	<fieldset id="aclLegend" class="jstree-default" dir="ltr" style="display:none">
 		<legend>Legend</legend>

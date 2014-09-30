@@ -951,7 +951,7 @@ class DatabaseRepository {
 		$dbh = $this->connect();
 	
 		try {
-			$ds = $dbh->query("SELECT o.OfficeId, Name, ArabicName, EmployeeId, ManagerId, SuperUser FROM OfficeList AS o RIGHT OUTER JOIN EmployeeList AS e ON o.OfficeId = e.OfficeId ORDER BY e.OfficeId, e.ManagerId");
+			$ds = $dbh->query("SELECT o.OfficeId, Name, ArabicName, EmployeeId, ManagerId, Director FROM OfficeList AS o RIGHT OUTER JOIN EmployeeList AS e ON o.OfficeId = e.OfficeId ORDER BY e.OfficeId, e.ManagerId");
 		} catch (PDOException $e) {
 			throw new Exception('Failed to execute query: ' . $e->getMessage());
 		}
@@ -977,8 +977,8 @@ class DatabaseRepository {
 		foreach ($data as $row) {
 			$r = (object)$row;
 
-			if ($r -> SuperUser == 1)
-				$superusers[] = $r -> EmployeeId;
+			if ($r -> Director == 1)
+				$directors[] = $r -> EmployeeId;
 
 			if ($r -> OfficeId == null)
 				continue;
@@ -1053,7 +1053,7 @@ class DatabaseRepository {
 		$w->openMemory();
 		//$w->startDocument('1.0','UTF-8');
 		$w->startElement("department");
-		$w->writeAttribute("superusers", implode(",", $superusers));
+		$w->writeAttribute("directors", implode(",", $directors));
 		$w->startElement("sections");
 		foreach ($ar as $key => $value) {
 			$w->startElement("section");
@@ -1103,8 +1103,8 @@ class DatabaseRepository {
 		
 		$xml = simplexml_load_string($param);
 
-		$superusers = explode(",", $xml['superusers']);
-		//throw new Exception('Failed to execute/prepare query: ' . $superuser);
+		$directors = explode(",", $xml['directors']);
+		//throw new Exception('Failed to execute/prepare query: ' . $director);
 		
 		//$file = fopen("act.xml","w");
 		//fwrite($file, $param);
@@ -1118,13 +1118,13 @@ class DatabaseRepository {
 		$st = "delete from EmployeeList";
 		$st .= ";delete from OfficeList";
 		
-		$superuserval = 0;
+		$director_val = 0;
 		foreach ($xml->employees->employee as $employee) {
-			$superuserval = 0;
-			if (in_array($employee, $superusers))
-				$superuserval = 1;
+			$director_val = 0;
+			if (in_array($employee, $directors))
+				$director_val = 1;
 			
-			$st .= ";INSERT INTO EmployeeList (EmployeeId, SuperUser) VALUES ('{$employee}', $superuserval)";
+			$st .= ";INSERT INTO EmployeeList (EmployeeId, Director) VALUES ('{$employee}', $director_val)";
 
 			//$st .= ";INSERT INTO EmployeeList (EmployeeId) VALUES ('{$employee}')";
 		//throw new Exception('Failed to execute/prepare query: ' . $st);
