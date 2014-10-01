@@ -9,7 +9,7 @@ class DatabaseRepository {
 		date_default_timezone_set('Asia/Kuwait');
 		//date_default_timezone_set('UTC');
 		$ini = parse_ini_file("config.ini", true);
-		$domain = $ini[$defaultDomain];
+		$domain = $ini["defaultDomain"];
 		if ($_SERVER["USERDOMAIN"] != null && (strtolower($_SERVER["USERDOMAIN"]) == "mew" || strtolower($_SERVER["USERDOMAIN"]) == "adeliya"))
 			$domain = strtolower($_SERVER["USERDOMAIN"]);
 			
@@ -845,24 +845,27 @@ class DatabaseRepository {
 			//throw new Exception($param['application-date']);
 			
 			foreach ($param as $key => $val) {
-				//throw new Exception($key . " --- " . $val);
-			
+				//if ($key == 'feed-points')
+				//	throw new Exception($key . " --- " . $val);
+
 				if ($key == 'schema' || $key == 'table' || $key == 'area')
 					continue;
 
 				if ($key == 'application-date' || $key == 'load-date') {
 					if ($param[$key] != '')
 						$val = DateTime::createFromFormat('d/m/Y', $param[$key])->format('Y-m-d');
+					else
+						$val = null;
 				}
 				
-				if ($param[$key] != '') {
+				//if ($param[$key] != '') {
 					//$key = str_replace('-', '', $key);
 					$key = $this->hyphensToCamel($key);
 					$columnsToUpdate .= ($columnsToUpdate == "" ? '' : ',') . $key . " = '{$val}'";
 					$fields .= ($fields == "" ? '' : ',') . $key;
 					$values .= ($values == "" ? ':' : ',:') . $key;
 					$ar[$key] = $val;
-				}
+				//}
 
 				//if ($key == 'applicationdate')
 					//break;
@@ -875,6 +878,7 @@ class DatabaseRepository {
 			else
 				throw new Exception('Wrong form: ' . $param['schema']);;
 				
+			//throw new Exception($st);				
 			$ds = $dbh->prepare($st);
 			$ds->execute($ar);
 
@@ -1540,13 +1544,13 @@ class DatabaseRepository {
 				if ($key == 'schema' || $key == 'data-key-field' || $key == 'data-key-field-val')
 					continue;
 
-				if ($param[$key] != '') {
+				//if ($param[$key] != '') {
 					$key = $this->hyphensToCamel($key);
 					$columnsToUpdate .= ($columnsToUpdate == "" ? '' : ',') . $key . " = '{$val}'";
 					$fields .= ($fields == "" ? '' : ',') . $key;
 					$values .= ($values == "" ? ':' : ',:') . $key;
 					$ar[$key] = $val;
-				}
+				//}
 			} 			
 
 			$columnsToUpdate .= ", Date = '" . date('Y-m-d') . "'";
