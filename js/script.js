@@ -1236,6 +1236,7 @@ function start(userLoginName, actorsSource, func) {
 							initDepartmentTree();
 					} else {
 						initDepartmentTree(actorsSource);
+						initUserTree();
 					}
 
 					if (func != null) {
