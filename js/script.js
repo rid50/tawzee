@@ -5,7 +5,7 @@ var searchInterval;
 
 var _admin;
 
-var _directors;
+var _directors = [];
 var _userLoginName = "";
 
 var userInfo;
@@ -2269,35 +2269,38 @@ function initUserTree() {
 
 	var idx, type;
 	var data = [];
-	var nodes = $('#jstree').jstree(true).get_json("#", {flat:true});
-	a.forEach(function(name){
-		name = name.split('|');
-		idx = _directors.indexOf(name[1]);
-		if (idx > -1)
-			type = "director";
-		else
-			type = "employee";
-		
-		data.push({
-			'id': $(this).attr('id'),
-			'type': (idx > -1) ? "director" : "employee",
-			'text': name[0],
-			'state' : (function() {
-					var state = { 'opened' : true, 'selected' : false};
-					nodes.some(function(node) {
-						if (node.data["data-loginname"] == name[1]) {
-							state.disabled = true;
-							return true;
-						}
-					})
+	var nodes = $('#jstree').jstree(true);
+	if (nodes) {
+		nodes = nodes.get_json("#", {flat:true});
+		a.forEach(function(name){
+			name = name.split('|');
+			idx = _directors.indexOf(name[1]);
+			if (idx > -1)
+				type = "director";
+			else
+				type = "employee";
+			
+			data.push({
+				'id': $(this).attr('id'),
+				'type': (idx > -1) ? "director" : "employee",
+				'text': name[0],
+				'state' : (function() {
+						var state = { 'opened' : true, 'selected' : false};
+						nodes.some(function(node) {
+							if (node.data["data-loginname"] == name[1]) {
+								state.disabled = true;
+								return true;
+							}
+						})
 
-					return state;
-			})(),
-			'data': {
-				'data-loginname': name[1],
-			},
-		});
-	})	
+						return state;
+				})(),
+				'data': {
+					'data-loginname': name[1],
+				},
+			});
+		})
+	}
 		//$("#jstree_userlist>ul").append('<li data-jstree=\'{"type":"' + type + '"}\' data-loginname="' + name[1] + '">' + name[0] + '</li>');
 		
 	jstree
