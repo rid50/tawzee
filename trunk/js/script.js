@@ -900,8 +900,8 @@ function initAccordion() {
 								var lastRow;
 								var rand = Math.random();
 								result.forEach(function(r, index) {
-									$('<li><img src=\"fopen.php?applicationNumber=' + _applicationNumber + '&id=' + r.ID + '&thumb&rand=' + rand + '\" /></li>').appendTo('#carousel .slides');
-									$('<li><img data-id=\"' + r.ID + '\" src=\"fopen.php?applicationNumber=' + _applicationNumber + '&id=' + r.ID + '&thumb&rand=' + rand + '\" /></li>').appendTo('#slider .slides');
+									$('<li><img src=\"my_fopen.php?applicationNumber=' + _applicationNumber + '&id=' + r.ID + '&thumb&rand=' + rand + '\" /></li>').appendTo('#carousel .slides');
+									$('<li><img data-id=\"' + r.ID + '\" src=\"my_fopen.php?applicationNumber=' + _applicationNumber + '&id=' + r.ID + '&thumb&rand=' + rand + '\" /></li>').appendTo('#slider .slides');
 									$('<div><a href="#" data-id=\"' + index + '\">' + r.Title + '</a><br/></div>').appendTo("#attachmentTitles");
 								});
 
@@ -1489,7 +1489,7 @@ function loadUserSignatures() {
 			var lastRow;
 			var rand = Math.random();
 			result.forEach(function(r, index) {
-				$('<div class="drag" id="sign' + r.ID + '"><li><img class="img-signature" data-id="' + r.ID + '" src="fopen.php?id=' + r.ID + '&rand=' + rand + '" /></li></div>').appendTo('#signatureImages');
+				$('<div class="drag" id="sign' + r.ID + '"><li><img class="img-signature" data-id="' + r.ID + '" src="my_fopen.php?id=' + r.ID + '&rand=' + rand + '" /></li></div>').appendTo('#signatureImages');
 
 				//$('.img-signature2').css({
 				$('#sign' + r.ID).css({
@@ -1599,7 +1599,7 @@ function loadUserSignatures() {
 
 			//$('#signatureImages img').on("click", function(event){
 			//	$('<div class="certificate-images"><img src="images/certificate.png" />' +
-			//	'<a class="tooltip-for-image" href=""><span><img src="fopen.php?id=' + this.getAttribute("data-id") + '" /></span></a></div>').appendTo('#' + _currentForm);
+			//	'<a class="tooltip-for-image" href=""><span><img src="my_fopen.php?id=' + this.getAttribute("data-id") + '" /></span></a></div>').appendTo('#' + _currentForm);
 			//});
 			
 		})
@@ -1686,7 +1686,7 @@ function loadStampedSignatures() {
 					setUserSignatureAsDroppable(signObj, _currentForm + r.SignatureID);
 					//setUserSignatureAsDroppable($('#sign' + r.SignatureID), _currentForm + r.SignatureID);
 				} else {
-					$('<div id="foreign' + r.SignatureID + '"><li><img class="img-signature" data-id="' + r.SignatureID + '" src="fopen.php?id=' + r.SignatureID + '&rand=' + rand + '" /></li></div>').appendTo(target);
+					$('<div id="foreign' + r.SignatureID + '"><li><img class="img-signature" data-id="' + r.SignatureID + '" src="my_fopen.php?id=' + r.SignatureID + '&rand=' + rand + '" /></li></div>').appendTo(target);
 
 					$('#foreign' + r.SignatureID).css({
 						"left": r.LeftPos + "px",

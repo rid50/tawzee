@@ -10,7 +10,7 @@
 //$outFilePath = "c:/temp/file.log";
 
 if (isset($_GET['applicationNumber'])) {
-//	error_log((isset($_GET['applicationNumber']) ? "true" : "false") . "\r\n", 3, "errors.log");
+	//error_log((isset($_GET['applicationNumber']) ? "true" : "false") . "\r\n", 3, "errors.log");
 	header("Content-Type: image/jpg");
 
 	//$header = "Content-Type: image/jpg";
