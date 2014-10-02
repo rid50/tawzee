@@ -27,12 +27,12 @@ if (isset($_GET['id']) || isset($_POST['id'])) {
 	}
 }
 
-$domain = 'mew';
+$ini = parse_ini_file("config.ini", true);
+$domain = $ini["defaultDomain"];
+
 if ($_SERVER["USERDOMAIN"] != null && (strtolower($_SERVER["USERDOMAIN"]) == "mew" || strtolower($_SERVER["USERDOMAIN"]) == "adeliya"))
 	$domain = strtolower($_SERVER["USERDOMAIN"]);
 	
-$ini = parse_ini_file("config.ini", true);
-//$dbName = "tawsilat";
 $dsn = $ini[$domain]["dsn"];
 if (!preg_match('/;$/', $dsn))
 	$dsn .= ';';
