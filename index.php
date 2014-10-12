@@ -119,7 +119,7 @@ if ($idp == "SAML") {
 			<div class="floatRight">
 				<a href="#" id="flagUK"><img src="images/FlagUK.png" alt="English" title="English" /></a>
 				<a href="#" id="flagKuwait"><img src="images/FlagKuwait.png" alt="Arabic" title="Arabic" /></a>
-				<div style="float:inherit; margin-top:6px"><span>User</span>:&nbsp;<select id="userLoginSelect" style="width:140px"></select></div>
+				<div id="userLoginSelectDiv" style="float:inherit; margin-top:6px"><span>User</span>:&nbsp;<select id="userLoginSelect" style="width:140px"></select></div>
 			</div>
 			
         </header>
