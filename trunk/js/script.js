@@ -642,8 +642,13 @@ $(document).ready(function () {
 
 	setEventToDeleteRowButtons();
 			
+			
 	start(_userLoginName, 'db', null);	// 'db' - get Actors from database
 
+	if (_admin != userInfo[0].loginName) {
+		$('#userLoginSelectDiv').hide();
+	}			
+	
 	if (!$("#main-div").hasClass("accessRejected")) {
 		initAccordion();
 		getAreas();
@@ -1325,7 +1330,7 @@ function getUserIdentities(url, json, func) {
 						else
 							alert("Unknown user");
 					else
-						alert(data[0].error);
+						alert("Error: " + data[0].error);
 					return;
 				}
 			}

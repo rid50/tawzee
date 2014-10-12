@@ -22,20 +22,22 @@ if ($bind) {
 	try {
 		foreach ($assoc_ar as $key => $value) {
 			foreach ($value as $key2 => $value2) {
-				if ($value2 == "") {
-					if (isset($_SERVER["AUTH_USER"])) {
+				if ($value2 == "") {	
+					if (isset($_SERVER["AUTH_USER"]) && $_SERVER["AUTH_USER"] != '') {
 						$filter = "samaccountname=" . array_pop(explode('\\', $_SERVER["AUTH_USER"]));
 					} else {
-						if (isset($_SESSION['loginName']))
-							//$filter = "samaccountname=" . array_pop(explode('\\', $_SESSION['loginName']));
+						if (isset($_SESSION['loginName'])) {
 							$filter = "samaccountname=" . $_SESSION['loginName'];
-						else
+						} else {
 							$filter = "samaccountname=basma";
+						}
 					}
 				} else {
 					$filter = "samaccountname=" . $value2;
 				}
 
+			//throw new Exception($filter);
+				
 				try {
 					$ldap_result = ldap_search($conn, $base_dn, $filter, $attributes) or die ("Error in search query");
 					$entries = ldap_get_entries($conn, $ldap_result);
