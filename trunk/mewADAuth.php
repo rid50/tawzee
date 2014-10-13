@@ -104,7 +104,7 @@ class sspmod_mewmodule_Auth_Source_mewADAuth extends sspmod_core_Auth_UserPassBa
 
 		//throw new Exception("entries: " . $entries["count"]);
 		if ($entries["count"] == 0) {
-			SimpleSAML_Logger::warning('mewmodule: Could not find user ' . var_export($loginName, TRUE) . '.');
+			//SimpleSAML_Logger::warning('mewmodule: Could not find user ' . var_export($loginName, TRUE) . '.');
 			throw new SimpleSAML_Error_Error('WRONGUSERPASS');
 		} else {
 			if ($password == '')
@@ -122,7 +122,7 @@ class sspmod_mewmodule_Auth_Source_mewADAuth extends sspmod_core_Auth_UserPassBa
 				$_SESSION['loginName'] = $loginName;
 				return $attributes;
 			} else {
-				SimpleSAML_Logger::warning('mewmodule: Wrong password ' . var_export($loginName, TRUE) . '.');
+				//SimpleSAML_Logger::warning('mewmodule: Wrong password ' . var_export($loginName, TRUE) . '.');
 				throw new SimpleSAML_Error_Error('WRONGUSERPASS');
 			}
 		}
