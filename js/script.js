@@ -2221,11 +2221,21 @@ initDepartmentTree = function(actorsSource) {
 						}
 					};
 					
-					if (node.type != 'department') {
+					if (_directors.indexOf(userInfo[0].loginName) == -1) {
 						delete items.rename;
 						delete items.create;
+						if (node.type == 'department')
+							delete items.remove;
+					} else {
+						if (node.type != 'department') {
+							delete items.rename;
+							delete items.create;
+						}
 					}
 
+					//if (_directors.indexOf(userInfo[0].loginName) == -1)
+					//	delete items.create;
+					
 //					if ($('#jstree_resourcelist').is(":visible")) {
 //						items.create._disabled = true;
 //					}
