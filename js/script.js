@@ -669,8 +669,8 @@ $(document).ready(function () {
 		}
 
 		if (_admin != userInfo[0].loginName) {
-			$('#userImportButton').attr('disabled', 'disabled');		// user assignment tab
-			$('#userExportButton').attr('disabled', 'disabled');		// user assignment tab
+			$('#userImportButton').attr('disabled', 'disabled').fadeTo("fast", .5);		// user assignment tab
+			$('#userExportButton').attr('disabled', 'disabled').fadeTo("fast", .5);		// user assignment tab
 		}
 		
 		$('#accordion').show();
