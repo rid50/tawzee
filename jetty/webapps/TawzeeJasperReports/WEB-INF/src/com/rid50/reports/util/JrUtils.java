@@ -68,7 +68,7 @@ public class JrUtils {
 			//	reqUrl += "/" + request.getContextPath();
 			
 			//String hostName = InetAddress.getLocalHost().getHostName();
-			URL url = new URL("http://" + reqUrl + "/fopen.php?id=" + id);
+			URL url = new URL("http://" + reqUrl + "/my_fopen.php?id=" + id);
 
 			//LOG.info("Id: " + id);
 			

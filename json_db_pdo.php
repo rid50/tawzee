@@ -29,7 +29,7 @@ try {
 header('Cache-Control: no-cache, must-revalidate');
 header('Expires: Mon, 1 Jan 1990 00:00:00 GMT');
 
-if ($func != "getActors") {
+if ($func != "getActors" || isset($result[0]['error'])) {
 	header('Content-type: application/json; charset=utf-8');
 	$json = json_encode($result);
 	print(isset($_GET['callback']) ? "{$_GET['callback']}($json)" : $json);

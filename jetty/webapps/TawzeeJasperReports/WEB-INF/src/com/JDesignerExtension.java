@@ -166,8 +166,6 @@ public class JDesignerExtension {
 		
 				//parameters.put(parameterName, com.rid50.reports.util.JrUtils.getSignature(Integer.toString(signatureID), scale, resolution));
 				
-				//LOG.info("Image Bottom Y coordinate: " + (bottomY - band.getHeight()));
-				
 				//JRDesignStyle style = new JRDesignStyle();
 				//style.setDefault(true);
 				//style.setBackcolor(new Color(0xff, 0x00, 0x00));
@@ -384,6 +382,7 @@ public class JDesignerExtension {
 //		    	LOG.info("Image->height: " + ((JRDesignImage)child).getHeight());		    	
 //		    }
 		} catch (Exception e) {
+			//LOG.info("Error: " + e.toString());
 			throw new Exception(e.toString());
 		}
 	}
