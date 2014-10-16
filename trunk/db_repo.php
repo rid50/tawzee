@@ -54,8 +54,19 @@ class DatabaseRepository {
 		}
 */
 
+		$tns = "  
+		(DESCRIPTION =
+			(ADDRESS_LIST =
+			  (ADDRESS = (PROTOCOL = TCP)(HOST = homam.mew.gov.kw)(PORT = 1521))
+			)
+			(CONNECT_DATA =
+			  (SERVICE_NAME = tawzee)
+			)
+		  )
+			   ";
 
-		try {
+
+		if (substr($this->dsn, 0, 3) != 'oci') {
 			$dsn = explode(';', $this->dsn, 2);
 			if ($dbName == "") {
 				if ($dsn[1] == "")
@@ -64,8 +75,18 @@ class DatabaseRepository {
 					$connection = strtolower($this->dsn);
 			} else
 				$connection = strtolower($dsn[0]) . ';dbname=' . $dbName;
-//			throw new Exception($connection);
-			//$dbh = new PDO($this->dsn . 'dbname=' . $dbName, $this->username, $this->password);
+		} else
+			$connection = $this->dsn;
+		
+		//$dbh = new PDO($this->dsn . 'dbname=' . $dbName, $this->username, $this->password);
+		//$connection = "oci:dbname=" . $tns;
+		
+		//$connection = "oci:dbname=//homam.mew.gov.kw:1521/tawzee";
+		//$this->username = "tawzee"; $this->password = "tawzee";
+
+		//throw new Exception($connection);
+			   
+		try {
 			$dbh = new PDO($connection, $this->username, $this->password);
 		} catch (PDOException $e) {
 			throw new Exception('Failed to connect to \'' .	$this->dsn . '\': '. $e->getMessage());
@@ -79,6 +100,8 @@ class DatabaseRepository {
 		$driver = explode(':', $this->dsn, 2);
 		$driver = strtolower($driver[0]);
 
+		//throw new Exception($driver);
+		
 		/* Driver specific initialization. */
 		switch ($driver) {
 			case 'mysql':
@@ -89,8 +112,13 @@ class DatabaseRepository {
 				/* Use UTF-8. */
 				$dbh->exec("SET NAMES 'UTF8'");
 				break;
+			case 'oci':
+				//$dbh->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER); 
+				/* Use UTF-8. */
+				//$dbh->exec("SET NAMES 'UTF8'");
+				break;
 		}
-
+		
 		return $dbh;
 	}
 	
@@ -121,6 +149,8 @@ class DatabaseRepository {
 			throw new Exception('Failed to prepare query: ' . $e->getMessage());
 		}
 
+		//throw new Exception('SELECT loginName, upn, displayName FROM UserRepository WHERE loginName = :loginName');
+		
 		//if (isset($_POST['loginNames']))
 		//	$assoc_ar = json_decode($_POST['loginNames'], true);
 		//else
@@ -432,7 +462,6 @@ class DatabaseRepository {
 		$dbh = $this->connect();
 		try {
 			$st = "SELECT ID, AreaName FROM Area ORDER BY AreaName ASC";
-
 			$ds = $dbh->query($st);
 		} catch (PDOException $e) {
 			throw new Exception('Failed to execute/prepare query: ' . $e->getMessage());
@@ -953,21 +982,30 @@ class DatabaseRepository {
 	
 	public function getActors() {
 		$dbh = $this->connect();
-	
+
+		$driver = explode(':', $this->dsn, 2);
+		$driver = strtolower($driver[0]);
+		$nullfirst = "";
+		if ($driver == 'oci')
+			$nullfirst = " NULLS FIRST";
+		
 		try {
-			$ds = $dbh->query("SELECT o.OfficeId, Name, ArabicName, EmployeeId, ManagerId, Director FROM OfficeList AS o RIGHT OUTER JOIN EmployeeList AS e ON o.OfficeId = e.OfficeId ORDER BY e.OfficeId, e.ManagerId");
+			//$ds = $dbh->query("SELECT o.OfficeId, Name, ArabicName, EmployeeId, ManagerId, Director FROM OfficeList AS o RIGHT OUTER JOIN EmployeeList AS e ON o.OfficeId = e.OfficeId ORDER BY e.OfficeId, e.ManagerId");
+			$ds = $dbh->query("SELECT o.OfficeId AS \"OfficeId\", Name AS \"Name\", ArabicName AS \"ArabicName\", EmployeeId AS \"EmployeeId\", ManagerId AS \"ManagerId\", Director AS \"Director\" FROM OfficeList o RIGHT OUTER JOIN EmployeeList e ON o.OfficeId = e.OfficeId ORDER BY e.OfficeId ASC " . $nullfirst . ", e.ManagerId ASC " . $nullfirst);
 		} catch (PDOException $e) {
 			throw new Exception('Failed to execute query: ' . $e->getMessage());
 		}
-		
+			
+		//throw new Exception("SELECT o.OfficeId AS \"OfficeId\", Name AS \"Name\", ArabicName AS \"ArabicName\", EmployeeId AS \"EmployeeId\", ManagerId AS \"ManagerId\", Director AS \"Director\" FROM OfficeList o RIGHT OUTER JOIN EmployeeList e ON o.OfficeId = e.OfficeId ORDER BY e.OfficeId ASC " . $nullfirst . ", e.ManagerId ASC " . $nullfirst);
+			
 		try {
 			$data = $ds->fetchAll(PDO::FETCH_ASSOC);
 		} catch (PDOException $e) {
 			throw new Exception('Failed to fetch result set: ' . $e->getMessage());
 		}
-		
+
 		try {
-			$ds = $dbh->query("SELECT o.OfficeId, Name, ArabicName FROM OfficeList AS o LEFT OUTER JOIN EmployeeList AS e ON o.OfficeId = e.OfficeId WHERE e.OfficeId IS NULL ORDER BY e.OfficeId");
+			$ds = $dbh->query("SELECT o.OfficeId AS \"OfficeId\", Name AS \"Name\", ArabicName AS \"ArabicName\" FROM OfficeList o LEFT OUTER JOIN EmployeeList e ON o.OfficeId = e.OfficeId WHERE e.OfficeId IS NULL ORDER BY e.OfficeId ASC " . $nullfirst);
 		} catch (PDOException $e) {
 			throw new Exception('Failed to execute query: ' . $e->getMessage());
 		}
@@ -977,16 +1015,25 @@ class DatabaseRepository {
 		} catch (PDOException $e) {
 			throw new Exception('Failed to fetch result set: ' . $e->getMessage());
 		}
-
+		
+		//$case = $dbh->getDbConnection()->getPdoInstance()->getAttribute(PDO::ATTR_CASE); 		
+		//throw new Exception($case);
 		foreach ($data as $row) {
 			$r = (object)$row;
-
+			
+			//$str = print_r($row, true);
+			//throw new Exception($str);
+			
 			if ($r -> Director == 1)
 				$directors[] = $r -> EmployeeId;
 
+			//$str = print_r($r, true);
+			//throw new Exception($str);
+				
 			if ($r -> OfficeId == null)
 				continue;
 
+				
 			if ($r -> ManagerId == null) {
 				if (!isset($ar[$r -> OfficeId]))
 					$ar[$r -> OfficeId] = array('name' => $r -> Name, 'arname' => $r -> ArabicName);
@@ -994,7 +1041,7 @@ class DatabaseRepository {
 			} else
 				$ar[$r -> OfficeId][$r -> ManagerId][] = $r -> EmployeeId;
 		}
-		
+
 		foreach ($data2 as $row) {
 			$r = (object)$row;
 
@@ -1049,8 +1096,9 @@ class DatabaseRepository {
 	//	.....................		
 		
 */		
-//		$str = print_r($ar, false);
-//		throw new Exception($str);
+		//$str = print_r($ar, true);
+		//throw new Exception($str);
+		//throw new Exception((string)count($ar));
 		
 		
 		$w = new XMLWriter();
