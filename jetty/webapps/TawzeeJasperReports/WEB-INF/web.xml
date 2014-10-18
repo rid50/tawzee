@@ -15,8 +15,38 @@
 		<url-pattern>/JasperServlet</url-pattern>
 	</servlet-mapping>
 	
+    <servlet>
+        <servlet-name>CGI</servlet-name>
+		<servlet-class>JasperServletCGI</servlet-class>
+        <!--servlet-class>org.eclipse.jetty.servlets.CGI</servlet-class-->
+        <init-param>
+            <param-name>Path</param-name>
+            <param-value>WEB-INF/cgi-bin</param-value>
+        </init-param>
+        <init-param>
+            <param-name>cgibinResourceBaseIsRelative</param-name>
+            <param-value>true</param-value>
+        </init-param>      
+        <!--init-param> 
+            <param-name>commandPrefix</param-name> 
+            <param-value>/usr/bin/python</param-value> 
+        </init-param-->         
+        <init-param>
+            <param-name>cgibinResourceBase</param-name>
+            <param-value>WEB-INF/cgi-bin</param-value>
+        </init-param>
+        <async-supported>true</async-supported>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+        
+    <servlet-mapping>
+        <servlet-name>CGI</servlet-name>
+        <url-pattern>/cgi-bin/*</url-pattern>
+    </servlet-mapping>  
+	
 	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
 	
 </web-app>

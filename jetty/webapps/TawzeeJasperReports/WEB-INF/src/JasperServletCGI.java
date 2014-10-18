@@ -1,4 +1,4 @@
-import org.eclipse.jetty.servlets.CGI
+import org.eclipse.jetty.servlets.CGI;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
