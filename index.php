@@ -4,7 +4,7 @@ session_start();
 if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
 	require_once('c:/simplesaml/lib/_autoload.php');
 else
-	require_once('/var/www/html/simplesamlphp/lib/_autoload.php');
+	require_once('/var/www/simplesamlphp/lib/_autoload.php');
 	//require_once('/home/y...../public_html/simplesamlphp/lib/_autoload.php');
 
 //$url = 'http://mewdesigncomps/index.html';
@@ -169,7 +169,7 @@ if ($idp == "SAML") {
 					</div>
 					<span>User Assignment</span>
 					<div>
-						<fieldset id="usersImportExport" style="text-align:center;">
+						<fieldset id="userImportExport" style="text-align:center;">
 							<legend>Users</legend>
 							<button id="userImportButton">Import</button>
 							<button id="userExportButton">Export</button>
