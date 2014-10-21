@@ -20,7 +20,9 @@ var _currentForm;
 var _formButtonSet;
 var _applicationNumber = "";
 var	_jasperReportsServerConnection = false;
-var _jasperReportsURL = "http://" + location.hostname +  ":8084/TawzeeJasperReports/cgi-bin/JasperServletCGI";
+var _jasperReportsURL = "http://" + location.hostname +  ":8084/TawzeeJasperReports/JasperServlet";
+var _runJettyEmbedded = "http://" + location.hostname +  "/jetty/webapps/TawzeeJasperReports/WEB-INF/cgi-bin/RunJettyEmbedded.bat";
+
 var _slider; 
 
 var actor_enum = {
