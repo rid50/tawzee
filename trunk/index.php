@@ -23,9 +23,15 @@ $_SESSION['ini_lang'] = $ini["lang"];
 if ($idp == "SAML") {
 	if ($idpSource == "DB")
 		$as = new SimpleSAML_Auth_Simple('mewSQLAuth');
-	else
-		$as = new SimpleSAML_Auth_Simple('mewADAuth');
-		
+	else {
+		//print(strpos($_SERVER["HTTP_VIA"], 'mew.gov.kw'));
+		//return;
+		if ($_SERVER["HTTP_VIA"] != null && strpos($_SERVER["HTTP_VIA"], 'mew.gov.kw') !== false)
+			$as = new SimpleSAML_Auth_Simple('mewADAuth');
+		else
+			$as = new SimpleSAML_Auth_Simple('mewSQLAuth');
+	}
+	
 	$as->requireAuth();
 	$attributes = $as->getAttributes();
 	//$url = $url . '?loginName=' . $attributes["LoginName"];

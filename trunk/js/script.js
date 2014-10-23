@@ -21,7 +21,7 @@ var _formButtonSet;
 var _applicationNumber = "";
 var	_jasperReportsServerConnection = false;
 var _jasperReportsURL = "http://" + location.hostname +  ":8084/TawzeeJasperReports/JasperServlet";
-var _runJettyEmbedded = "http://" + location.hostname +  "/jetty/webapps/TawzeeJasperReports/WEB-INF/cgi-bin/RunJettyEmbedded.bat";
+var _runJettyEmbedded = "http://tawzee/jetty/webapps/TawzeeJasperReports/WEB-INF/cgi-bin/RunJasperReportsCGI.bat";
 
 var _slider; 
 
