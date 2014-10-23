@@ -6,3 +6,4 @@ C:\tawzee\BatchFileExecution\bin\BatchFileExecution.dll
 C:\tawzee\BatchFileExecution\bin\BatchFileExecution.pdb
 C:\tawzee\BatchFileExecution\obj\Debug\BatchFileExecution.dll
 C:\tawzee\BatchFileExecution\obj\Debug\BatchFileExecution.pdb
+C:\tawzee\BatchFileExecution\obj\Debug\BatchFileExecution.csprojResolveAssemblyReference.cache
