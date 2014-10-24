@@ -51,7 +51,8 @@ public class JDesignerExtension {
 		_connection = conn;
 	}
 
-	public void addImages(JasperDesign design, HashMap<String, Object> parameters, HttpServletRequest request) throws Exception {
+	//public void addImages(JasperDesign design, HashMap<String, Object> parameters, HttpServletRequest request) throws Exception {
+	public void addImages(JasperDesign design, HashMap<String, Object> parameters, String reqUrl) throws Exception {
 		
 		JRDesignParameter parameter = null;
 		JRDesignExpression expression = null;
@@ -144,7 +145,8 @@ public class JDesignerExtension {
 				parameter.setValueClass(java.awt.Image.class);
 				design.addParameter(parameter);
 				
-				parameters.put(parameterName, com.rid50.reports.util.JrUtils.getSignature(Integer.toString(signatureID), request));
+				//parameters.put(parameterName, com.rid50.reports.util.JrUtils.getSignature(Integer.toString(signatureID), request));
+				parameters.put(parameterName, com.rid50.reports.util.JrUtils.getSignature(Integer.toString(signatureID), reqUrl));
 				
 				//scale = false;
 				

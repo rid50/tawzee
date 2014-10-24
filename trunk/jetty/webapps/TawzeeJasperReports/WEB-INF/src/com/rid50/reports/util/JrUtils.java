@@ -50,11 +50,13 @@ public class JrUtils {
 		//return true;
 	}
 
-	public static BufferedImage getSignature(String id, HttpServletRequest request) throws Exception {
-		return getSignature(id, false, 0, request);
+	//public static BufferedImage getSignature(String id, HttpServletRequest request) throws Exception {
+	public static BufferedImage getSignature(String id, String reqUrl) throws Exception {
+		return getSignature(id, false, 0, reqUrl);
 	}
 	
-	public static BufferedImage getSignature(String id, boolean scale, int resolution, HttpServletRequest request) throws Exception {
+	//public static BufferedImage getSignature(String id, boolean scale, int resolution, HttpServletRequest request) throws Exception {
+	public static BufferedImage getSignature(String id, boolean scale, int resolution, String reqUrl) throws Exception {
 		try {
 			// Log log4j configuration
 			/*
@@ -63,7 +65,7 @@ public class JrUtils {
 	        PropertyConfigurator.configure(log4jProperties);
 			*/
 			
-			String reqUrl = request.getServerName();
+			//String reqUrl = request.getServerName();
 			//if (request.getContextPath() != "")
 			//	reqUrl += "/" + request.getContextPath();
 			
