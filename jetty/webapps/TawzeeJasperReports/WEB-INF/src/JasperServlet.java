@@ -84,7 +84,8 @@ public class JasperServlet extends HttpServlet {
 				parameters.put("ReportName", rName);
 				JDesignerExtension jd = new JDesignerExtension(conn);
 				// jd.addParameters(parameters);
-				jd.addImages(design, parameters, request);
+				//jd.addImages(design, parameters, request);
+				jd.addImages(design, parameters, request.getServerName());
 			}
 			
 			JasperReport report = JasperCompileManager.compileReport(design);

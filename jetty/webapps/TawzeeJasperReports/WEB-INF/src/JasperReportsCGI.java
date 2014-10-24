@@ -9,10 +9,13 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
@@ -43,17 +46,24 @@ public class JasperReportsCGI {
 
 	public static void main( String args[] ) throws IOException {
 		
+		String server_name = System.getProperty("cgi.server_name");
 		String query_string = System.getProperty("cgi.query_string");
+		//System.out.println(server_name);
+		//System.out.println(query_string);
 		//String query_string = "reportName=TawzeeApplicationForm&applicationNumber=12345&keyFieldValue=12345&renderAs=png";
 		//String url = "http://www.example.com/something.html?one=11111&two=22222&three=33333";
 		List<NameValuePair> params = URLEncodedUtils.parse(query_string, Charset.forName("UTF8"));
-
-		System.out.println(query_string);
+		Map<String, String> map = new HashMap<String, String>();
 		for (NameValuePair param : params) {
-			  System.out.println(param.getName() + " : " + param.getValue());
-		}		
-/*		
+			map.put(param.getName(), param.getValue());
+			//System.out.println(param.getName() + " : " + param.getValue());
+		}
+		
+		//System.out.println(map.get("reportName"));
+		
+		
 		try {
+/*			
 			if (request.getParameter("CheckConnection") != null) {
 				response.addHeader("Access-Control-Allow-Origin", "*");
 				response.addHeader("Access-Control-Allow-Methods",
@@ -63,12 +73,17 @@ public class JasperReportsCGI {
 				response.addHeader("Access-Control-Max-Age", "1728000");
 				return;
 			}
-			
-			String rName = request.getParameter("reportName");
-			String applicationNumber = request.getParameter("applicationNumber");
-			String keyFieldValue = request.getParameter("keyFieldValue");
-			String renderAs = request.getParameter("renderAs");
+*/			
+			//String rName = request.getParameter("reportName");
+			//String applicationNumber = request.getParameter("applicationNumber");
+			//String keyFieldValue = request.getParameter("keyFieldValue");
+			//String renderAs = request.getParameter("renderAs");
 
+			String rName = map.get("reportName");
+			String applicationNumber = map.get("applicationNumber");
+			String keyFieldValue = map.get("keyFieldValue");
+			String renderAs = map.get("renderAs");
+			
 			// Connect to DB and compile JRXML file
 			JasperReportsWrapper wrapper = new JasperReportsWrapper();
 			Connection conn = wrapper.getConnection();
@@ -77,13 +92,15 @@ public class JasperReportsCGI {
 	            System.out.println("Connection failed!");
 	            return;
 	        }
+
+	        String path = JasperReportsCGI.class.getResource("").getPath();
+	        path = path.substring(0, path.lastIndexOf('/', path.length() - 2));
+	        path = path.substring(0, path.lastIndexOf('/', path.length()));
+	        //System.out.println(path);
+	        
+			//String filePath = getServletContext().getRealPath(rName + ".jrxml");
+			String filePath = path + "/" + rName + ".jrxml";
 			
-			// String filePath = getServletContext().getRealPath(rName +  ".jasper");
-			// JasperReport report = (JasperReport)JRLoader.loadObjectFromFile(filePath);
-
-			String filePath = getServletContext().getRealPath(rName + ".jrxml");
-			// JasperReport report = wrapper.compileJRXMLFile(filePath);
-
 			HashMap<String, Object> parameters = new HashMap<String, Object>();
 			parameters.put("ApplicationNumber", applicationNumber);
 
@@ -94,7 +111,9 @@ public class JasperReportsCGI {
 				parameters.put("ReportName", rName);
 				JDesignerExtension jd = new JDesignerExtension(conn);
 				// jd.addParameters(parameters);
-				jd.addImages(design, parameters, request);
+
+				//jd.addImages(design, parameters, request);
+				jd.addImages(design, parameters, server_name);
 			}
 			
 			JasperReport report = JasperCompileManager.compileReport(design);
@@ -108,8 +127,14 @@ public class JasperReportsCGI {
 					wrapper.getConnection());
 
 			if (renderAs.equals("png")) {
-				response.setContentType("image/png");
+				//response.setContentType("image/png");
+				//System.out.println("Content-Type: image/png\n\n");
+				System.out.println("Content-Type: text/plain\n\n");
 
+				System.out.println("renderAs: " + renderAs);
+				if (true)
+					return;
+				
 				//Image image = JasperPrintManager.printPageToImage(print, 0, 2.0f);
 				BufferedImage image = new BufferedImage(
 						print.getPageWidth() + 1, print.getPageHeight() + 1,
@@ -142,31 +167,36 @@ public class JasperReportsCGI {
 				// exporter.setParameter(JRExporterParameter.OFFSET_Y, new
 				// Integer(1));
 
-				OutputStream out = response.getOutputStream();
-				exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, out);
+				//OutputStream out = response.getOutputStream();
+				//exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, out);
+				exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, System.out);
 
 				// OutputStream out = new FileOutputStream("kuku-test.jpg");
 				// exporter.setParameter(JRExporterParameter.OUTPUT_FILE, out);
 
 				exporter.exportReport();
 
-				ImageIO.write((BufferedImage) image, "png", out);
-				out.close();
+				//ImageIO.write((BufferedImage) image, "png", out);
+				ImageIO.write((BufferedImage) image, "png", System.out);
+				System.out.close();
 			} else {
-				response.setContentType("application/pdf");
+				//response.setContentType("application/pdf");
+				System.out.println("Content-Type: application/pdf\n\n");
 
 				// Export PDF file to browser window
 				JRPdfExporter exporter = new JRPdfExporter();
 				exporter.setParameter(JRExporterParameter.CHARACTER_ENCODING,
 						"UTF-8");
 				exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
+				//exporter.setParameter(JRExporterParameter.OUTPUT_STREAM,
+				//		response.getOutputStream());
 				exporter.setParameter(JRExporterParameter.OUTPUT_STREAM,
-						response.getOutputStream());
+						System.out);
 				exporter.exportReport();
-			}
+			}			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-*/		
+		
 	}
 }
