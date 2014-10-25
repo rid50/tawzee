@@ -129,11 +129,11 @@ public class JasperReportsCGI {
 			if (renderAs.equals("png")) {
 				//response.setContentType("image/png");
 				//System.out.println("Content-Type: image/png\n\n");
-				System.out.println("Content-Type: text/plain\n\n");
+				//System.out.println("Content-Type: text/plain\n\n");
 
-				System.out.println("renderAs: " + renderAs);
-				if (true)
-					return;
+				//System.out.println("renderAs: " + renderAs);
+				//if (true)
+				//	return;
 				
 				//Image image = JasperPrintManager.printPageToImage(print, 0, 2.0f);
 				BufferedImage image = new BufferedImage(

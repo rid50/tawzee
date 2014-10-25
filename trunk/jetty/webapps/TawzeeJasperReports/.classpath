@@ -18,5 +18,7 @@
 	<classpathentry kind="lib" path="C:/tawzee/jetty/lib/jetty-servlet-9.1.2.v20140210.jar"/>
 	<classpathentry kind="lib" path="C:/tawzee/jetty/lib/jetty-servlets-9.1.2.v20140210.jar"/>
 	<classpathentry kind="lib" path="C:/tawzee/jetty/lib/jetty-util-9.1.2.v20140210.jar"/>
+	<classpathentry exported="true" kind="con" path="net.sf.jasperreports.JR_CONTAINER"/>
+	<classpathentry exported="true" kind="con" path="com.jaspersoft.server.JRS_CONTAINER"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

@@ -13,6 +13,10 @@ namespace BatchFileExecution
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            HttpResponse response = this.Response;
+            response.ContentType = "image/png";
+
+
             //tawzee:8084/TawzeeJasperReports/JasperServlet?reportName=TawzeeApplicationForm&applicationNumber=12345&keyFieldValue=12345&renderAs=png
             //string filepath = Server.MapPath(@"C:\tawzee\jetty\webapps\TawzeeJasperReports\WEB-INF\cgi-bin\RunJettyEmbedded.bat");
             //string filepath = @"C:\tawzee\jetty\webapps\TawzeeJasperReports\WEB-INF\cgi-bin\RunJettyEmbedded.bat";
@@ -63,7 +67,7 @@ namespace BatchFileExecution
 
             sOut.Close();
             sErr.Close();
-
+/*
             // Write out the results.
             string fmtStdOut = "<font face=courier size=0>{0}</font>";
             if (!String.IsNullOrEmpty(output))
@@ -78,7 +82,7 @@ namespace BatchFileExecution
             }
 
             this.Response.Write(String.Format(fmtStdOut, "ExitCode: " + exitCode.ToString()));
-
+*/
 /*
             StreamReader sr = File.OpenText(filepath);
             //StreamWriter sw = proc.StandardInput;
