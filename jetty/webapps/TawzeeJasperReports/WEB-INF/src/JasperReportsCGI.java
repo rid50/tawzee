@@ -59,7 +59,10 @@ public class JasperReportsCGI {
 			//System.out.println(param.getName() + " : " + param.getValue());
 		}
 		
+		//System.out.println("Content-Type: text/html\n\n");
 		//System.out.println(map.get("reportName"));
+        //if (true)
+        //	return;
 		
 		
 		try {
@@ -96,7 +99,11 @@ public class JasperReportsCGI {
 	        String path = JasperReportsCGI.class.getResource("").getPath();
 	        path = path.substring(0, path.lastIndexOf('/', path.length() - 2));
 	        path = path.substring(0, path.lastIndexOf('/', path.length()));
+	        
+			//System.out.println("Content-Type: text/html\n\n");
 	        //System.out.println(path);
+	        //if (true)
+	        //	return;
 	        
 			//String filePath = getServletContext().getRealPath(rName + ".jrxml");
 			String filePath = path + "/" + rName + ".jrxml";
@@ -128,7 +135,7 @@ public class JasperReportsCGI {
 
 			if (renderAs.equals("png")) {
 				//response.setContentType("image/png");
-				//System.out.println("Content-Type: image/png\n\n");
+				System.out.println("Content-Type: image/png\n\n");
 				//System.out.println("Content-Type: text/plain\n\n");
 
 				//System.out.println("renderAs: " + renderAs);
