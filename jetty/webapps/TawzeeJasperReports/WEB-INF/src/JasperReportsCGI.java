@@ -135,7 +135,7 @@ public class JasperReportsCGI {
 
 			if (renderAs.equals("png")) {
 				//response.setContentType("image/png");
-				System.out.println("Content-Type: image/png\n\n");
+				System.out.println("Content-Type: image/png\n");
 				//System.out.println("Content-Type: text/plain\n\n");
 
 				//System.out.println("renderAs: " + renderAs);
@@ -185,10 +185,10 @@ public class JasperReportsCGI {
 
 				//ImageIO.write((BufferedImage) image, "png", out);
 				ImageIO.write((BufferedImage) image, "png", System.out);
-				System.out.close();
+				//System.out.close();
 			} else {
 				//response.setContentType("application/pdf");
-				System.out.println("Content-Type: application/pdf\n\n");
+				System.out.println("Content-Type: application/pdf\n");
 
 				// Export PDF file to browser window
 				JRPdfExporter exporter = new JRPdfExporter();
