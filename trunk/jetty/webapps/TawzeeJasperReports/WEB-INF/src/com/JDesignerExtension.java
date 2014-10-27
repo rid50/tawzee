@@ -97,7 +97,7 @@ public class JDesignerExtension {
 //		}
 
 		
-		//LOG.info("Total Height: " + reportHeight);
+//		LOG.info("Total Height: " + reportHeight);
 //		LOG.info("Page width: " + design.getPageWidth());
 		
 //		JRSection sect = design.getDetailSection();
