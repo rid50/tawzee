@@ -12,7 +12,7 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
-	<import value="com.rid50.reports.util.JrUtils"/>
+	<import value="com.rid50.reports.util.*"/>
 	<style name="Table_TH" mode="Transparent" backcolor="#FFFFFF">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
@@ -235,7 +235,7 @@ WHERE a.ApplicationNumber = $P{ApplicationNumber}]]>
 		<band height="107" splitType="Stretch">
 			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 			<staticText>
-				<reportElement x="177" y="70" width="184" height="24" uuid="3edd45c2-a64a-4b59-9dd9-5e73a19fc53a">
+				<reportElement x="177" y="74" width="184" height="24" uuid="3edd45c2-a64a-4b59-9dd9-5e73a19fc53a">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -292,7 +292,7 @@ WHERE a.ApplicationNumber = $P{ApplicationNumber}]]>
 				<textFieldExpression><![CDATA[$F{ApplicationDate}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="390" y="70" width="146" height="24" uuid="3dfd2d52-b548-489f-84e5-3449d2ed9096">
+				<reportElement x="390" y="74" width="146" height="24" uuid="3dfd2d52-b548-489f-84e5-3449d2ed9096">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unity" value="pixel"/>
@@ -304,13 +304,13 @@ WHERE a.ApplicationNumber = $P{ApplicationNumber}]]>
 				<text><![CDATA[وزارة الكهرباء والماء]]></text>
 			</staticText>
 			<image scaleImage="RealSize">
-				<reportElement x="322" y="4" width="213" height="66" uuid="63ff4734-4ca7-4719-bb6d-91c54958e9b8">
+				<reportElement x="435" y="2" width="57" height="70" uuid="63ff4734-4ca7-4719-bb6d-91c54958e9b8">
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<imageExpression><![CDATA["images/logo.png"]]></imageExpression>
+				<imageExpression><![CDATA["images/mew_logo.png"]]></imageExpression>
 			</image>
 		</band>
 	</pageHeader>

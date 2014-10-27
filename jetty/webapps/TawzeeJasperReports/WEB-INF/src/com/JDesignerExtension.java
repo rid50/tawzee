@@ -184,8 +184,8 @@ public class JDesignerExtension {
 
 				//LOG.info("ScaleImageValue: " + image.getScaleImageValue());	// default RETAIN_SHAPE
 				//LOG.info("StretchTypeValue: " + image.getStretchTypeValue());	// default NO_STRETCH
-				
 
+				
 				int bandPosY = 0; //boolean done = false;
 				int tableRowHeight = 0;
 				JRExpression exp;
