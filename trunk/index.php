@@ -221,6 +221,17 @@ if ($idp == "SAML") {
 <div id="main-form" class="forms" style="display:none; padding:20px; font-size:1.2em" class="floatLeft"
 	data-link="application-form-link" data-parent-table="Application" data-child-table="ApplicationDetail" data-key-field="application-number">
 		<div>
+			<div id="scroller-anchor">
+			</div>
+			<div id="scroller" style="margin-top:10px; width:50px">
+				<img src="images/conditions_icon.png" alt="Terms & Conditions" title="Terms & Conditions" />
+			</div>
+			<script type="text/javascript">
+			  $(function() {
+				moveScroller();
+			  });
+			</script> 
+			
 			<!--input type="text" id="error_box" /-->
 			<!--div style="position: absolute; top:10px; right:0px;">
 				<button id="add" title="Add a new form"></button>
