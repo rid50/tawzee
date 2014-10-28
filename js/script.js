@@ -83,14 +83,14 @@ function moveScroller() {
 		var s = $("#terms");
 		var left;
 		if ($("body[dir='ltr']").length) {
-			left = $("#left-section").offset().left + 3;
+			left = $("#left-section").offset().left;
 		} else {
-			left = $("#left-section").offset().left + $("#left-section").width() - 30;
+			left = $("#left-section").offset().left + $("#left-section").width() - 37;
 		}
 
 		s.css({
 			position: "fixed",
-			top: ($("#left-section").offset().top + 1) + "px",
+			top: ($("#left-section").offset().top + 5) + "px",
 			left: left + "px",
 		});
 		//console.log("resize");
@@ -689,14 +689,21 @@ $(document).ready(function () {
 		text: false
 	});
 	
-	$("#add, .addRow, #newForm, #editForm, #save, #print, #printForm, #delete").on("mousedown", function(){
+	$("#add, .addRow, #newForm, #editForm, #save, #print, #printForm, #delete, #terms-button").on("mousedown", function(){
 		$(this).animate({'top': '+=1px', 'left': '+=1px'}, 100);
 	});
 
-	$("#add, .addRow, #newForm, #editForm, #save, #print, #printForm, #delete").on("mouseup", function(){
+	$("#add, .addRow, #newForm, #editForm, #save, #print, #printForm, #delete, #terms-button").on("mouseup", function(){
 		$(this).animate({'top': '-=1px', 'left': '-=1px'}, 100);
 	});
 
+	$("#terms-button").button({
+		icons: {primary: null},
+		text: false
+	}).on("click", function(event){
+		alert("kuku");
+	});
+	
 	setEventToDeleteRowButtons();
 			
 			
@@ -3465,6 +3472,7 @@ function toggleLanguage(lang, dir) {
 				//$('#terms').css({'right':'-20'});				
 			}
 
+			$('#terms-button').attr({title: $.i18n.prop('TermsConditions')});
 			$('#add, #newForm').attr({title: $.i18n.prop('AddForm')});
 			$('#editForm').attr({title: $.i18n.prop('EditForm')});
 			$('#save').attr({title: $.i18n.prop('SaveForm')});
