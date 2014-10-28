@@ -81,17 +81,22 @@ function xml2Str(xmlNode) {
 function moveScroller() {
     var move = function() {
 		var s = $("#terms");
-		var left;
+		var left, right;
 		if ($("body[dir='ltr']").length) {
-			left = $("#left-section").offset().left;
+			left = $("#left-section").offset().left + "px";
+			//right = "";
 		} else {
-			left = $("#left-section").offset().left + $("#left-section").width() - 37;
+			//left = "";
+			left = $("#left-section").offset().left + $("#left-section").width() + "px";
+			//right = $("#left-section").offset().left + "px";
 		}
+		console.log(right);
 
 		s.css({
 			position: "fixed",
 			top: ($("#left-section").offset().top + 5) + "px",
-			left: left + "px",
+			left: left,
+			//right: right
 		});
 		//console.log("resize");
 /*
