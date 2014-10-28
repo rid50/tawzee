@@ -100,7 +100,7 @@ fieldset.possibility {
 	border-radius: 4px;
 }
 
-#add, #newForm, #editForm, #save, #print, #printForm, #delete
+#add, #newForm, #editForm, #save, #print, #printForm, #delete, #terms-button
 {
     background-repeat: no-repeat;
 	background-color:transparent;
@@ -110,12 +110,19 @@ fieldset.possibility {
 	margin:0 10px;
 }
 
+#terms-button
+{
+	//box-shadow: 2px 2px 2px #999;
+	border: 1px solid red;
+}
+
 #add {background-image: url(../images/add24.png)}
 #save {background-image: url(../images/save24.png)}
 #print, #printForm {background-image: url(../images/print24.png)}
 #delete {background:url(../images/sprite.png) 0 -72px;}   
 #newForm {background-image: url(../images/new24.png)} 
 #editForm {background-image: url(../images/edit24.png)}
+#terms-button {background-image: url(../images/terms_conditions.png)}
 
 .addRow, .deleteRow
 {

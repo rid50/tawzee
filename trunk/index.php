@@ -229,8 +229,9 @@ if ($idp == "SAML") {
 	data-link="application-form-link" data-parent-table="Application" data-child-table="ApplicationDetail" data-key-field="application-number">
 		<div>
 			<div id="terms-anchor"></div>
-			<div id="terms" style="position:relative; top:0px; left: -20px">
-				<img src="images/terms_conditions.png" alt="Terms & Conditions" title="Terms & Conditions" />
+			<div id="terms" style="position:relative; top:5px; left: -20px">
+				<!--img src="images/terms_conditions.png" alt="Terms & Conditions" title="Terms & Conditions" /-->
+				<button id="terms-button" title="Terms & Conditions"></button>
 			</div>
 			<script type="text/javascript"> 
 				$(function() {
