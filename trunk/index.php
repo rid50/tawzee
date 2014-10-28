@@ -217,21 +217,35 @@ if ($idp == "SAML") {
 	</fieldset>
 	
 </div>
-
+<!--
+<div id="terms-and-conditions" style="display:none; position:relative;">
+	<div id="scroller-anchor"></div>
+	<div id="scroller" style="position:relative; top:50px">
+		<img src="images/conditions_icon.png" alt="Terms & Conditions" title="Terms & Conditions" />
+	</div>
+</div>
+-->
 <div id="main-form" class="forms" style="display:none; padding:20px; font-size:1.2em" class="floatLeft"
 	data-link="application-form-link" data-parent-table="Application" data-child-table="ApplicationDetail" data-key-field="application-number">
 		<div>
-			<div id="scroller-anchor">
+			<div id="terms-anchor"></div>
+			<div id="terms" style="position:relative; top:0px; left: -20px">
+				<img src="images/terms_conditions.png" alt="Terms & Conditions" title="Terms & Conditions" />
 			</div>
-			<div id="scroller" style="margin-top:10px; width:50px">
-				<img src="images/conditions_icon.png" alt="Terms & Conditions" title="Terms & Conditions" />
-			</div>
-			<script type="text/javascript">
-			  $(function() {
-				moveScroller();
-			  });
+			<script type="text/javascript"> 
+				$(function() {
+				/*
+					var s = $("#scroller");
+					s.css({
+						position: "fixed",
+						top: ($("#left-section").offset().top + 51) + "px",
+						left: ($("#left-section").offset().left + 1) + "px",
+					});
+				*/
+					moveScroller();
+				});
 			</script> 
-			
+
 			<!--input type="text" id="error_box" /-->
 			<!--div style="position: absolute; top:10px; right:0px;">
 				<button id="add" title="Add a new form"></button>

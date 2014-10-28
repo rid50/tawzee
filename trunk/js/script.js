@@ -80,24 +80,45 @@ function xml2Str(xmlNode) {
 
 function moveScroller() {
     var move = function() {
-        var st = $(window).scrollTop();
-        var ot = $("#scroller-anchor").offset().top;
+		var s = $("#terms");
+		var left;
+		if ($("body[dir='ltr']").length) {
+			left = $("#left-section").offset().left + 3;
+		} else {
+			left = $("#left-section").offset().left + $("#left-section").width() - 30;
+		}
+
+		s.css({
+			position: "fixed",
+			top: ($("#left-section").offset().top + 1) + "px",
+			left: left + "px",
+		});
+		//console.log("resize");
+/*
+        var st = $("#left-section").scrollTop();
+        var ot = $("#scroller-anchor").position().top;
+		console.log("st: " + st + " | ot: " + ot);
+
         var s = $("#scroller");
         if(st > ot) {
             s.css({
                 position: "fixed",
-                top: "0px"
+                top: ($("#left-section").offset().top + 51) + "px",
+				left: ($("#left-section").offset().left + 1) + "px",
             });
         } else {
             if(st <= ot) {
                 s.css({
                     position: "relative",
-                    top: ""
+                    top: "50px",
+					left: "-20px"
                 });
             }
         }
+*/		
     };
-    $(window).scroll(move);
+    $("#left-section").scroll(move);
+    $(window).resize(move);
     move();
 }
 
@@ -157,6 +178,9 @@ $(document).ready(function () {
 			lang = 'ar';
 			//$(videoControl).hide();
 			toggleLanguage('ar', 'rtl');
+			//moveScroller();			
+			
+
 			//$(videoControl).show();
 		}
 	});
@@ -165,6 +189,9 @@ $(document).ready(function () {
 		if ($("body[dir='rtl']").length) {
 			lang = 'en';
 			toggleLanguage('en', 'ltr');
+			//moveScroller();			
+			
+			
 		}
 	});
 
@@ -217,6 +244,9 @@ $(document).ready(function () {
 				$('#application-number').focus();
 			}, 100 );
 		}
+
+		//$("#left-section").append($('#terms-and-conditions'));
+		//$('#terms-and-conditions').show();
 		
 //		this.append('<input type="text" id="error-box" />');	
 //		this.append('#formButtonSet');
@@ -225,6 +255,8 @@ $(document).ready(function () {
 	$('#main-form').on('hide', function() {
 		$(this).find("input[type='text']").removeClass("ui-state-error");
 		$('#application-number').attr('readonly','readonly');
+		//$('#terms-and-conditions').hide();
+		//moveScroller();
 		error('');
 	});
 	
@@ -673,7 +705,7 @@ $(document).ready(function () {
 	if (_admin != userInfo[0].loginName) {
 		$('#userLoginSelectDiv').hide();
 	}			
-	
+		
 	if (!$("#main-div").hasClass("accessRejected")) {
 		initAccordion();
 		getAreas();
@@ -3397,6 +3429,7 @@ function toggleLanguage(lang, dir) {
 				$("#possibility-yes, #possibility-no").css("text-align", "left");
 				
 				$('#formButtonSet').css({'left':'auto', 'right':'10px'});
+				//$('#terms').css({'left':'-20'});
 				//$('.vakata-context li > a .vakata-contextmenu-sep').css({'margin':'0 0.5em 0 0 !important'});
 				
 			} else {
@@ -3429,7 +3462,7 @@ function toggleLanguage(lang, dir) {
 				$("#possibility-yes, #possibility-no").css("text-align", "right");
 				
 				$('#formButtonSet').css({'left':'10px', 'right':'auto'});
-				
+				//$('#terms').css({'right':'-20'});				
 			}
 
 			$('#add, #newForm').attr({title: $.i18n.prop('AddForm')});
@@ -3567,6 +3600,9 @@ function toggleLanguage(lang, dir) {
 			
 		}				
 	});
+	
+	moveScroller();			
+
 }
 /*	
 this.confirm = function(text, param, func) {

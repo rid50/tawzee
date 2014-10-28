@@ -188,7 +188,7 @@ header {
 
 }
 
-section#left-section {
+#left-section {
 	box-shadow: 4px 4px 2px #999;
 	border: 1px solid #000;
 	//font-size:1em;
@@ -199,11 +199,10 @@ section#left-section {
 	height: inherit;
 	position: relative;
 	overflow: auto;
-
 	margin-right: 6px;
 }
 
-section#right-section {
+#right-section {
 	box-shadow: 4px 4px 2px #999;
 	border: 1px solid #000;
 	padding: 0 6px;
