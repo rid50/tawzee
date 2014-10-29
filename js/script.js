@@ -83,19 +83,20 @@ function moveScroller() {
 		var s = $("#terms");
 		var left, right;
 		if ($("body[dir='ltr']").length) {
-			left = $("#left-section").offset().left + "px";
-			//right = "";
+			left = $("#left-section").offset().left + 5;
+			//right = "auto";
 		} else {
+			//left = "184.5px";
 			//left = "";
-			left = $("#left-section").offset().left + $("#left-section").width() + "px";
+			left = $("#left-section").offset().left + $("#left-section").width() - $('#terms').width() - 5;
 			//right = $("#left-section").offset().left + "px";
 		}
-		console.log(right);
+		//console.log(right);
 
 		s.css({
 			position: "fixed",
-			top: ($("#left-section").offset().top + 5) + "px",
-			left: left,
+			top: ($("#left-section").offset().top + 3) + "px",
+			left: left + "px",
 			//right: right
 		});
 		//console.log("resize");
@@ -706,7 +707,7 @@ $(document).ready(function () {
 		icons: {primary: null},
 		text: false
 	}).on("click", function(event){
-		alert("kuku");
+		$('#openModalLink')[0].click();
 	});
 	
 	setEventToDeleteRowButtons();
@@ -3477,7 +3478,9 @@ function toggleLanguage(lang, dir) {
 				//$('#terms').css({'right':'-20'});				
 			}
 
-			$('#terms-button').attr({title: $.i18n.prop('TermsConditions')});
+			//$('#terms-button').attr({title: $.i18n.prop('TermsConditions')});
+			$('#terms-button').button({ label: $.i18n.prop('TermsConditions')});
+			
 			$('#add, #newForm').attr({title: $.i18n.prop('AddForm')});
 			$('#editForm').attr({title: $.i18n.prop('EditForm')});
 			$('#save').attr({title: $.i18n.prop('SaveForm')});

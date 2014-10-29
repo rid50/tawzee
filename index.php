@@ -121,7 +121,6 @@ if ($idp == "SAML") {
 			<div class="floatLeft">
 				<a href="#" class="psc-logo"><img src="images/logo.png" alt="Back to Home" title="Back to Home" /></a>
 			</div>
-			
 			<div class="floatRight">
 				<a href="#" id="flagUK"><img src="images/FlagUK.png" alt="English" title="English" /></a>
 				<a href="#" id="flagKuwait"><img src="images/FlagKuwait.png" alt="Arabic" title="Arabic" /></a>
@@ -229,9 +228,9 @@ if ($idp == "SAML") {
 	data-link="application-form-link" data-parent-table="Application" data-child-table="ApplicationDetail" data-key-field="application-number">
 		<div>
 			<div id="terms-anchor"></div>
-			<div id="terms" style="position:relative; top:5px; left: -20px">
+			<div id="terms" style="position:relative;">
 				<!--img src="images/terms_conditions.png" alt="Terms & Conditions" title="Terms & Conditions" /-->
-				<button id="terms-button" title="Terms & Conditions"></button>
+				<button id="terms-button" title="Terms & Conditions">Terms & Conditions</button>
 			</div>
 			<script type="text/javascript"> 
 				$(function() {
@@ -750,6 +749,17 @@ if ($idp == "SAML") {
 			</div-->
 		</div>
 	</form>
+</div>
+
+<div style="display:none">
+	<a id="openModalLink" href="#openModal"></a>
+</div>
+
+<div id="openModal" class="modalbg">
+	<div class="dialog">
+		<a href="#close" title="Close" class="close">X</a>
+		<img src="images/conditions.jpg" alt="Terms & Conditions" />
+	</div>
 </div>
 
 <!--
