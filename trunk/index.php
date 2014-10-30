@@ -228,7 +228,7 @@ if ($idp == "SAML") {
 	data-link="application-form-link" data-parent-table="Application" data-child-table="ApplicationDetail" data-key-field="application-number">
 		<div>
 			<div id="terms-anchor"></div>
-			<div id="terms" style="position:relative;">
+			<div id="terms">
 				<!--img src="images/terms_conditions.png" alt="Terms & Conditions" title="Terms & Conditions" /-->
 				<button id="terms-button" title="Terms & Conditions">Terms & Conditions</button>
 			</div>
@@ -242,7 +242,7 @@ if ($idp == "SAML") {
 						left: ($("#left-section").offset().left + 1) + "px",
 					});
 				*/
-					moveScroller();
+					//moveScroller();
 				});
 			</script> 
 

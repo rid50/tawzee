@@ -493,10 +493,10 @@ input[type='checkbox'] {
 */
 #formButtonSet {
 	display:none;
-	position: absolute;
-	left: auto;
-	right: 10px;
-	top: 10px;
+	//position: absolute;
+	//left: auto;
+	//right: 10px;
+	//top: 10px;
 }
 
 #error-box {
