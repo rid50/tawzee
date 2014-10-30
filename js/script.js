@@ -81,22 +81,33 @@ function xml2Str(xmlNode) {
 function moveScroller() {
     var move = function() {
 		var s = $("#terms");
-		var left, right;
+		var s2 = $("#formButtonSet");
+
+		var left, left2;
 		if ($("body[dir='ltr']").length) {
 			left = $("#left-section").offset().left + 5;
+			left2 = $("#left-section").offset().left + $("#left-section").width() - s2.width() - 10;
 			//right = "auto";
 		} else {
 			//left = "184.5px";
 			//left = "";
-			left = $("#left-section").offset().left + $("#left-section").width() - $('#terms').width() - 5;
-			//right = $("#left-section").offset().left + "px";
+			left = $("#left-section").offset().left + $("#left-section").width() - s.width() - 5;
+			left2 = $("#left-section").offset().left + 10;
 		}
-		//console.log(right);
+		
+		//console.log(left2);
 
 		s.css({
 			position: "fixed",
 			top: ($("#left-section").offset().top + 3) + "px",
 			left: left + "px",
+			//right: right
+		});
+
+		s2.css({
+			position: "fixed",
+			top: ($("#left-section").offset().top + 10) + "px",
+			left: left2 + "px",
 			//right: right
 		});
 		//console.log("resize");
@@ -123,7 +134,7 @@ function moveScroller() {
         }
 */		
     };
-    $("#left-section").scroll(move);
+    //$("#left-section").scroll(move);
     $(window).resize(move);
     move();
 }
@@ -711,7 +722,8 @@ $(document).ready(function () {
 	});
 	
 	setEventToDeleteRowButtons();
-			
+
+	moveScroller();
 			
 	start(_userLoginName, 'db', null);	// 'db' - get Actors from database
 
@@ -3441,7 +3453,7 @@ function toggleLanguage(lang, dir) {
 
 				$("#possibility-yes, #possibility-no").css("text-align", "left");
 				
-				$('#formButtonSet').css({'left':'auto', 'right':'10px'});
+				//$('#formButtonSet').css({'left':'auto', 'right':'10px'});
 				//$('#terms').css({'left':'-20'});
 				//$('.vakata-context li > a .vakata-contextmenu-sep').css({'margin':'0 0.5em 0 0 !important'});
 				
@@ -3474,7 +3486,7 @@ function toggleLanguage(lang, dir) {
 				
 				$("#possibility-yes, #possibility-no").css("text-align", "right");
 				
-				$('#formButtonSet').css({'left':'10px', 'right':'auto'});
+				//$('#formButtonSet').css({'left':'10px', 'right':'auto'});
 				//$('#terms').css({'right':'-20'});				
 			}
 
