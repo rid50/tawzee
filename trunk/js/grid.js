@@ -64,7 +64,13 @@ Grid = {
             datatype: "json",
             colNames: [$.i18n.prop('ApplicationNumber'), $.i18n.prop('ApplicationDate'), $.i18n.prop('OwnerName'), $.i18n.prop('ProjectName'), , $.i18n.prop('Area'), $.i18n.prop('Block'), $.i18n.prop('Plot'), $.i18n.prop('ConstructionExpDate'), $.i18n.prop('FeedPoints')],
             colModel: [ //http://php.net/manual/en/function.date.php
-                        {name: 'ApplicationNumber', index: 'ApplicationNumber', align: 'left', width: '120px', sortable: true, resizable: true, frozen: true },
+                        {name: 'ApplicationNumber', index: 'ApplicationNumber', align: 'left', width: '120px', sortable: true, resizable: true, frozen: true, 
+							cellattr: function(rowId, val, rawObject) {
+								if (val < 0) {
+									return " class='negativeNumber'";
+								}
+							}
+						},
                         {name: 'ApplicationDate', index: 'ApplicationDate', align: 'center', width: '100px', sortable: true, hidden: false, resizable: false, sorttype: 'date', formatter: 'date', formatoptions: { srcformat: 'Y-m-d', newformat: 'd-M-Y'} }, //DateEntry (src) = "12/31/1999 00:00:00"
                         //{name: 'ApplicationDate', index: 'ApplicationDate', align: 'center', width: '100px', sortable: true, hidden: false, resizable: false, sorttype: 'date', formatter: 'date', formatoptions: { srcformat: 'Y-m-d', newformat: 'd/m/Y'} }, //DateEntry (src) = "12/31/1999 00:00:00"
                         {name: 'OwnerName', index: 'OwnerName', align: 'right', width: '150px', sortable: true, editable: false, resizable: false },
@@ -162,11 +168,30 @@ Grid = {
     }
 };
 
+/*
+function negativeNumbersFormatter(cellvalue, options, rowObject) {
+	console.log(cellvalue);
+	console.log(options);
+	console.log(rowObject);
+}
+*/
+
 function fillFormFields(that, rowId) {
 	var row = $(that).getRowData(rowId);
 	_applicationNumber = row['ApplicationNumber'];
-	$('#application-number').val(row['ApplicationNumber']);
-	$('#application-number').attr('readonly','readonly');
+	
+	var $applicationNumber = $('#application-number');
+	if (row['ApplicationNumber'] < 0)
+		$applicationNumber.css({'color':'#f00'});
+	else
+		$applicationNumber.css({'color':'currentcolor'});
+	
+	$applicationNumber.val(row['ApplicationNumber']);
+	$applicationNumber.attr('readonly','readonly');
+	//$('#application-number').val(row['ApplicationNumber']);
+	//$('#application-number').attr('readonly','readonly');
+
+
 	$('#app-number-search').val(row['ApplicationNumber']);
 	//var dt = $.datepicker.parseDate('dd-MM-yy', $('#grid').getCell(rowId, 'ApplicationDate'), {monthNames:$.datepicker.regional[ lang == "en" ? "" : lang ].monthNames});
 
