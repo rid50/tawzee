@@ -66,8 +66,9 @@ Grid = {
             colModel: [ //http://php.net/manual/en/function.date.php
                         {name: 'ApplicationNumber', index: 'ApplicationNumber', align: 'left', width: '120px', sortable: true, resizable: true, frozen: true, 
 							cellattr: function(rowId, val, rawObject) {
-								if (val < 0) {
-									return " class='negativeNumber'";
+								var m = val.match("[/\\\\]");
+								if (!m) {
+									return " class='make-a-note'";
 								}
 							}
 						},
@@ -181,7 +182,8 @@ function fillFormFields(that, rowId) {
 	_applicationNumber = row['ApplicationNumber'];
 	
 	var $applicationNumber = $('#application-number');
-	if (row['ApplicationNumber'] < 0)
+	var m = row['ApplicationNumber'].match("[/\\\\]");
+	if (!m)
 		$applicationNumber.css({'color':'#f00'});
 	else
 		$applicationNumber.css({'color':'currentcolor'});

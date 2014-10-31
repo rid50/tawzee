@@ -991,7 +991,7 @@ class DatabaseRepository {
 		
 		try {
 			//$ds = $dbh->query("SELECT o.OfficeId, Name, ArabicName, EmployeeId, ManagerId, Director FROM OfficeList AS o RIGHT OUTER JOIN EmployeeList AS e ON o.OfficeId = e.OfficeId ORDER BY e.OfficeId, e.ManagerId");
-			$ds = $dbh->query("SELECT o.OfficeId AS \"OfficeId\", Name AS \"Name\", ArabicName AS \"ArabicName\", EmployeeId AS \"EmployeeId\", ManagerId AS \"ManagerId\", Director AS \"Director\" FROM OfficeList o RIGHT OUTER JOIN EmployeeList e ON o.OfficeId = e.OfficeId ORDER BY e.OfficeId ASC " . $nullfirst . ", e.ManagerId ASC " . $nullfirst);
+			$ds = $dbh->query("SELECT o.OfficeId AS \"OfficeId\", Name AS \"Name\", ArabicName AS \"ArabicName\", MemberOf AS \"MemberOf\", EmployeeId AS \"EmployeeId\", ManagerId AS \"ManagerId\", Director AS \"Director\" FROM OfficeList o RIGHT OUTER JOIN EmployeeList e ON o.OfficeId = e.OfficeId ORDER BY e.OfficeId ASC " . $nullfirst . ", e.ManagerId ASC " . $nullfirst);
 		} catch (PDOException $e) {
 			throw new Exception('Failed to execute query: ' . $e->getMessage());
 		}
@@ -1005,7 +1005,7 @@ class DatabaseRepository {
 		}
 
 		try {
-			$ds = $dbh->query("SELECT o.OfficeId AS \"OfficeId\", Name AS \"Name\", ArabicName AS \"ArabicName\" FROM OfficeList o LEFT OUTER JOIN EmployeeList e ON o.OfficeId = e.OfficeId WHERE e.OfficeId IS NULL ORDER BY e.OfficeId ASC " . $nullfirst);
+			$ds = $dbh->query("SELECT o.OfficeId AS \"OfficeId\", Name AS \"Name\", ArabicName AS \"ArabicName\", MemberOf AS \"MemberOf\" FROM OfficeList o LEFT OUTER JOIN EmployeeList e ON o.OfficeId = e.OfficeId WHERE e.OfficeId IS NULL ORDER BY e.OfficeId ASC " . $nullfirst);
 		} catch (PDOException $e) {
 			throw new Exception('Failed to execute query: ' . $e->getMessage());
 		}
@@ -1036,7 +1036,7 @@ class DatabaseRepository {
 				
 			if ($r -> ManagerId == null) {
 				if (!isset($ar[$r -> OfficeId]))
-					$ar[$r -> OfficeId] = array('name' => $r -> Name, 'arname' => $r -> ArabicName);
+					$ar[$r -> OfficeId] = array('name' => $r -> Name, 'arname' => $r -> ArabicName, 'memberof' => $r -> MemberOf);
 				$ar[$r -> OfficeId][$r -> EmployeeId] = array();
 			} else
 				$ar[$r -> OfficeId][$r -> ManagerId][] = $r -> EmployeeId;
@@ -1046,7 +1046,7 @@ class DatabaseRepository {
 			$r = (object)$row;
 
 			if (!isset($ar[$r -> OfficeId]))
-				$ar[$r -> OfficeId] = array('name' => $r -> Name, 'arname' => $r -> ArabicName);
+				$ar[$r -> OfficeId] = array('name' => $r -> Name, 'arname' => $r -> ArabicName, 'memberof' => $r -> MemberOf);
 		}
 		
 /*
@@ -1112,9 +1112,10 @@ class DatabaseRepository {
 			$w->writeAttribute("id", $key);
 			$w->writeAttribute("name",  $value['name']);
 			$w->writeAttribute("arname",  $value['arname']);
+			$w->writeAttribute("memberof",  $value['memberof']);
 			$w->startElement("managers");
 			foreach ($value as $key2 => $value2) {
-				if ($key2 == 'name' || $key2 == 'arname')
+				if ($key2 == 'name' || $key2 == 'arname' || $key2 == 'memberof')
 					continue;
 				$w->startElement("manager");
 				$w->writeAttribute("name", $key2);
@@ -1189,7 +1190,7 @@ class DatabaseRepository {
 		foreach ($xml->sections->section as $section) {
 			if ($section['id'] == 0 || $section['id'] == NULL)
 				throw new Exception('Failed to execute/prepare query: Office ID - 0 Or NULL is not allowed');
-			$st .= ";INSERT INTO OfficeList (OfficeId, Name, ArabicName) VALUES ('{$section['id']}', '{$section['name']}', '{$section['arname']}')";
+			$st .= ";INSERT INTO OfficeList (OfficeId, Name, ArabicName, MemberOf) VALUES ('{$section['id']}', '{$section['name']}', '{$section['arname']}', '{$section['memberof']}')";
 			foreach ($section->managers->manager as $manager) {
 				//$superuserval = 0;
 				//if (in_array($manager['name'], $superusers))
@@ -1223,7 +1224,7 @@ class DatabaseRepository {
 		$dbh = $this->connect();
 
 		try {
-			$prest = $dbh->prepare("INSERT INTO OfficeList(Name, ArabicName) VALUES('{$param['name']}', '{$param['name']}');");
+			$prest = $dbh->prepare("INSERT INTO OfficeList(Name, ArabicName, MemberOf) VALUES('{$param['name']}', '{$param['name']}', '{$param['memberof']}');");
 		//throw new Exception("INSERT INTO OfficeList() VALUES('{$param['name']}', '{$param['name']}');");
 			$prest->execute();
 			$this->result[] =  $dbh->lastInsertId();

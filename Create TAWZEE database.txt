@@ -38,7 +38,7 @@ CREATE TABLE Area (
 DROP TABLE IF EXISTS Application;
 CREATE TABLE Application (
 ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-ApplicationNumber VARCHAR( 24 ) NOT NULL,
+ApplicationNumber VARCHAR(24) NOT NULL AUTO_INCREMENT,
 ApplicationDate DATE NOT NULL,
 OwnerName VARCHAR( 24 ) NOT NULL,
 ProjectName VARCHAR( 24 ) NOT NULL,
@@ -215,8 +215,9 @@ CREATE TABLE OfficeList (
   OfficeId SMALLINT UNSIGNED AUTO_INCREMENT,
   Name varchar(45) NOT NULL,
   ArabicName varchar(45) NOT NULL,
+  MemberOf varchar(24),
   PRIMARY KEY (OfficeId)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE EmployeeList (
   EmployeeId varchar(45) NOT NULL,
@@ -230,7 +231,7 @@ CREATE TABLE EmployeeList (
 
 -- ------------------------------------------------------------------------------------------------------------
 
-INSERT INTO `OfficeList` VALUES ('11', "Gulf Consult", "مستشارو الخليج");
+INSERT INTO `OfficeList` VALUES ('11', "Gulf Consult", "مستشارو الخليج", "CONSULTANCY");
 
 -- ------------------------------------------------------------------------------------------------------------
 

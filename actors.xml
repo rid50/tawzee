@@ -1,25 +1,25 @@
-<department directors="awatef,roman,zjaljadi,maalhaider,tamalallah,ridavidenko">
+<department directors="awatef,tamalallah,ridavidenko,maalhaider,zjaljadi,roman">
  <sections>
-  <section id="11" name="Gulf Consult" arname="مستشارو الخليج">
+  <section id="11" name="Gulf Consult" arname="مستشارو الخليج" memberof="CONSULTANCY">
    <managers>
+    <manager name="ahmed">
+    </manager>
     <manager name="ali">
      <employee>amr</employee>
      <employee>abdalla</employee>
     </manager>
-    <manager name="ahmed">
-    </manager>
    </managers>
   </section>
-  <section id="12" name="Salmiya Electricity Emergency" arname="السالمية طوارئ الكهرباء">
+  <section id="12" name="Salmiya Electricity Emergency" arname="السالمية طوارئ الكهرباء" memberof="">
    <managers>
-    <manager name="awatef">
-    </manager>
     <manager name="bader">
      <employee>basma</employee>
     </manager>
+    <manager name="awatef">
+    </manager>
    </managers>
   </section>
-  <section id="13" name="Hawali Electricity Emergency" arname="حولي طوارئ الكهرباء">
+  <section id="13" name="Hawali Electricity Emergency" arname="حولي طوارئ الكهرباء" memberof="">
    <managers>
     <manager name="hesham">
      <employee>hosam</employee>
@@ -27,30 +27,30 @@
     </manager>
    </managers>
   </section>
-  <section id="14" name="Electricity Installation Department" arname="وزارة الكهرباء التثبيت">
+  <section id="14" name="Electricity Installation Department" arname="وزارة الكهرباء التثبيت" memberof="">
    <managers>
+    <manager name="zkalbannay">
+    </manager>
+    <manager name="tamalallah">
+    </manager>
+    <manager name="ridavidenko">
+    </manager>
+    <manager name="maalhaider">
+    </manager>
+    <manager name="zjaljadi">
+    </manager>
     <manager name="roman">
     </manager>
     <manager name="mnsarhan">
     </manager>
-    <manager name="zjaljadi">
-    </manager>
-    <manager name="maalhaider">
-    </manager>
-    <manager name="tamalallah">
-    </manager>
-    <manager name="zkalbannay">
-    </manager>
-    <manager name="ridavidenko">
-    </manager>
    </managers>
   </section>
-  <section id="15" name="Electricity Distribution Department" arname="قسم توزيع الكهرباء">
+  <section id="15" name="Electricity Distribution Department" arname="قسم توزيع الكهرباء" memberof="">
    <managers>
     <manager name="mansour">
     </manager>
    </managers>
   </section>
  </sections>
- <employees><employee>nina</employee><employee>masri</employee><employee>awatef</employee><employee>bashar</employee><employee>shukri</employee><employee>jkmutlaq</employee><employee>ali</employee><employee>ahmed</employee><employee>amr</employee><employee>abdalla</employee><employee>bader</employee><employee>basma</employee><employee>hesham</employee><employee>hosam</employee><employee>husain</employee><employee>roman</employee><employee>mnsarhan</employee><employee>zjaljadi</employee><employee>maalhaider</employee><employee>tamalallah</employee><employee>zkalbannay</employee><employee>ridavidenko</employee><employee>mansour</employee></employees>
+ <employees><employee>shukri</employee><employee>masri</employee><employee>bashar</employee><employee>nina</employee><employee>jkmutlaq</employee><employee>ahmed</employee><employee>ali</employee><employee>amr</employee><employee>abdalla</employee><employee>bader</employee><employee>awatef</employee><employee>basma</employee><employee>hesham</employee><employee>hosam</employee><employee>husain</employee><employee>zkalbannay</employee><employee>tamalallah</employee><employee>ridavidenko</employee><employee>maalhaider</employee><employee>zjaljadi</employee><employee>roman</employee><employee>mnsarhan</employee><employee>mansour</employee></employees>
 </department>
