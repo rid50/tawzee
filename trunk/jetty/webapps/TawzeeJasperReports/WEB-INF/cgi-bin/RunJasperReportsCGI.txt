@@ -1,1 +1,3 @@
 http://tawzee.mew.gov.kw/cgi-bin/RunJasperReportsCGI.sh?reportName=TawzeeApplicationForm&applicationNumber=12345&keyFieldValue=12345&renderAs=png
+
+http://yaruss.org/cgi-bin/RunJasperReportsCGI.cgi?reportName=TawzeeApplicationForm&applicationNumber=12345&keyFieldValue=12345&renderAs=png

@@ -1988,6 +1988,7 @@ initDepartmentTree = function(actorsSource) {
 			'data': {
 				'data-name': $(this).attr('name'),
 				'data-arname': $(this).attr('arname'),
+				'data-memberof': $(this).attr('memberof'),
 			},
 		});
 		
@@ -2203,6 +2204,7 @@ initDepartmentTree = function(actorsSource) {
 							var section = xmlHelper.createElementWithAttribute("section", 'id', node.id);
 							xmlHelper.appendAttributeToElement(section, 'name', node.text);
 							xmlHelper.appendAttributeToElement(section, 'arname', node.text);
+							xmlHelper.appendAttributeToElement(section, 'memberof', "");
 							xmlHelper.appendNewLineElement(section, 3);
 							var sections = $(_rootActors).find("sections");
 							sections.append(section);
@@ -2261,7 +2263,7 @@ initDepartmentTree = function(actorsSource) {
 											return;
 										}
 										
-										node = tree.create_node(node, {'id':data[0], 'text':deptname, 'type':'department', 'data':{"data-name":deptname, "data-arname":deptname}}, "before");
+										node = tree.create_node(node, {'id':data[0], 'text':deptname, 'type':'department', 'data':{"data-name":deptname, "data-arname":deptname, "data-memberof":""}}, "before");
 										tree.edit(node);
 									})
 									.fail(function(jqXHR, textStatus, errorThrown) {
@@ -2300,18 +2302,31 @@ initDepartmentTree = function(actorsSource) {
 							"action": function (obj) { 
 								tree.delete_node(node);
 							}
+						},
+						membership: {
+							"separator_before": false,
+							"separator_after": false,
+							//"shortcut"			: 73,
+							//"shortcut_label"	: 'Del',
+							//"icon"				: "glyphicon glyphicon-leaf",
+							"label": $.i18n.prop("OUMembership"),
+							"action": function (obj) {
+								addOUMembership(tree);
+							}
 						}
 					};
 					
 					if (_directors.indexOf(userInfo[0].loginName) == -1) {
 						delete items.rename;
 						delete items.create;
+						delete items.membership;
 						if (node.type == 'department')
 							delete items.remove;
 					} else {
 						if (node.type != 'department') {
 							delete items.rename;
 							delete items.create;
+							delete items.membership;
 						}
 					}
 
@@ -2710,6 +2725,7 @@ saveActors = function(actorsTarget) {	//actorsTarget == undefined - 'db'
 
 		xmlHelper.appendAttributeToElement(section, 'name', name);
 		xmlHelper.appendAttributeToElement(section, 'arname', arname);
+		xmlHelper.appendAttributeToElement(section, 'memberof', this.data["data-memberof"].trim());
 
 		sections.appendChild(section);
 		xmlHelper.appendNewLineElement(section, 3);
@@ -2789,6 +2805,50 @@ saveActors = function(actorsTarget) {	//actorsTarget == undefined - 'db'
 		});
 }
 
+
+this.addOUMembership = function(jstree) {
+	var form = $("<div/>");
+	var html = '<select id="OUMembershipSelect">' +
+				'<option selected="selected" value="CONSULTANCY">' + $.i18n.prop('ConsultancyOffice') + '</option>' +
+				'<option value="CONTROLOFFICE">' + $.i18n.prop('EmergencyControlOffice') + '</option>' +
+				'<option value="">' + $.i18n.prop('NonMembership') + '</option></select>';
+    form.html(html);
+	form.data(jstree);
+    form.dialog({
+		title:$.i18n.prop('SelectOUMembership'),
+		dialogClass: "no-close",
+        height: "auto",
+        width: 300,
+        modal: true,
+		autoOpen: true,
+		resizable: false,
+		open: function( event, ui ) {
+			$(this).dialog( "option", "buttons",
+				[{	text: $.i18n.prop('Ok'),
+					id: 'OUMembershipButton',
+					click: function() {
+						//$( this ).dialog( "destroy" )
+					}
+				},
+				{	text: $.i18n.prop('Cancel'),
+					click: function() {
+						$( this ).dialog( "destroy" )
+					}
+				}]
+			); 
+			//$('.ui-dialog-buttonpane button:first').focus();
+			$(this).keyup(function(e) {
+				if (e.keyCode == 13) {
+				   $('.ui-dialog-buttonpane button:first').trigger('click');
+				}
+			});
+
+		},
+		close: function( event, ui ) {
+		},
+    });
+}
+
 this.addNewUser = function(jstree) {
 	var form = $("<div/>");
 	var html = '<input id="newUserInput" style="margin: 3px 0 3px 13px;" type="text" value="" size="15" />';
@@ -2805,13 +2865,13 @@ this.addNewUser = function(jstree) {
 		resizable: false,
 		open: function( event, ui ) {
 			$(this).dialog( "option", "buttons",
-				[{	text: "Ok",
+				[{	text: $.i18n.prop('Ok'),
 					id: 'addUserButton',
 					click: function() {
 						//$( this ).dialog( "destroy" )
 					}
 				},
-				{	text: "Cancel",
+				{	text: $.i18n.prop('Cancel'),
 					click: function() {
 						$( this ).dialog( "destroy" )
 					}
@@ -2831,6 +2891,17 @@ this.addNewUser = function(jstree) {
 }
 
 $(function() {
+	$(document).on("click", "#OUMembershipButton", function(){
+		error("");
+		var input = $("#OUMembershipSelect");
+		var val = input[0].options[input[0].selectedIndex].value;
+		
+		var jstree = $(input.parent()).data();
+		$(input.parent()).dialog("destroy");
+		jstree.get_selected(true)[0].data["data-memberof"] = val;
+		saveActors();
+	});
+
 	$(document).on("click", "#addUserButton", function(){
 		//$("#addUserError").detach();
 		error("");
