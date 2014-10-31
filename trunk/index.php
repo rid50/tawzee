@@ -202,6 +202,9 @@ if ($idp == "SAML") {
 	<div id="jstree_resourcelist" dir="ltr" style="display:none"></div>	
 	<fieldset id="userLegend" dir="ltr" style="display:none">
 		<legend>Legend</legend>
+		<img src="images/folder_nonmember.png" style="width:16px; height:16px" alt="User"/><span style="vertical-align:top">Office</span><br/>
+		<img src="images/folder_consultancy.png" style="width:16px; height:16px" alt="User"/><span style="vertical-align:top">Consultancy Office</span><br/>
+		<img src="images/folder_lightning.png" style="width:16px; height:16px" alt="User"/><span style="vertical-align:top">Emergency Control Office</span><br/>
 		<img src="images/user.png" alt="User"/><span style="vertical-align:top">User</span><br/>
 		<img src="images/manager.png" alt="Manager"/><span style="vertical-align:top">Manager</span><br/>
 		<img src="images/director.png" alt="Director"/><span style="vertical-align:top">Director</span><br/>
