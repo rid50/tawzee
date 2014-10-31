@@ -1975,13 +1975,27 @@ initDepartmentTree = function(actorsSource) {
 
 	var managers, employees, val;
 	var departments_data = [], managers_data = [], employees_data = [];
-
+	var department_icon;
+	
 	$(_rootActors).find('section').each(function(dindex) {
 		//$("#jstree>ul").append('<li data-jstree=\'{"type":"department"}\' id="' + $(this).attr('id') + '" data-name="' + $(this).attr('name') + '" data-arname="' + $(this).attr('arname') + '"><a href="#">' + (($("body[dir='ltr']").length) ? $(this).attr('name') : $(this).attr('arname')) + '</a></li>');
 
+		switch($(this).attr('memberof')) {
+			case "CONSULTANCY":
+				department_icon = 'images/folder_consultancy.png';
+				break;
+			case "CONTROLOFFICE":
+				department_icon = 'images/folder_lightning.png';
+				break;
+			default:
+				department_icon = 'jstree-folder';
+		}
+		
 		departments_data.push({
 			'id': $(this).attr('id'),
 			'type': 'department',
+			'icon': department_icon,
+			//'icon': 'images/folder_consultancy.png',
 			'text': ($("body[dir='ltr']").length) ? $(this).attr('name') : $(this).attr('arname'),
 			//'state': { 'opened' : true, 'selected' : false },
 			'data': {},
@@ -2309,6 +2323,10 @@ initDepartmentTree = function(actorsSource) {
 							//"shortcut"			: 73,
 							//"shortcut_label"	: 'Del',
 							//"icon"				: "glyphicon glyphicon-leaf",
+							"_disabled": function (obj) { 
+								if ($('#jstree_resourcelist').is(":visible") || node.children.length != 0)
+									return true;
+							},								
 							"label": $.i18n.prop("OUMembership"),
 							"action": function (obj) {
 								addOUMembership(tree);
@@ -2345,6 +2363,10 @@ initDepartmentTree = function(actorsSource) {
 					"icon" : "jstree-folder",
 					"select_node" : false
 				},
+				//"department-consultancy" : {
+				//	"icon": "images/folder_consultancy.png",
+				//	"select_node" : false
+				//},
 				"director" : {
 					"icon" : "images/director.png"
 				},				
@@ -2898,7 +2920,26 @@ $(function() {
 		
 		var jstree = $(input.parent()).data();
 		$(input.parent()).dialog("destroy");
-		jstree.get_selected(true)[0].data["data-memberof"] = val;
+		var node = jstree.get_selected(true)[0];
+		//jstree.get_selected(true)[0].data["data-memberof"] = val;
+		node.data["data-memberof"] = val;
+			//var nd = data.instance.get_node($("#" + data.node.parent));
+			//if (nd.type == "department") {
+			//	data.instance.set_type(data.node, "manager");
+
+		switch(val) {
+			case "CONSULTANCY":
+				department_icon = 'images/folder_consultancy.png';
+				break;
+			case "CONTROLOFFICE":
+				department_icon = 'images/folder_lightning.png';
+				break;
+			default:
+				department_icon = 'jstree-folder';
+		}
+
+		jstree.set_icon(node, department_icon);
+		
 		saveActors();
 	});
 
@@ -3578,9 +3619,12 @@ function toggleLanguage(lang, dir) {
 			$("#userExportButton").button({ label: $.i18n.prop('ExportUsers')});
 
 			$("#userLegend legend, #aclLegend legend").text(($.i18n.prop('Legend')));
-			$("#userLegend>span:nth-of-type(1)").text(($.i18n.prop('User')));
-			$("#userLegend>span:nth-of-type(2)").text(($.i18n.prop('Manager')));
-			$("#userLegend>span:nth-of-type(3)").text(($.i18n.prop('Director')));
+			$("#userLegend>span:nth-of-type(1)").text(($.i18n.prop('Office')));
+			$("#userLegend>span:nth-of-type(2)").text(($.i18n.prop('ConsultancyOffice')));
+			$("#userLegend>span:nth-of-type(3)").text(($.i18n.prop('EmergencyControlOffice')));
+			$("#userLegend>span:nth-of-type(4)").text(($.i18n.prop('User')));
+			$("#userLegend>span:nth-of-type(5)").text(($.i18n.prop('Manager')));
+			$("#userLegend>span:nth-of-type(6)").text(($.i18n.prop('Director')));
 			$("#aclLegend>span").text(($.i18n.prop('ReadWrite')));
 
 			$("#saveAccessControlSettings").button({ label: $.i18n.prop('SaveACSettings')});
