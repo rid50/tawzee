@@ -553,7 +553,7 @@ $(document).ready(function () {
 			}
 		});
 		
-		applyAcl();
+		//applyAcl();
 	});
 	
 	if (lang == "ar") {
@@ -725,8 +725,9 @@ $(document).ready(function () {
 
 	moveScroller();
 			
+	//start(_userLoginName, 'db', function(){ applyAcl() });	// 'db' - get Actors from database
 	start(_userLoginName, 'db', null);	// 'db' - get Actors from database
-
+	
 	if (_admin != userInfo[0].loginName) {
 		$('#userLoginSelectDiv').hide();
 	}			
@@ -766,6 +767,7 @@ $(document).ready(function () {
 		$("#accordion").accordion( "option", "active", 4 );				
 		$('#accordion').show();
 	}
+	applyAcl();
 });
 
 function getAcl() {
@@ -788,7 +790,7 @@ function getAcl() {
 				}
 			}
 //			_acl = data;
-			 applyAcl();
+			 //applyAcl();
 		})
 		.fail(function(jqXHR, textStatus, errorThrown) {
 			errorFound = true;
@@ -911,7 +913,7 @@ function initAccordion() {
 		collapsible: false,
 		heightStyle: 'content',
 		create: function( event, ui ) {
-			applyAcl();
+			//applyAcl();
 			//setAccordionState();
 			//applyAcl(true); 	// true - check for accordion access control list
 		},
