@@ -2186,15 +2186,18 @@ initDepartmentTree = function(actorsSource) {
 					propToFind = data.node.data["data-memberof"];
 					setAcl(propToFind);
 				} else if (data.node.type == "manager") {
-					propToFind = data.instance.get_node($("#" + data.node.parent)).data["data-memberof"];
+					//propToFind = data.instance.get_node($("#" + data.node.parent)).data["data-memberof"];
+					propToFind = data.instance.get_node(data.node.parent).data["data-memberof"];
 					setAcl(propToFind);
 					propToFind = data.node.data["data-loginname"];
 					setAcl(propToFind);
 				} else if (data.node.type == "employee") {
-					node = data.instance.get_node($("#" + data.node.parent));
+					//node = data.instance.get_node($("#" + data.node.parent));
+					node = data.instance.get_node(data.node.parent);
 					propToFind = data.instance.get_node(node.parent).data["data-memberof"];
 					setAcl(propToFind);
-					propToFind = data.instance.get_node($("#" + data.node.parent)).data["data-loginname"];
+					//propToFind = data.instance.get_node($("#" + data.node.parent)).data["data-loginname"];
+					propToFind = data.instance.get_node(data.node.parent).data["data-loginname"];
 					setAcl(propToFind);
 					propToFind = data.node.data["data-loginname"];
 					setAcl(propToFind);
@@ -2245,6 +2248,20 @@ initDepartmentTree = function(actorsSource) {
 		.on("delete_node.jstree", function (e, data) {
 			var inst = $('#jstree_userlist').jstree(true);
 			var nodes = inst.get_json("#", {flat:true});
+			
+			var found = false;
+			for (var prop in _acl) {
+				if (data.node.data["data-loginname"] in _acl[prop]) {
+					found = true;
+					delete _acl[prop][data.node.data["data-loginname"]];
+					if (Object.keys(_acl[prop]).length === 0)
+						delete _acl[prop];
+				}
+			}
+			
+			if (found)
+				$("#saveAccessControlSettings").click();
+			
 			nodes.some(function(node) {
 				if (node.data["data-loginname"] == data.node.data["data-loginname"]) {
 					inst.enable_node(node);
@@ -2386,7 +2403,7 @@ initDepartmentTree = function(actorsSource) {
 							//"shortcut_label"	: 'Del',
 							//"icon"				: "glyphicon glyphicon-leaf",
 							"_disabled": function (obj) { 
-								if ($('#jstree_resourcelist').is(":visible") || node.children.length != 0)
+								if ($('#jstree_resourcelist').is(":visible"))
 									return true;
 							},								
 							"label": $.i18n.prop("OUMembership"),
@@ -2706,11 +2723,43 @@ function initResourceTree() {
 			$('#jstree').jstree(true).deselect_all(true);
 		})
 		.on("check_node.jstree", function (e, data) {
+			check_uncheck_node(e, data);
+		})
+		.on("uncheck_node.jstree", function (e, data) {
+			check_uncheck_node(e, data);
+		})
+		
+		//.on("check_node.jstree", check_uncheck_node(e, data))
+		//.on("uncheck_node.jstree", check_uncheck_node(e, data))
+		
+/*		
+		.on("check_node.jstree", function (e, data) {
 			if (data.event.originalEvent) {
-				var node = $('#jstree').jstree(true).get_selected(true);
+				var jstree = $('#jstree').jstree(true);
+				var node = jstree.get_selected(true);
 				if (node.length) {
 					node = node[0];
+					
+					var clearChildrenAcls = function(node) {
+						$(node.children).each(function(i, id) {
+							var node = jstree.get_node(id);
+							var prop = node.data["data-loginname"];
+							if (Object.keys(_acl[data.node.data.id]).indexOf(prop) != -1) {
+								delete _acl[data.node.data.id][prop];
+								//if (Object.keys(_acl[data.node.data.id]).length === 0) {
+								//	delete _acl[data.node.data.id];
+								//}
+							}
+							//node = jstree.get_node($('#' + id));
+							clearChildrenAcls(node);
+						})
+					}
+					//var children;
+					//if (node.type == "department")
+					//	children = $('#jstree').jstree(true).get_children_dom(node);
+						
 					var prop = node.type == "department" ? node.data["data-memberof"] : node.data["data-loginname"];
+					
 					_acl[data.node.data.id] = _acl[data.node.data.id] || {};
 					_acl[data.node.data.id][prop] = _acl[data.node.data.id][prop] || {};
 					if ($(data.event.target).hasClass('jstree-checkbox'))
@@ -2720,6 +2769,8 @@ function initResourceTree() {
 						_acl[data.node.data.id][prop].write = true;
 						//delete _acl[data.node.data.id][prop].write;
 						
+					clearChildrenAcls(node);
+					
 					//if (Object.keys(_acl[data.node.data.id][prop]).length === 0) {
 					//	delete _acl[data.node.data.id][prop];
 					//	if (Object.keys(_acl[data.node.data.id]).length === 0) {
@@ -2744,6 +2795,7 @@ function initResourceTree() {
 				}
 			}
 		})
+*/		
 		.jstree({
 			"core" : {
 				"data" : data,
@@ -2783,6 +2835,81 @@ function initResourceTree() {
 			},
 			"plugins" : [ "checkbox", "types" ]
 		});
+}
+
+function check_uncheck_node(e, data) {
+	if (data.event.originalEvent) {
+		var jstree = $('#jstree').jstree(true);
+		var node = jstree.get_selected(true);
+		if (node.length) {
+			node = node[0];
+			
+			var clearChildrenAcls = function(node) {
+				$(node.children).each(function(i, id) {
+					var node = jstree.get_node(id);
+					var prop = node.data["data-loginname"];
+					if (Object.keys(_acl[data.node.data.id]).indexOf(prop) != -1) {
+						delete _acl[data.node.data.id][prop];
+						//if (Object.keys(_acl[data.node.data.id]).length === 0) {
+						//	delete _acl[data.node.data.id];
+						//}
+					}
+					//node = jstree.get_node($('#' + id));
+					clearChildrenAcls(node);
+				})
+			}
+			//var children;
+			//if (node.type == "department")
+			//	children = $('#jstree').jstree(true).get_children_dom(node);
+				
+			var prop = node.type == "department" ? node.data["data-memberof"] : node.data["data-loginname"];
+			
+			_acl[data.node.data.id] = _acl[data.node.data.id] || {};
+			_acl[data.node.data.id][prop] = _acl[data.node.data.id][prop] || {};
+			if ($(data.event.target).hasClass('jstree-checkbox')) {
+				if (e.type == "check_node") {
+					_acl[data.node.data.id][prop].read = true;
+					if (node.type == "department") {
+						delete _acl[data.node.data.id][prop]['read'];
+						if (Object.keys(_acl[data.node.data.id][prop]).length === 0) {
+							delete _acl[data.node.data.id][prop];
+							//if (Object.keys(_acl[data.node.data.id]).length === 0) {
+							//	delete _acl[data.node.data.id];
+							//}
+						}
+					}
+				} else
+					_acl[data.node.data.id][prop].read = false;
+			} else if ($(data.event.target).hasClass('jstree-checkbox2')) {
+				if (e.type == "check_node") {
+					_acl[data.node.data.id][prop].write = true;
+					if (node.type == "department") {
+						delete _acl[data.node.data.id][prop]['write'];
+						if (Object.keys(_acl[data.node.data.id][prop]).length === 0) {
+							delete _acl[data.node.data.id][prop];
+							//if (Object.keys(_acl[data.node.data.id]).length === 0) {
+							//	delete _acl[data.node.data.id];
+							//}
+						}
+					}
+				} else
+					_acl[data.node.data.id][prop].write = false;
+			}
+			
+			clearChildrenAcls(node);
+			
+			if (Object.keys(_acl[data.node.data.id]).length === 0) {
+				delete _acl[data.node.data.id];
+			}
+			
+			//if (Object.keys(_acl[data.node.data.id][prop]).length === 0) {
+			//	delete _acl[data.node.data.id][prop];
+			//	if (Object.keys(_acl[data.node.data.id]).length === 0) {
+			//		delete _acl[data.node.data.id];
+			//	}
+			//}
+		}
+	}
 }
 
 saveActors = function(actorsTarget) {	//actorsTarget == undefined - 'db'
