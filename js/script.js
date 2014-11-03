@@ -790,20 +790,19 @@ function getAcl() {
 
 			var jstree = $('#jstree').jstree(true);
 			var node = jstree.get_node(sectionId);
-			var manager_id, employee_id;
-			var office_id = node.data["data-memberof"];
+			var manager_loginName, employee_loginName;
+			var office_groupName = node.data["data-memberof"];
 			node.children.some(function(id) {
 				var node = jstree.get_node(id);
-				manager_id = node.data["data-loginname"];
+				manager_loginName = node.data["data-loginname"];
 				if (node.data["data-loginname"] == userInfo[0].loginName) {
-					//manager_id = userInfo[0].loginName;
 					return true;
 				}
 				
 				$(node.children).each(function(i, id) {
 					var node = jstree.get_node(id);
 					if (node.data["data-loginname"] == userInfo[0].loginName) {
-						employee_id = userInfo[0].loginName;
+						employee_loginName = userInfo[0].loginName;
 						return;
 					}
 				})
@@ -836,24 +835,24 @@ function getAcl() {
 				})
 */
 				for (var prop in data) {
-					if (employee_id in data[prop]) {
+					if (employee_loginName in data[prop]) {
 						_acl[prop] = _acl[prop] || {};
-						_acl[prop][employee_id] = data[prop][employee_id];
+						_acl[prop][employee_loginName] = data[prop][employee_loginName];
 					}
-					if (manager_id in data[prop]) {
+					if (manager_loginName in data[prop]) {
 						_acl[prop] = _acl[prop] || {};
-						_acl[prop][manager_id] = data[prop][manager_id];
+						_acl[prop][manager_loginName] = data[prop][manager_loginName];
 					}
-					if (office_id in data[prop]) {
+					if (office_groupName in data[prop]) {
 						_acl[prop] = _acl[prop] || {};
-						_acl[prop][office_id] = data[prop][office_id];
+						_acl[prop][office_groupName] = data[prop][office_groupName];
 					}
 				}
 				//applyAcl(office_id, manager_id, employee_id);
 
 			}
 
-			applyAcl(office_id, manager_id, employee_id);
+			applyAcl(office_groupName, manager_loginName, employee_loginName);
 			
 		})
 		.fail(function(jqXHR, textStatus, errorThrown) {
@@ -862,7 +861,7 @@ function getAcl() {
 		});
 }
 
-function applyAcl(office_id, manager_id, employee_id) {
+function applyAcl(office_groupName, manager_loginName, employee_loginName) {
 //console.log("appl");
 /*
 					var prop = node.type == "department" ? node.data["data-memberof"] : node.data["data-loginname"];
@@ -904,43 +903,163 @@ function applyAcl(office_id, manager_id, employee_id) {
 				//	continue;
 
 				if (nodeType == "span") {
-					
-					_acl[id][prop].write
-					
 					if (!el.hasClass('ui-accordion-header'))
 						continue;
 					
-					if (el.hasClass( "my-ui-state-disabled" )) {
-						el.removeClass( "my-ui-state-disabled" );
+					if ("write" in _acl[id][prop]) {
+						if (_acl[id][prop].write) {
+							el.css('visibility', 'initial');
+							if (el.hasClass( "my-ui-state-disabled" )) {
+								el.removeClass( "my-ui-state-disabled" );
+							}
+						} else {
+							if (!el.hasClass( "my-ui-state-disabled" )) {
+								el.addClass( "my-ui-state-disabled" );
+							}
+						}
+					}
+					if ("read" in _acl[id][prop]) {
+						if (_acl[id][prop].read) {
+							if (el.hasClass( "my-ui-state-disabled" )) {
+								el.removeClass( "my-ui-state-disabled" );
+							}
+						} else {
+							el.css('visibility', 'hidden');
+							if (!el.hasClass( "my-ui-state-disabled" )) {
+								el.addClass( "my-ui-state-disabled" );
+							}
+						}
 					}
 				} else if (nodeType == "table") {
-					//$('.addRow').css('visibility', 'initial');
-					el.find('button').css('visibility', 'initial');
-					el.find('input').removeAttr('disabled');
+					if ("write" in _acl[id][prop]) {
+						if (_acl[id][prop].write) {
+							el.css('visibility', 'initial');
+							el.find('button').css('visibility', 'initial');
+							el.find('input').removeAttr('disabled');
+						} else {
+							el.find('input').attr('disabled', 'disabled');
+							el.find('button').css('visibility', 'hidden');
+						}
+					}
+					if ("read" in _acl[id][prop]) {
+						if (_acl[id][prop].read) {
+							el.find('button').css('visibility', 'initial');
+							el.find('input').removeAttr('disabled');
+						} else {
+							el.css('visibility', 'hidden');
+							el.find('button').css('visibility', 'hidden');
+						}
+					}
 				} else if (nodeType == "div") {
-					$('#' + el.attr('data-link')).removeAttr('disabled');
-					$('#' + el.attr('data-link')).fadeTo("fast", 1.0).attr("href", "#");
-					$('#formButtonSet button').not('#print').fadeTo("fast", 1.0).removeAttr('disabled');
+					if ("write" in _acl[id][prop]) {
+						if (_acl[id][prop].write) {
+							el.css('visibility', 'initial');
+							$('#' + el.attr('data-link')).removeAttr('disabled');
+							$('#' + el.attr('data-link')).fadeTo("fast", 1.0).attr("href", "#");
+							$('#formButtonSet button').not('#print').fadeTo("fast", 1.0).removeAttr('disabled');
+						} else {
+							el.find('#formButtonSet button').not('#print').fadeTo("fast", .5).attr('disabled', 'disabled');
+						}
+					}
+					if ("read" in _acl[id][prop]) {
+						if (_acl[id][prop].read) {
+							$('#' + el.attr('data-link')).removeAttr('disabled');
+							$('#' + el.attr('data-link')).fadeTo("fast", 1.0).attr("href", "#");
+							$('#formButtonSet button').not('#print').fadeTo("fast", 1.0).removeAttr('disabled');
+						} else {
+							el.css('visibility', 'hidden');
+							$('#' + el.attr('data-link')).attr('disabled', 'disabled');
+							$('#' + el.attr('data-link')).fadeTo("fast", .5).removeAttr("href"); 
+						}
+					}
 				} else if (nodeType == "text") {
-					$('label[for="' + id + '"]').css('visibility', 'initial');
-					el.removeAttr('disabled');
+					if ("write" in _acl[id][prop] && !el.attr('readonly')) {
+						if (_acl[id][prop].write) {
+							el.css('visibility', 'initial');
+							$('label[for="' + id + '"]').css('visibility', 'initial');
+							el.removeAttr('disabled');
+						} else {
+							el.attr('disabled', 'disabled');
+						}
+					}
+					if ("read" in _acl[id][prop] && !el.attr('readonly')) {
+						if (_acl[id][prop].read) {
+							$('label[for="' + id + '"]').css('visibility', 'initial');
+							el.removeAttr('disabled');
+						} else {
+							el.css('visibility', 'hidden');
+							$('label[for="' + id + '"]').css('visibility', 'hidden');
+						}
+					}
 				} else if (nodeType == "radio" || nodeType == "checkbox") {
-					$('label[for="' + id + '"]').css('visibility', 'initial');
-					el.each(function() {
-						$('label[for="' + this.id + '"]').css('visibility', 'initial');
-					})
-					el.removeAttr('disabled');
+					if ("write" in _acl[id][prop]) {
+						if (_acl[id][prop].write) {
+							el.css('visibility', 'initial');
+							$('label[for="' + id + '"]').css('visibility', 'initial');
+							el.each(function() {
+								$('label[for="' + this.id + '"]').css('visibility', 'initial');
+							})
+							el.removeAttr('disabled');
+						} else {
+							el.attr('disabled', 'disabled');
+						}
+					}
+					if ("read" in _acl[id][prop]) {
+						if (_acl[id][prop].read) {
+							$('label[for="' + id + '"]').css('visibility', 'initial');
+							el.each(function() {
+								$('label[for="' + this.id + '"]').css('visibility', 'initial');
+							})
+							el.removeAttr('disabled');
+						} else {
+							el.css('visibility', 'hidden');
+							$('label[for="' + id + '"]').css('visibility', 'hidden');
+							el.each(function() {
+								$('label[for="' + this.id + '"]').css('visibility', 'hidden');
+							})
+						}
+					}
 				} else if (nodeType == "fieldset") {
-					el.removeAttr('disabled');
+					if ("write" in _acl[id][prop]) {
+						if (_acl[id][prop].write) {
+							el.css('visibility', 'initial');
+							el.removeAttr('disabled');
+						} else {
+							el.attr('disabled', 'disabled');
+						}
+					}
+					if ("read" in _acl[id][prop]) {
+						if (_acl[id][prop].read) {
+							el.removeAttr('disabled');
+						} else {
+							el.css('visibility', 'hidden');
+						}
+					}
 				} else if (nodeType == "button") {
-					$('#formButtonSet #print').fadeTo("fast", 1.0).removeAttr('disabled');
-					el.fadeTo("fast", 1.0).removeAttr('disabled');
+					if ("write" in _acl[id][prop]) {
+						if (_acl[id][prop].write) {
+							$('#formButtonSet #print').fadeTo("fast", 1.0).removeAttr('disabled');
+							el.fadeTo("fast", 1.0).removeAttr('disabled');
+						} else {
+							$('#formButtonSet #print').fadeTo("fast", .5).attr('disabled', 'disabled');
+							el.fadeTo("fast", .5).attr('disabled', 'disabled');
+						}
+					}
+					if ("read" in _acl[id][prop]) {
+						if (_acl[id][prop].read) {
+							$('#formButtonSet #print').fadeTo("fast", 1.0).removeAttr('disabled');
+							el.fadeTo("fast", 1.0).removeAttr('disabled');
+						} else {
+							$('#formButtonSet #print').fadeTo("fast", .5).attr('disabled', 'disabled');
+							el.fadeTo("fast", .5).attr('disabled', 'disabled');
+						}
+					}
 				} 
 				//else
 					//el.removeAttr('disabled');
 				
-				el.css('visibility', 'initial');
-			
+//				el.css('visibility', 'initial');
+/*			
 				if (userInfo[0].loginName in _acl[id]) {
 					if ("write" in _acl[id][userInfo[0].loginName]) {
 						if (!_acl[id][userInfo[0].loginName].write) {
@@ -990,15 +1109,16 @@ function applyAcl(office_id, manager_id, employee_id) {
 						}
 					}
 				}
+*/				
 			}
 		}
 	}
 	
 	//var prop = $('#jstree').jstree(true).get_node(sectionId).data["data-memberof"];
-	setAcl(office_id);
+	setAcl(office_groupName);
 	//prop = userInfo[0].loginName;
-	setAcl(manager_id);
-	setAcl(employee_id);
+	setAcl(manager_loginName);
+	setAcl(employee_loginName);
 	
 	setAccordionState();
 }
