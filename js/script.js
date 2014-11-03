@@ -904,6 +904,9 @@ function applyAcl(office_id, manager_id, employee_id) {
 				//	continue;
 
 				if (nodeType == "span") {
+					
+					_acl[id][prop].write
+					
 					if (!el.hasClass('ui-accordion-header'))
 						continue;
 					
