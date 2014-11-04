@@ -62,7 +62,7 @@ Grid = {
 			loadonce: false,
             mtype: "get",
             datatype: "json",
-            colNames: [$.i18n.prop('ApplicationNumber'), $.i18n.prop('ApplicationDate'), $.i18n.prop('OwnerName'), $.i18n.prop('ProjectName'), , $.i18n.prop('Area'), $.i18n.prop('Block'), $.i18n.prop('Plot'), $.i18n.prop('ConstructionExpDate'), $.i18n.prop('FeedPoints')],
+            colNames: [$.i18n.prop('ApplicationNumber'), $.i18n.prop('ApplicationDate'), $.i18n.prop('OwnerName'), $.i18n.prop('ProjectName'), , $.i18n.prop('Area'), $.i18n.prop('Block'), $.i18n.prop('Plot'), $.i18n.prop('ConstructionExpDate'), $.i18n.prop('FeedPoints'), $.i18n.prop('ControlCenter')],
             colModel: [ //http://php.net/manual/en/function.date.php
                         {name: 'ApplicationNumber', index: 'ApplicationNumber', align: 'left', width: '120px', sortable: true, resizable: true, frozen: true, 
 							cellattr: function(rowId, val, rawObject) {
@@ -82,6 +82,7 @@ Grid = {
                         {name: 'Plot', index: 'Plot', align: 'right', width: '40px', sortable: true, editable: false, resizable: false },
                         {name: 'ConstructionExpDate', index: 'ConstructionExpDate', align: 'right', width: '80px', sortable: true, editable: false, resizable: false },
                         {name: 'FeedPoints', hidden: true },
+                        {name: 'ControlCenterId', hidden: true },
                       ],
             rowNum: 20,
             rowList: [20, 40, 60],
@@ -212,6 +213,8 @@ function fillFormFields(that, rowId) {
 	$('#plot, #plot2').val(row['Plot']);
 	$('#construction-exp-date, #construction-exp-date2').val(row['ConstructionExpDate']);
 	$('#feed-points, #feed-points2').val(row['FeedPoints']);
+
+	$('#controlCenterId').attr('data-controlcenterid', row['ControlCenterId']);
 	
 	//$('#owner-name2, #project-name2, #area2, #block2, #plot2, #construction-exp-date2').attr('readonly','readonly');
 	setRadioButton('project-type', row['ProjectType']);

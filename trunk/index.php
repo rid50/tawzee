@@ -202,7 +202,7 @@ if ($idp == "SAML") {
 	<div id="jstree_resourcelist" dir="ltr" style="display:none"></div>	
 	<fieldset id="userLegend" dir="ltr" style="display:none">
 		<legend>Legend</legend>
-		<img src="images/folder_nonmember.png" style="width:16px; height:16px" alt="User"/><span style="vertical-align:top">Office</span><br/>
+		<img src="images/folder_headquarter.png" style="width:16px; height:16px" alt="User"/><span style="vertical-align:top">Headquarter</span><br/>
 		<img src="images/folder_consultancy.png" style="width:16px; height:16px" alt="User"/><span style="vertical-align:top">Consultancy Office</span><br/>
 		<img src="images/folder_lightning.png" style="width:16px; height:16px" alt="User"/><span style="vertical-align:top">Emergency Control Office</span><br/>
 		<img src="images/user.png" alt="User"/><span style="vertical-align:top">User</span><br/>
@@ -256,7 +256,7 @@ if ($idp == "SAML") {
 				<button id="print" title="Print form"></button>
 				<button id="delete" title="Delete form"></button>
 			</div-->
-
+			<br/>
 			<label for="application-number">Application Number</label>
 			<input type="text" id="application-number" autofocus maxlength="24" class="text ui-widget-content ui-corner-all" data-is-required="true"/>
 			<label for="application-date">Application Date</label>
@@ -265,8 +265,10 @@ if ($idp == "SAML") {
 			<label for="owner-name">Owner Name</label>
 			<input type="text" id="owner-name" maxlength="24" class="text ui-widget-content ui-corner-all" data-is-required="true"/>
 			<label for="project-name">Project Name</label>
-			<input type="text" id="project-name" maxlength="24" class="text ui-widget-content ui-corner-all" data-is-required="true"/><br/>
-
+			<input type="text" id="project-name" maxlength="24" class="text ui-widget-content ui-corner-all" data-is-required="true"/>
+			<label for="controlCenterId">Control Center</label>
+			<select id="controlCenterId" class="ui-widget-content ui-corner-all" style="width:160px" data-validation='^([1-9])', data-validation-message="$.i18n.prop('ControlCenter') + ' ' + $.i18n.prop('CannotBeEmpty')"></select><br/>
+						
 			<label for="area">Area</label>
 			<input type="text" id="area" maxlength="15" size="10" class="text ui-widget-content ui-corner-all" data-is-required="true"/>
 			<label for="block">Block</label>

@@ -38,8 +38,8 @@ CREATE TABLE Area (
 DROP TABLE IF EXISTS Application;
 CREATE TABLE Application (
 ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-ApplicationNumber VARCHAR(24) NOT NULL AUTO_INCREMENT,
-ApplicationDate DATE NOT NULL,
+ApplicationNumber VARCHAR(24) NOT NULL,
+ApplicationDate DATE,
 OwnerName VARCHAR( 24 ) NOT NULL,
 ProjectName VARCHAR( 24 ) NOT NULL,
 ProjectType SMALLINT NOT NULL DEFAULT -1,
@@ -65,6 +65,7 @@ PossibilityNo SMALLINT NOT NULL DEFAULT -1,
 StationNumber VARCHAR(10),
 ApplicationCreator VARCHAR(45) NULL,
 OfficeId SMALLINT UNSIGNED NOT NULL,
+ControlCenterId SMALLINT UNSIGNED NOT NULL,
 time TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -215,7 +216,7 @@ CREATE TABLE OfficeList (
   OfficeId SMALLINT UNSIGNED AUTO_INCREMENT,
   Name varchar(45) NOT NULL,
   ArabicName varchar(45) NOT NULL,
-  MemberOf varchar(24),
+  MemberOf varchar(24)) NOT NULL,
   PRIMARY KEY (OfficeId)
 ) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
