@@ -100,14 +100,14 @@ function moveScroller() {
 
 		s.css({
 			position: "fixed",
-			top: ($("#left-section").offset().top + 3) + "px",
+			top: ($("#left-section").offset().top + 14) + "px",
 			left: left + "px",
 			//right: right
 		});
 
 		s2.css({
 			position: "fixed",
-			top: ($("#left-section").offset().top + 10) + "px",
+			top: ($("#left-section").offset().top + 20) + "px",
 			left: left2 + "px",
 			//right: right
 		});
@@ -272,6 +272,7 @@ $(document).ready(function () {
 
 	$('#main-form').on('hide', function() {
 		$(this).find("input[type='text']").removeClass("ui-state-error");
+		$('#controlCenterId').removeClass("ui-state-error");
 		$('#application-number').attr('readonly','readonly');
 		//$('#terms-and-conditions').hide();
 		//moveScroller();
@@ -420,6 +421,23 @@ $(document).ready(function () {
 								//setEventToDeleteRowButtons();
 							}
 
+							var selectTag = $('#controlCenterId'), html;
+							selectTag.empty();
+							if (0 == selectTag.attr('data-controlcenterid'))
+								selectTag.append('<option selected="selected" value="0"> --- ' + jQuery.i18n.prop('Select') + ' --- </option>');
+							
+							var nodes = $('#jstree').jstree(true).get_json("#", {flat:false});
+							$(nodes).each(function() {
+								if (this.data["data-memberof"] == "CONTROLOFFICE") {
+									if (this.id == selectTag.attr('data-controlcenterid'))
+										html = '<option selected="selected" value="' + this.id + '">' + this.text + '</option>';
+									else
+										html = '<option value="' + this.id + '">' + this.text + '</option>';
+
+									selectTag.append(html);
+								}
+							})
+							
 							var tableRow;
 							result.forEach(function(r, index) {
 								if (index == 0) {
@@ -799,13 +817,18 @@ function getAcl() {
 					return true;
 				}
 				
+				var found = false;
 				$(node.children).each(function(i, id) {
 					var node = jstree.get_node(id);
 					if (node.data["data-loginname"] == userInfo[0].loginName) {
 						employee_loginName = userInfo[0].loginName;
-						return;
+						found = true;
+						return false;
 					}
 				})
+				
+				if (found)
+					return true;
 			})
 			
 			//var idx = _directors.indexOf(userInfo[0].loginName);
@@ -860,28 +883,21 @@ function getAcl() {
 			alert("Get Access Control List - error: " + errorThrown);
 		});
 }
-
-function applyAcl(office_groupName, manager_loginName, employee_loginName) {
-//console.log("appl");
 /*
-					var prop = node.type == "department" ? node.data["data-memberof"] : node.data["data-loginname"];
-					
-					_acl[data.node.data.id] = _acl[data.node.data.id] || {};
-					_acl[id][prop] = _acl[data.node.data.id][prop] || {};
+function resetAcl() {
+	var form = "main-form";
+	var fields = form.find("input[type='text']").not("#error-box");
+	fields = form.find("input[type='radio']");
+	fields = form.find("input[type='checkbox']");
 
-						$(node.children).each(function(i, id) {
-							var node = jstree.get_node(id);
-							var prop = node.data["data-loginname"];
-							if (Object.keys(_acl[data.node.data.id]).indexOf(prop) != -1) {
-								delete _acl[data.node.data.id][prop];
-								//if (Object.keys(_acl[data.node.data.id]).length === 0) {
-								//	delete _acl[data.node.data.id];
-								//}
-							}
-							//node = jstree.get_node($('#' + id));
-							clearChildrenAcls(node);
-						})
-*/		
+	form = "load-form";
+	fields = form.find("input[type='text']").not("#error-box, #owner-name2, #project-name2, #area2, #block2, #plot2, #construction-exp-date2, #feed-points2");
+	fields = form.find("input[type='radio']");
+	fields = form.find("input[type='checkbox']");
+}
+*/
+function applyAcl(office_groupName, manager_loginName, employee_loginName) {
+	//console.log("appl");
 	function setAcl(prop) {
 		for (var id in _acl) {
 			if (prop in _acl[id]) {
@@ -1733,9 +1749,9 @@ function fillUserLoginCombo() {
 		setTimeout(function() {
 			$("#resourceManagement").css("display", "none");
 			
+			//resetAcl();
 			start(val, 'db', function() {		// 'db' - get Actors from database
 				$("#accordion").accordion( "option", "active", 0 );
-				//applyAcl();
 				//setAccordionState();
 				//applyAcl(true); 	// true - check for accordion access control list
 
@@ -2216,6 +2232,7 @@ initDepartmentTree = function(actorsSource) {
 			case "CONTROLOFFICE":
 				department_icon = 'images/folder_lightning.png';
 				break;
+			case "HEADQUARTER":
 			default:
 				department_icon = 'jstree-folder';
 		}
@@ -2585,14 +2602,14 @@ initDepartmentTree = function(actorsSource) {
 							},															
 							"action": function (obj) {
 								var deptname = 'New office';
-								$.post("json_db_pdo.php", {'func':'createOU', 'param':{'name':deptname}})	// OU - Organizational Unit
+								$.post("json_db_pdo.php", {'func':'createOU', 'param':{'name':deptname, 'memberof':'HEADQUARTER'}})	// OU - Organizational Unit
 									.done(function(data){
 										if (isAjaxError(data)) {
 											error = true;
 											return;
 										}
 										
-										node = tree.create_node(node, {'id':data[0], 'text':deptname, 'type':'department', 'data':{"data-name":deptname, "data-arname":deptname, "data-memberof":""}}, "before");
+										node = tree.create_node(node, {'id':data[0], 'text':deptname, 'type':'department', 'data':{"data-name":deptname, "data-arname":deptname, "data-memberof":"HEADQUARTER"}}, "before");
 										tree.edit(node);
 									})
 									.fail(function(jqXHR, textStatus, errorThrown) {
@@ -3260,7 +3277,7 @@ this.addOUMembership = function(jstree) {
 	var html = '<select id="OUMembershipSelect">' +
 				'<option selected="selected" value="CONSULTANCY">' + $.i18n.prop('ConsultancyOffice') + '</option>' +
 				'<option value="CONTROLOFFICE">' + $.i18n.prop('EmergencyControlOffice') + '</option>' +
-				'<option value="">' + $.i18n.prop('NonMembership') + '</option></select>';
+				'<option value="HEADQUARTER">' + $.i18n.prop('Headquarter') + '</option></select>';
     form.html(html);
 	form.data(jstree);
     form.dialog({
@@ -3361,6 +3378,7 @@ $(function() {
 			case "CONTROLOFFICE":
 				department_icon = 'images/folder_lightning.png';
 				break;
+			case "HEADQUARTER":
 			default:
 				department_icon = 'jstree-folder';
 		}
@@ -3500,6 +3518,7 @@ function saveForm(that, func) {
 		formFields = currForm.find("input[type='text']").not("#error-box").filter(function() {
 			return $(this).parent()[0].tagName != "TD";
 		});
+		formFields = formFields.add($('#controlCenterId'));
 		//tableFields = currForm.find(".Switch, .K1000KWT, .K1000AMP, .K1250KWT, .K1250AMP, .K1600KWT, .K1600AMP");
 	} else if ("load-form" == _currentForm) {
 		formFields = currForm.find("input[type='text']").not("#error-box, #owner-name2, #project-name2, #area2, #block2, #plot2, #construction-exp-date2, #feed-points2").filter(function() {
@@ -3533,9 +3552,14 @@ function saveForm(that, func) {
 	myHelper.setValidationTip($('#error-box'));
 	
 	formFields.each(function() {
-		if ($(this).attr('data-is-required'))
-			valid = valid && myHelper.isRequired( $(this), $.i18n.prop(myHelper.hyphensToCamel(this.id)) );
-
+		if ($(this).attr('data-is-required')) {
+			valid = valid && myHelper.isRequired($(this), $.i18n.prop(myHelper.hyphensToCamel(this.id)));
+		}
+		
+		if ($(this).attr('data-validation')) {
+			valid = valid && myHelper.checkRegexp($(this), $(this).attr('data-validation'), eval($(this).attr('data-validation-message'))); 
+		}
+		
 		if (!valid)
 			return false;
 
@@ -4089,6 +4113,7 @@ function toggleLanguage(lang, dir) {
 			$('label[for="application-date"]').html($.i18n.prop('ApplicationDate'));
 			$('label[for="owner-name"]').html($.i18n.prop('OwnerName'));
 			$('label[for="project-name"], label[for="project-name2"]').html($.i18n.prop('ProjectName'));
+			$('label[for="controlCenterId"]').html($.i18n.prop('ControlCenter'));
 			$('label[for="area"], label[for="area2"]').html($.i18n.prop('Area'));
 			$('label[for="block"], label[for="block2"]').html($.i18n.prop('Block'));
 			$('label[for="plot"], label[for="plot2"]').html($.i18n.prop('Plot'));

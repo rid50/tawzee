@@ -67,8 +67,8 @@ hr {
 
  #application-number { width:140px;}
 
- //input.text, input[type="radio"], button { margin-bottom:10px; padding: .4em; }
 input.text, input[type="radio"] { margin-bottom:10px; padding: .4em; }
+select {padding: .25em; }
 
 form input.text { margin-right:20px;}
 #residence-total-area, #construction-area, #ac-area, #current-load, #extra-load, #load-after-delivery, #conductive-total-load{ margin-right:0px; !important}

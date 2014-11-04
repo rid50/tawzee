@@ -23,7 +23,7 @@
 	myHelper.checkRegexp = function(o, regexp, n) {
 		if (o.val().length == 0)
 			return true;
-			
+		regexp = new RegExp(regexp);
 		if (!(regexp.test(o.val()))) {
 			o.addClass("ui-state-error");
 			updateTips(n);
