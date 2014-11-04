@@ -521,6 +521,12 @@ class DatabaseRepository {
 
 			if($que->fetchColumn() != 0)
 				throw new Exception("23000"); //"The document already exists"
+				
+			//$application = $dbh->lastInsertId();
+			$param['application-number'] = $dbh->lastInsertId();
+			
+			throw new Exception($param['application-number']);
+
 		}
 		
 		$dbh->beginTransaction();

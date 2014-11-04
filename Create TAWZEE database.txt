@@ -216,7 +216,7 @@ CREATE TABLE OfficeList (
   OfficeId SMALLINT UNSIGNED AUTO_INCREMENT,
   Name varchar(45) NOT NULL,
   ArabicName varchar(45) NOT NULL,
-  MemberOf varchar(24)) NOT NULL,
+  MemberOf varchar(24) NOT NULL,
   PRIMARY KEY (OfficeId)
 ) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
