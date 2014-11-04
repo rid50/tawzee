@@ -256,6 +256,7 @@ $(document).ready(function () {
 	})(jQuery);
 	
 	$('#main-form').on('show', function() {
+		fillControlCenterDDBox();
 		if (_applicationNumber == "") {
 			$('#application-number').removeAttr('readonly');
 			setTimeout(function() {
@@ -420,23 +421,8 @@ $(document).ready(function () {
 								
 								//setEventToDeleteRowButtons();
 							}
-
-							var selectTag = $('#controlCenterId'), html;
-							selectTag.empty();
-							if (0 == selectTag.attr('data-controlcenterid'))
-								selectTag.append('<option selected="selected" value="0"> --- ' + jQuery.i18n.prop('Select') + ' --- </option>');
 							
-							var nodes = $('#jstree').jstree(true).get_json("#", {flat:false});
-							$(nodes).each(function() {
-								if (this.data["data-memberof"] == "CONTROLOFFICE") {
-									if (this.id == selectTag.attr('data-controlcenterid'))
-										html = '<option selected="selected" value="' + this.id + '">' + this.text + '</option>';
-									else
-										html = '<option value="' + this.id + '">' + this.text + '</option>';
-
-									selectTag.append(html);
-								}
-							})
+//							fillControlCenterDDBox();
 							
 							var tableRow;
 							result.forEach(function(r, index) {
@@ -630,8 +616,9 @@ $(document).ready(function () {
 			clearForm();
 		} else if (this.id == "newForm") {
 			_currentForm = "main-form";
-			$("#accordion").accordion( "option", "active", 1 );				
 			clearForm();
+			$("#accordion").accordion( "option", "active", 1 );				
+			//clearForm();
 		} else if (this.id == "save") {
 			$.blockUI();
 			if ("main-form" == _currentForm && $('#application-number').attr('readonly') == undefined ||
@@ -795,6 +782,25 @@ $(document).ready(function () {
 	}, false);
 	//applyAcl();
 });
+
+function fillControlCenterDDBox() {
+	var selectTag = $('#controlCenterId'), html;
+	selectTag.empty();
+	if (0 == selectTag.attr('data-controlcenterid'))
+		selectTag.append('<option selected="selected" value="0"> --- ' + jQuery.i18n.prop('Select') + ' --- </option>');
+	
+	var nodes = $('#jstree').jstree(true).get_json("#", {flat:false});
+	$(nodes).each(function() {
+		if (this.data["data-memberof"] == "CONTROLOFFICE") {
+			if (this.id == selectTag.attr('data-controlcenterid'))
+				html = '<option selected="selected" value="' + this.id + '">' + this.text + '</option>';
+			else
+				html = '<option value="' + this.id + '">' + this.text + '</option>';
+
+			selectTag.append(html);
+		}
+	})
+}
 
 function getAcl() {
 	_acl = {};
@@ -3552,7 +3558,7 @@ function saveForm(that, func) {
 	myHelper.setValidationTip($('#error-box'));
 	
 	formFields.each(function() {
-		if ($(this).attr('data-is-required')) {
+		if ($(this).attr('data-is-required') == "true") {
 			valid = valid && myHelper.isRequired($(this), $.i18n.prop(myHelper.hyphensToCamel(this.id)));
 		}
 		
@@ -3846,6 +3852,7 @@ function clearForm() {
 		$('#app-number-search').val("");
 		_applicationNumber = "";
 		$('#application-number').removeAttr('readonly');
+		$('#controlCenterId').attr('data-controlcenterid', 0);
 		
 		$("#grid").jqGrid('resetSelection');
 		_rowId = _page = 0;
