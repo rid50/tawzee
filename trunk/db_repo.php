@@ -522,15 +522,29 @@ class DatabaseRepository {
 			if($que->fetchColumn() != 0)
 				throw new Exception("23000"); //"The document already exists"
 				
+			//$que = $dbh->query("SELECT LAST_INSERT_ID()");
 			//$application = $dbh->lastInsertId();
-			$param['application-number'] = $dbh->lastInsertId();
+			//$param['application-number'] = $que->fetchColumn();
 			
-			throw new Exception($param['application-number']);
+			//throw new Exception($que->fetchColumn());
+			//$date = new DateTime('now');
+			//throw new Exception($date->format('Y-m-d'));
 
+			//throw new Exception((new DateTime())->format('Y-m-d-H-i-s'));
+			
+			$param['application-number'] = "somevalue";		// will be updated soon
+			$param['application-date'] = (new DateTime())->format('d/m/Y');
+			//$param['application-date'] = (new DateTime('now', new DateTimeZone('Asia/Kuwait')))->format('d/m/Y');
+			//throw new Exception($param['application-date']);
 		}
 		
 		$dbh->beginTransaction();
 
+		$this->result = new stdClass;
+		//$this->result = array({});
+		//$this->result->ar = 1;
+		//throw new Exception($this->result);
+		
 		try {
 			if (isset($param['area-id'])) {
 				$areaId = $param['area-id'];
@@ -540,7 +554,10 @@ class DatabaseRepository {
 					$stArea->execute();
 					$areaId = $dbh->lastInsertId();
 					$param['area-id'] = $areaId;
-					$this->result[] = $areaId;
+					//$this->result = array();
+					//$this->result[] = array('areaId' => $areaId);
+					//$this->result = object('areaId' => $areaId);
+					$this->result->areaId = $areaId;
 				}
 			}
 /*
@@ -588,9 +605,24 @@ class DatabaseRepository {
 					//break;
 			} 			
 
-			if ($param['schema'] == 'main-form')
-				$st = "INSERT INTO Application (" . $fields . ")" . "VALUES (" . $values . ") ON DUPLICATE KEY UPDATE " . $columnsToUpdate;
-			else if ($param['schema'] == 'load-form')
+			if ($param['schema'] == 'main-form') {
+				if ($op == 'insert') {
+					$st = "INSERT INTO Application (" . $fields . ")" . "VALUES (" . $values . ")";
+					$ds = $dbh->prepare($st);
+					$ds->execute($ar);
+					$lastInsertId = $dbh->lastInsertId();
+					$st = "UPDATE Application SET ApplicationNumber = LAST_INSERT_ID() WHERE id = LAST_INSERT_ID()";
+					$ds = $dbh->prepare($st);
+					$ds->execute();
+					$this->result->applicationNumber = $lastInsertId;
+					$this->result->applicationDate = $param['application-date'];
+
+					//$this->result = array('applicationNumber' => $lastInsertId);
+
+				} else {
+					$st = "INSERT INTO Application (" . $fields . ")" . "VALUES (" . $values . ") ON DUPLICATE KEY UPDATE " . $columnsToUpdate;
+				}
+			} else if ($param['schema'] == 'load-form')
 				$st = "INSERT INTO ApplicationLoad (" . $fields . ")" . "VALUES (" . $values . ") ON DUPLICATE KEY UPDATE " . $columnsToUpdate;
 			else
 				throw new Exception('Wrong form: ' . $param['schema']);;
