@@ -547,13 +547,15 @@ $(document).ready(function () {
 					_formButtonSet = null;
 				}
 
-				if ("main-form" == _currentForm)
-					$('#add').show();
-				else if ("load-form" == _currentForm)
-					$('#add').hide();
+				//if ("main-form" == _currentForm)
+				//	$('#add').show();
+				//else if ("load-form" == _currentForm)
+				//	$('#add').hide();
 				
 				$(this).show();
+				//console.log('show: ' + this.id);
 			} else {
+				//console.log('hide: ' + this.id);
 				$(this).hide();
 			}
 		});
@@ -614,6 +616,9 @@ $(document).ready(function () {
 	.on("click", function(event){
 		if (this.id == "add") {
 			clearForm();
+			if ($('#' + _currentForm).is(":visible")) {
+				fillControlCenterDDBox();
+			}
 		} else if (this.id == "newForm") {
 			_currentForm = "main-form";
 			clearForm();
@@ -786,7 +791,7 @@ $(document).ready(function () {
 function fillControlCenterDDBox() {
 	var selectTag = $('#controlCenterId'), html;
 	selectTag.empty();
-	if (0 == selectTag.attr('data-controlcenterid'))
+	if (selectTag.attr('data-controlcenterid') == "0" || selectTag.attr('data-controlcenterid') == undefined)
 		selectTag.append('<option selected="selected" value="0"> --- ' + jQuery.i18n.prop('Select') + ' --- </option>');
 	
 	var nodes = $('#jstree').jstree(true).get_json("#", {flat:false});
@@ -2930,17 +2935,18 @@ function initResourceTree() {
 		});
 		
 		fields_data = [];
-		var fields = $(this).find('input, fieldset.access-control, table.access-control')
+		var fields = $(this).find('input, select, fieldset.access-control, table.access-control')
 							.not('fieldset.access-control input, table.access-control input');
 		var labelobj
 		fields.each(function() {
 			node = {
 				'data': {
 					'id': (this.type == "radio" || this.type == "checkbox")	? this.name : 
+						(this.type == "select-one") ? this.id :
 						(this.type == "fieldset" || this.type == "table") ? this.id :
 						(this.type == "text" && this.id == "" && this.attributes.class != undefined) ? this.attributes.class.value : this.id,
 				},
-				'type': (this.nodeName.toLowerCase() == "fieldset") ? "fieldset" : (this.nodeName.toLowerCase() == "table") ? "table" : "field",
+				'type': (this.nodeName.toLowerCase() == "fieldset") ? "fieldset" : (this.nodeName.toLowerCase() == "table") ? "table" : (this.nodeName.toLowerCase() == "select") ? "select" : "field",
 				'text': (function(obj){
 					if (obj.type == "radio" || obj.type == "checkbox") {
 						labelobj = $('label[for="' + obj.name + '"]');
@@ -2964,6 +2970,8 @@ function initResourceTree() {
 						}
 					} else if (obj.nodeName.toLowerCase() == "fieldset") {
 						return $('fieldset[id="' + obj.id + '"] legend').text().replace(/:$/, "");
+					} else if (obj.nodeName.toLowerCase() == "select") {
+						return $('label[for="' + obj.id + '"]').text().replace(/:$/, "");
 					} else if (obj.nodeName.toLowerCase() == "table") {
 						return $.i18n.prop(obj.attributes['data-label'].value);
 					}
@@ -3083,6 +3091,9 @@ function initResourceTree() {
 				},				
 				"checkbox" : {
 					"icon" : "images/checkbox_yes.png"
+				},				
+				"select" : {
+					"icon" : "images/combobox.png"
 				},				
 				"accordion" : {
 					"icon" : "images/accordion.png"
@@ -3771,17 +3782,22 @@ function saveForm(that, func) {
 						alert(data[0].error);
 					
 					return;
-				} else if (data != null) {
-					areaId = data[0];
-					areaNames.push({id:areaId, label:areaName});
-					//gridReload('customReset');	// custom reset
-					//gridReload('customReset', $('#application-number').val());	// custom reset
-					//updateLoadForm();
 				}
 			}
 
+			if (data.areaId != undefined) {
+				//areaId = data[0];
+				areaNames.push({id:data.areaId, label:areaName});
+				//areaId = data[0];
+				//areaNames.push({id:areaId, label:areaName});
+			}
+			
 			if ("main-form" == _currentForm) {
 				if (func == "insertForm") {
+					if (data.applicationNumber != undefined) {
+						param["application-number"] = data.applicationNumber;
+						param["application-date"] = data.applicationDate;
+					}
 					addRowToGrid(param);
 				} else {
 					//gridReload('customReset', $('#application-number').val());	// custom reset
