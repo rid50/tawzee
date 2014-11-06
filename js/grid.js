@@ -190,7 +190,7 @@ function fillFormFields(that, rowId) {
 		$applicationNumber.css({'color':'currentcolor'});
 	
 	$applicationNumber.val(row['ApplicationNumber']);
-	$applicationNumber.attr('readonly','readonly');
+	//$applicationNumber.attr('readonly','readonly');
 	//$('#application-number').val(row['ApplicationNumber']);
 	//$('#application-number').attr('readonly','readonly');
 

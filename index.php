@@ -258,16 +258,16 @@ if ($idp == "SAML") {
 			</div-->
 			<br/>
 			<label for="application-number">Application Number</label>
-			<input type="text" id="application-number" autofocus maxlength="24" class="text ui-widget-content ui-corner-all" data-is-required="false"/>
+			<input type="text" id="application-number" autofocus maxlength="24" class="text ui-widget-content ui-corner-all" data-is-required="true"/>
 			<label for="application-date">Application Date</label>
-			<input type="text" id="application-date" maxlength="10" class="rid50-datepicker text ui-widget-content ui-corner-all" data-is-required="false"/><br/>
+			<input type="text" id="application-date" maxlength="10" class="rid50-datepicker text ui-widget-content ui-corner-all" data-is-required="true"/><br/>
 			
 			<label for="owner-name">Owner Name</label>
 			<input type="text" id="owner-name" maxlength="24" class="text ui-widget-content ui-corner-all" data-is-required="true"/>
 			<label for="project-name">Project Name</label>
 			<input type="text" id="project-name" maxlength="24" class="text ui-widget-content ui-corner-all" data-is-required="true"/>
 			<label for="controlCenterId">Control Center</label>
-			<select id="controlCenterId" class="ui-widget-content ui-corner-all" style="width:150px" data-validation='^([1-9])', data-validation-message="$.i18n.prop('ControlCenter') + ' ' + $.i18n.prop('CannotBeEmpty')"></select><br/>
+			<select id="controlCenterId" class="ui-widget-content ui-corner-all" style="width:140px" data-validation='^([1-9])', data-validation-message="$.i18n.prop('ControlCenter') + ' ' + $.i18n.prop('CannotBeEmpty')"></select><br/>
 						
 			<label for="area">Area</label>
 			<input type="text" id="area" maxlength="15" size="10" class="text ui-widget-content ui-corner-all" data-is-required="true"/>

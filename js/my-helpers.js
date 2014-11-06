@@ -62,7 +62,16 @@
 			return '-' + c.toLowerCase();
 		});
 	}
+
+	myHelper.getCurrentDate = function () {
+		var d = new Date();
+		var month = d.getMonth() + 1;
+		month = (('' + month).length < 2 ? '0' : '') + month;
+		return d.getDate() + "/" + month + "/" + d.getFullYear();
+		//return action + ' \&nbsp;' + dt + ' by ' + displayName;
+	}
 	
+
 	var validationTip;
 
 	myHelper.setValidationTip = function(tip) {

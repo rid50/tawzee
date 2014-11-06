@@ -257,12 +257,13 @@ $(document).ready(function () {
 	
 	$('#main-form').on('show', function() {
 		fillControlCenterDDBox();
-		if (_applicationNumber == "") {
-			$('#application-number').removeAttr('readonly');
+		//if (_applicationNumber == "") {
+			//$('#application-number').removeAttr('readonly');
 			setTimeout(function() {
-				$('#application-number').focus();
+				setFocus();
+				//$('#application-number').focus();
 			}, 100 );
-		}
+		//}
 
 		//$("#left-section").append($('#terms-and-conditions'));
 		//$('#terms-and-conditions').show();
@@ -274,18 +275,19 @@ $(document).ready(function () {
 	$('#main-form').on('hide', function() {
 		$(this).find("input[type='text']").removeClass("ui-state-error");
 		$('#controlCenterId').removeClass("ui-state-error");
-		$('#application-number').attr('readonly','readonly');
+		//$('#application-number').attr('readonly','readonly');
 		//$('#terms-and-conditions').hide();
 		//moveScroller();
 		error('');
 	});
 	
 	$('#load-form').on('show', function() {
-		if ($('#file-number').attr('readonly') === undefined) {
+		//if ($('#file-number').attr('readonly') === undefined) {
 			setTimeout(function() {
-				$('#file-number').focus();
+				setFocus();
+				//$('#file-number').focus();
 			}, 100 );
-		}
+		//}
 	});
 	 
 	$('#load-form').on('hide', function() {
@@ -351,7 +353,8 @@ $(document).ready(function () {
 			return;
 		}
 		
-		if ($('#application-number').attr('readonly') == undefined && clickedForm == "load-form")
+		//if ($('#application-number').attr('readonly') == undefined && clickedForm == "load-form")
+		if (!$('#application-number').val().match("[/\\\\]") && clickedForm == "load-form")
 			return;
 
 		_currentForm = clickedForm;
@@ -467,9 +470,9 @@ $(document).ready(function () {
 					} else if ("load-form" == _currentForm) {
 						currForm.find("input[type='text']").not("#owner-name2, #project-name2, #area2, #block2, #plot2, #construction-exp-date2, #feed-points2").val("");
 						if (result.length == 0) {
-							$('#file-number').removeAttr('readonly');
+							//$('#file-number').removeAttr('readonly');
 						} else {
-							$('#file-number').attr('readonly','readonly');
+							//$('#file-number').attr('readonly','readonly');
 									
 							$('.tr-load-detail').each(function(index, tr) {
 								if (index > 0)
@@ -626,12 +629,17 @@ $(document).ready(function () {
 			//clearForm();
 		} else if (this.id == "save") {
 			$.blockUI();
+			if ($('#application-number').val() == "")
+				insertForm(this);
+			else
+				updateForm(this);
+/*
 			if ("main-form" == _currentForm && $('#application-number').attr('readonly') == undefined ||
 				"load-form" == _currentForm && $('#file-number').attr('readonly') == undefined)
 				insertForm(this);
 			else
 				updateForm(this);
-				
+*/				
 			$.unblockUI();
 		} else {
 			//var apn = $(this).parent().siblings('#application-number').val();
@@ -787,6 +795,28 @@ $(document).ready(function () {
 	}, false);
 	//applyAcl();
 });
+
+function setFocus() {
+	var currForm = $('#' + _currentForm);
+	var fields;
+
+	if ("main-form" == _currentForm) {
+		fields = currForm.find("input[type='text']").not("#error-box").filter(function() {
+			return $(this).parent()[0].tagName != "TD";
+		});
+	} else if ("load-form" == _currentForm) {
+		fields = currForm.find("input[type='text']").not("#error-box, #owner-name2, #project-name2, #area2, #block2, #plot2, #construction-exp-date2, #feed-points2").filter(function() {
+			return $(this).parent()[0].tagName != "TD";
+		});
+	}
+
+	fields.each(function() {
+		if ($(this).attr('disabled') != 'disabled' && $(this).attr('readonly') != 'readonly' && $(this).css('visibility') != 'hidden') {
+			$(this).focus();
+			return false;
+		}
+	});
+}
 
 function fillControlCenterDDBox() {
 	var selectTag = $('#controlCenterId'), html;
@@ -985,11 +1015,14 @@ function applyAcl(office_groupName, manager_loginName, employee_loginName) {
 							$('#' + el.attr('data-link')).fadeTo("fast", 1.0).attr("href", "#");
 							$('#formButtonSet button').not('#print').fadeTo("fast", 1.0).removeAttr('disabled');
 						} else {
-							el.find('#formButtonSet button').not('#print').fadeTo("fast", .5).attr('disabled', 'disabled');
+							$('#' + el.attr('data-link')).attr('disabled', 'disabled');
+							$('#' + el.attr('data-link')).fadeTo("fast", .5).removeAttr("href"); 
+							$('#formButtonSet button').not('#print').fadeTo("fast", .5).attr('disabled', 'disabled');
 						}
 					}
 					if ("read" in _acl[id][prop]) {
 						if (_acl[id][prop].read) {
+							el.css('visibility', 'initial');
 							$('#' + el.attr('data-link')).removeAttr('disabled');
 							$('#' + el.attr('data-link')).fadeTo("fast", 1.0).attr("href", "#");
 							$('#formButtonSet button').not('#print').fadeTo("fast", 1.0).removeAttr('disabled');
@@ -997,6 +1030,7 @@ function applyAcl(office_groupName, manager_loginName, employee_loginName) {
 							el.css('visibility', 'hidden');
 							$('#' + el.attr('data-link')).attr('disabled', 'disabled');
 							$('#' + el.attr('data-link')).fadeTo("fast", .5).removeAttr("href"); 
+							$('#formButtonSet button').not('#print').fadeTo("fast", .5).attr('disabled', 'disabled');
 						}
 					}
 				} else if (nodeType == "text") {
@@ -1004,18 +1038,31 @@ function applyAcl(office_groupName, manager_loginName, employee_loginName) {
 						if (_acl[id][prop].write) {
 							el.css('visibility', 'initial');
 							$('label[for="' + id + '"]').css('visibility', 'initial');
+							if (el.hasClass( "rid50-datepicker" ))
+								el.datepicker( "option", "disabled", false );
+
 							el.removeAttr('disabled');
 						} else {
+							if (el.hasClass( "rid50-datepicker" ))
+								el.datepicker( "option", "disabled", true );
+
 							el.attr('disabled', 'disabled');
 						}
 					}
 					if ("read" in _acl[id][prop] && !el.attr('readonly')) {
 						if (_acl[id][prop].read) {
 							$('label[for="' + id + '"]').css('visibility', 'initial');
+							if (el.hasClass( "rid50-datepicker" ))
+								el.datepicker( "option", "disabled", false );
+
 							el.removeAttr('disabled');
 						} else {
 							el.css('visibility', 'hidden');
 							$('label[for="' + id + '"]').css('visibility', 'hidden');
+							if (el.hasClass( "rid50-datepicker" ))
+								el.datepicker( "option", "disabled", true );
+
+							el.attr('disabled', 'disabled');
 						}
 					}
 				} else if (nodeType == "radio" || nodeType == "checkbox") {
@@ -1175,7 +1222,20 @@ function initAccordion() {
 					if (ui.newHeader.hasClass( "my-ui-state-disabled" )) {
 						return false;
 					}
+					
+					var anchor = $('#' + $('#load-form').attr('data-link'));
+					if ($('#application-number').val().match("[/\\\\]")) {
+						//anchor.css('visibility', 'initial');
+						anchor.removeAttr('disabled');
+						anchor.fadeTo("fast", 1.0).attr("href", "#");
+						//$('#formButtonSet button').not('#print').fadeTo("fast", 1.0).removeAttr('disabled');
+					} else {
+						anchor.attr('disabled', 'disabled');
+						anchor.fadeTo("fast", .5).removeAttr("href"); 
+						//$('#formButtonSet button').not('#print').fadeTo("fast", .5).attr('disabled', 'disabled');
+					}
 				
+					//dataLink.attr('data-link').click();
 					$("#" + $('#' + _currentForm).attr('data-link')).click();
 					divGrid.hide();
 					report_container.hide();
@@ -3569,12 +3629,15 @@ function saveForm(that, func) {
 	myHelper.setValidationTip($('#error-box'));
 	
 	formFields.each(function() {
-		if ($(this).attr('data-is-required') == "true") {
-			valid = valid && myHelper.isRequired($(this), $.i18n.prop(myHelper.hyphensToCamel(this.id)));
-		}
-		
-		if ($(this).attr('data-validation')) {
-			valid = valid && myHelper.checkRegexp($(this), $(this).attr('data-validation'), eval($(this).attr('data-validation-message'))); 
+		//if ($(this).css('visibility') != 'hidden' && $(this).attr('disabled') != 'disabled') {
+		if ($(this).attr('disabled') != 'disabled' && $(this).attr('readonly') != 'readonly' && $(this).css('visibility') != 'hidden') {
+			if ($(this).attr('data-is-required') == "true") {
+				valid = valid && myHelper.isRequired($(this), $.i18n.prop(myHelper.hyphensToCamel(this.id)));
+			}
+			
+			if ($(this).attr('data-validation')) {
+				valid = valid && myHelper.checkRegexp($(this), $(this).attr('data-validation'), eval($(this).attr('data-validation-message'))); 
+			}
 		}
 		
 		if (!valid)
@@ -3741,6 +3804,10 @@ function saveForm(that, func) {
 	param["schema"][2]["primary-key"] = currForm.attr('data-key-field');
 */
 
+	if (func == "insertForm") {
+		param["application-date"] = myHelper.getCurrentDate();
+	}
+
 	param["application-creator"] = userInfo[0].displayName;
 	param["office-id"] = sectionId;	
 	param["schema"] = _currentForm;
@@ -3805,8 +3872,8 @@ function saveForm(that, func) {
 				}
 				updateLoadForm();
 			} else if ("load-form" == _currentForm) {
-				if ($('#file-number').attr('readonly') == undefined)
-					$('#file-number').attr('readonly', 'readonly');
+				//if ($('#file-number').attr('readonly') == undefined)
+				//	$('#file-number').attr('readonly', 'readonly');
 			}
 		})
 		.fail(function(jqXHR, textStatus, errorThrown) {
@@ -3867,13 +3934,13 @@ function clearForm() {
 	if ("main-form" == _currentForm) {
 		$('#app-number-search').val("");
 		_applicationNumber = "";
-		$('#application-number').removeAttr('readonly');
+		//$('#application-number').removeAttr('readonly');
 		$('#controlCenterId').attr('data-controlcenterid', 0);
 		
 		$("#grid").jqGrid('resetSelection');
 		_rowId = _page = 0;
 	} else if ("load-form" == _currentForm) {
-		$('#file-number').removeAttr('readonly');
+		//$('#file-number').removeAttr('readonly');
 	}
 
 	//$(".dragclone").remove();
@@ -3892,7 +3959,8 @@ function clearForm() {
 
 	if (currForm.is(':visible')){
 		setTimeout(function() {
-			$('#application-number').focus();
+			setFocus();
+			//$('#application-number').focus();
 		}, 100 );
 	}
 }
