@@ -1,1 +1,1 @@
-{"ui-accordion-accordion-header-1":{"ali":{"write":false}},"application-number":{"CONSULTANCY":{"write":false},"CONTROLOFFICE":{"write":false},"abdalla":{"write":true}},"application-date":{"CONSULTANCY":{"write":false}},"owner-name":{"ali":{"write":true}},"controlCenterId":{"CONTROLOFFICE":{"write":false}}}
+{"ui-accordion-accordion-header-1":{"ali":{"write":true}},"application-number":{"CONTROLOFFICE":{"write":false},"CONSULTANCY":{"write":false}},"controlCenterId":{"CONTROLOFFICE":{"write":false}},"application-date":{"CONSULTANCY":{"write":false}}}

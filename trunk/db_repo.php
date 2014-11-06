@@ -532,8 +532,9 @@ class DatabaseRepository {
 
 			//throw new Exception((new DateTime())->format('Y-m-d-H-i-s'));
 			
-			$param['application-number'] = "somevalue";		// will be updated soon
-			$param['application-date'] = (new DateTime())->format('d/m/Y');
+			if ($param['schema'] == 'main-form')
+				$param['application-number'] = "somevalue";		// will be updated soon
+			//$param['application-date'] = (new DateTime())->format('d/m/Y');
 			//$param['application-date'] = (new DateTime('now', new DateTimeZone('Asia/Kuwait')))->format('d/m/Y');
 			//throw new Exception($param['application-date']);
 		}
@@ -612,25 +613,31 @@ class DatabaseRepository {
 					$ds->execute($ar);
 					$lastInsertId = $dbh->lastInsertId();
 					$st = "UPDATE Application SET ApplicationNumber = LAST_INSERT_ID() WHERE id = LAST_INSERT_ID()";
-					$ds = $dbh->prepare($st);
-					$ds->execute();
+					//$ds = $dbh->prepare($st);
+					//$ds->execute();
 					$this->result->applicationNumber = $lastInsertId;
-					$this->result->applicationDate = $param['application-date'];
+					$this->result->applicationDate = DateTime::createFromFormat('d/m/Y', $param['application-date'])->format('Y-m-d');
 
 					//$this->result = array('applicationNumber' => $lastInsertId);
 
 				} else {
-					$st = "INSERT INTO Application (" . $fields . ")" . "VALUES (" . $values . ") ON DUPLICATE KEY UPDATE " . $columnsToUpdate;
+					$st = "DELETE FROM ApplicationDetail WHERE ApplicationNumber = '{$param['application-number']}'";
+					$ds = $dbh->prepare($st);
+					$ds->execute();
+
+					//$st = "INSERT INTO Application (" . $fields . ")" . "VALUES (" . $values . ") ON DUPLICATE KEY UPDATE " . $columnsToUpdate;
+					//$st = "UPDATE Application SET " . $columnsToUpdate . " WHERE ApplicationNumber = '{$param['application-number']}'";
 				}
-			} else if ($param['schema'] == 'load-form')
+			} else if ($param['schema'] == 'load-form') {
 				$st = "INSERT INTO ApplicationLoad (" . $fields . ")" . "VALUES (" . $values . ") ON DUPLICATE KEY UPDATE " . $columnsToUpdate;
-			else
+			} else
 				throw new Exception('Wrong form: ' . $param['schema']);;
 				
-			//throw new Exception($st);				
+			//throw new Exception($st);
+			
 			$ds = $dbh->prepare($st);
 			$ds->execute($ar);
-
+/*		
 			if ($param['schema'] == 'main-form')
 				$st = "DELETE FROM ApplicationDetail WHERE ApplicationNumber = '{$param['application-number']}'";
 			else if ($param['schema'] == 'load-form')
@@ -639,7 +646,7 @@ class DatabaseRepository {
 			//throw new Exception($st);
 			$ds = $dbh->prepare($st);
 			$ds->execute($ar);
-			
+*/			
 			for ($i = 0; $i < count($param['table']); $i++) {
 				//$columnsToUpdate = "";
 				//$ar2 = array();
