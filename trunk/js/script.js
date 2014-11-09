@@ -398,7 +398,6 @@ $(document).ready(function () {
 					//if (result.length == 0)
 					//$('.tr-load-detail').not(':first').empty();
 
-					
 					var currForm = $('#' + _currentForm);
 					if ("main-form" == _currentForm) {
 						currForm.find("input[type='text']").not("#application-number, #application-date, #owner-name, #project-name, #area, #block, #plot, #construction-exp-date, #feed-points").val("");
@@ -629,10 +628,11 @@ $(document).ready(function () {
 			//clearForm();
 		} else if (this.id == "save") {
 			$.blockUI();
-			if ($('#application-number').val() == "")
-				insertForm(this);
-			else
-				updateForm(this);
+			saveForm(this);
+			//if ($('#application-number').val() == "")
+			//	insertForm(this);
+			//else
+			//	updateForm(this);
 /*
 			if ("main-form" == _currentForm && $('#application-number').attr('readonly') == undefined ||
 				"load-form" == _currentForm && $('#file-number').attr('readonly') == undefined)
@@ -3585,7 +3585,8 @@ function updateForm(that) {
 	saveForm(that, "updateForm");
 }
 
-function saveForm(that, func) {
+//function saveForm(that, func) {
+function saveForm(that) {
 	var currForm = $('#' + _currentForm);
 	
 	var formFields, radioFields, checkboxFields; //, tableFields;
@@ -3804,17 +3805,23 @@ function saveForm(that, func) {
 	param["schema"][2]["primary-key"] = currForm.attr('data-key-field');
 */
 
-	if (func == "insertForm") {
-		param["application-date"] = myHelper.getCurrentDate();
-	}
+	//if (func == "insertForm") {
+	//	param["application-date"] = myHelper.getCurrentDate();
+	//}
 
+	param["application-number-old-value"] = $('#application-number')[0].defaultValue;
+
+	if (param["application-number-old-value"] == "")
+		param["application-date"] = myHelper.getCurrentDate();
+	
 	param["application-creator"] = userInfo[0].displayName;
 	param["office-id"] = sectionId;	
 	param["schema"] = _currentForm;
 	
 	if ( valid ) {
 		url = "json_db_pdo.php";
-		data = {"func": func,
+		//data = {"func": func,
+		data = {"func": "insertUpdate",
 			"param": param
 				// docFileNumber:file_number.val(),
 				// docApprover:userInfo[0].displayName,
@@ -3860,7 +3867,8 @@ function saveForm(that, func) {
 			}
 			
 			if ("main-form" == _currentForm) {
-				if (func == "insertForm") {
+				//if (func == "insertForm") {
+				if (param["application-number-old-value"] == "") {
 					if (data.applicationNumber != undefined) {
 						param["application-number"] = data.applicationNumber;
 						param["application-date"] = data.applicationDate;
@@ -3932,6 +3940,7 @@ function clearForm() {
 	currForm.find(':checkbox').prop('checked', false);
 
 	if ("main-form" == _currentForm) {
+		$('#application-number')[0].defaultValue = "";
 		$('#app-number-search').val("");
 		_applicationNumber = "";
 		//$('#application-number').removeAttr('readonly');

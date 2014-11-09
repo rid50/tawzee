@@ -190,6 +190,9 @@ function fillFormFields(that, rowId) {
 		$applicationNumber.css({'color':'currentcolor'});
 	
 	$applicationNumber.val(row['ApplicationNumber']);
+	$applicationNumber[0].defaultValue = $applicationNumber.val();
+	//$('#application-number')[0].defaultValue = $('#application-number')[0].value;
+	
 	//$applicationNumber.attr('readonly','readonly');
 	//$('#application-number').val(row['ApplicationNumber']);
 	//$('#application-number').attr('readonly','readonly');
@@ -219,6 +222,7 @@ function fillFormFields(that, rowId) {
 	//$('#owner-name2, #project-name2, #area2, #block2, #plot2, #construction-exp-date2').attr('readonly','readonly');
 	setRadioButton('project-type', row['ProjectType']);
 	//$('input:radio[name=project-type]')[row['ProjectType']].checked = true;
+	
 }
 
 
