@@ -501,10 +501,11 @@ class DatabaseRepository {
 		}, $input);
 	}
 
-	function insertUpdate($param, $op) {
+//	function insertUpdate($param, $op) {
+	function insertUpdate($param) {
 		$dbh = $this->connect();
 
-		if ($op == 'insert') {
+		//if ($op == 'insert') {
 			//$str = preg_replace( "/^[a-z]/", '$0', $param["schema"][2]["primary-key"] );
 			//$str = $this->hyphensToCamel($param["schema"][2]["primary-key"]);
 			//throw new Exception($str);
@@ -512,15 +513,25 @@ class DatabaseRepository {
 			//$que = $dbh->query("SELECT COUNT(*) FROM Application WHERE ApplicationNumber = {$this->hyphensToCamel($param['schema'][2]['primary-key'])}");
 			//$que = $dbh->query("SELECT COUNT(*) FROM Application WHERE ApplicationNumber = {$param[$param['schema'][2]['primary-key']]}");
 			
-			if ($param['schema'] == 'main-form')
-				$que = $dbh->query("SELECT COUNT(*) FROM Application WHERE ApplicationNumber = '{$param['application-number']}'");
-			else if ($param['schema'] == 'load-form')
+			$inserNewOrUpdateKey = $param["application-number"] != $param["application-number-old-value"];
+
+			//throw new Exception($param['schema']);
+			
+			if ($param['schema'] == 'main-form') {
+				if ($inserNewOrUpdateKey) {		// insert new / update key
+					$que = $dbh->query("SELECT COUNT(*) FROM Application WHERE ApplicationNumber = '{$param['application-number']}'");
+
+					if ($param["application-number-old-value"] == "")		// insert record
+						$param['application-number'] = "somevalue";		// will be updated soon
+				}
+			} else if ($param['schema'] == 'load-form') {
 				$que = $dbh->query("SELECT COUNT(*) FROM ApplicationLoad WHERE FileNumber = '{$param['file-number']}'");
-			else
+			} else
 				throw new Exception('Wrong form: ' . $param['schema']);;
 
-			if($que->fetchColumn() != 0)
+			if($inserNewOrUpdateKey && $que->fetchColumn() != 0)
 				throw new Exception("23000"); //"The document already exists"
+
 				
 			//$que = $dbh->query("SELECT LAST_INSERT_ID()");
 			//$application = $dbh->lastInsertId();
@@ -532,12 +543,13 @@ class DatabaseRepository {
 
 			//throw new Exception((new DateTime())->format('Y-m-d-H-i-s'));
 			
-			if ($param['schema'] == 'main-form')
-				$param['application-number'] = "somevalue";		// will be updated soon
+			//if ($param['schema'] == 'main-form')
+			//	$param['application-number'] = "somevalue";		// will be updated soon
+				
 			//$param['application-date'] = (new DateTime())->format('d/m/Y');
 			//$param['application-date'] = (new DateTime('now', new DateTimeZone('Asia/Kuwait')))->format('d/m/Y');
 			//throw new Exception($param['application-date']);
-		}
+		//}
 		
 		$dbh->beginTransaction();
 
@@ -583,7 +595,7 @@ class DatabaseRepository {
 				//if ($key == 'feed-points')
 				//	throw new Exception($key . " --- " . $val);
 
-				if ($key == 'schema' || $key == 'table' || $key == 'area')
+				if ($key == 'schema' || $key == 'table' || $key == 'area' || $key == 'application-number-old-value')
 					continue;
 
 				if ($key == 'application-date' || $key == 'load-date') {
@@ -607,7 +619,8 @@ class DatabaseRepository {
 			} 			
 
 			if ($param['schema'] == 'main-form') {
-				if ($op == 'insert') {
+				//if ($op == 'insert') {
+				if ($param["application-number-old-value"] == "") {		// insert new
 					$st = "INSERT INTO Application (" . $fields . ")" . "VALUES (" . $values . ")";
 					$ds = $dbh->prepare($st);
 					$ds->execute($ar);
@@ -621,12 +634,19 @@ class DatabaseRepository {
 					//$this->result = array('applicationNumber' => $lastInsertId);
 
 				} else {
-					$st = "DELETE FROM ApplicationDetail WHERE ApplicationNumber = '{$param['application-number']}'";
+					if ($inserNewOrUpdateKey)		// update key
+						$st = "DELETE FROM ApplicationDetail WHERE ApplicationNumber = '{$param['application-number-old-value']}'";
+					else
+						$st = "DELETE FROM ApplicationDetail WHERE ApplicationNumber = '{$param['application-number']}'";
+						
 					$ds = $dbh->prepare($st);
 					$ds->execute();
 
 					//$st = "INSERT INTO Application (" . $fields . ")" . "VALUES (" . $values . ") ON DUPLICATE KEY UPDATE " . $columnsToUpdate;
-					//$st = "UPDATE Application SET " . $columnsToUpdate . " WHERE ApplicationNumber = '{$param['application-number']}'";
+					if ($inserNewOrUpdateKey)		// update key
+						$st = "UPDATE Application SET " . $columnsToUpdate . " WHERE ApplicationNumber = '{$param['application-number-old-value']}'";
+					else
+						$st = "UPDATE Application SET " . $columnsToUpdate . " WHERE ApplicationNumber = '{$param['application-number']}'";
 				}
 			} else if ($param['schema'] == 'load-form') {
 				$st = "INSERT INTO ApplicationLoad (" . $fields . ")" . "VALUES (" . $values . ") ON DUPLICATE KEY UPDATE " . $columnsToUpdate;
