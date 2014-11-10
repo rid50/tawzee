@@ -469,6 +469,7 @@ $(document).ready(function () {
 					} else if ("load-form" == _currentForm) {
 						currForm.find("input[type='text']").not("#owner-name2, #project-name2, #area2, #block2, #plot2, #construction-exp-date2, #feed-points2").val("");
 						if (result.length == 0) {
+							$('#file-number')[0].defaultValue = "";
 							//$('#file-number').removeAttr('readonly');
 						} else {
 							//$('#file-number').attr('readonly','readonly');
@@ -493,6 +494,8 @@ $(document).ready(function () {
 							result.forEach(function(r, index) {
 								if (index == 0) {
 									$('#file-number').val(r.FileNumber);
+									$('#file-number')[0].defaultValue = $('#file-number')[0].value;
+
 									var dt = $.datepicker.parseDate('yy-mm-dd', r.LoadDate);
 									$('#load-date').val($.datepicker.formatDate('dd/mm/yy', dt));
 									$('#power-factor-summer').val(format( "#,##0.#0", r.PowerFactorSummer));
@@ -549,11 +552,6 @@ $(document).ready(function () {
 					_formButtonSet = null;
 				}
 
-				//if ("main-form" == _currentForm)
-				//	$('#add').show();
-				//else if ("load-form" == _currentForm)
-				//	$('#add').hide();
-				
 				$(this).show();
 				//console.log('show: ' + this.id);
 			} else {
@@ -924,19 +922,55 @@ function getAcl() {
 			alert("Get Access Control List - error: " + errorThrown);
 		});
 }
-/*
+
 function resetAcl() {
 	var form = "main-form";
+	form = $('#' + form);
 	var fields = form.find("input[type='text']").not("#error-box");
-	fields = form.find("input[type='radio']");
-	fields = form.find("input[type='checkbox']");
+	fields.each(function() {
+		$(this).css('visibility', 'initial');
+		$('label[for="' + this.id + '"]').css('visibility', 'initial');
+		if ($(this).hasClass( "rid50-datepicker" ))
+			$(this).datepicker( "option", "disabled", false );
+
+		$(this).removeAttr('disabled');
+	});
+	
+	fields = form.find("input[type='radio'], input[type='checkbox']");
+	fields.each(function() {
+		$(this).css('visibility', 'initial');
+		$('label[for="' + this.id + '"]').css('visibility', 'initial');
+		$(this).each(function() {
+			$('label[for="' + this.id + '"]').css('visibility', 'initial');
+		})
+
+		$(this).removeAttr('disabled');
+	});
 
 	form = "load-form";
+	form = $('#' + form);	
 	fields = form.find("input[type='text']").not("#error-box, #owner-name2, #project-name2, #area2, #block2, #plot2, #construction-exp-date2, #feed-points2");
-	fields = form.find("input[type='radio']");
-	fields = form.find("input[type='checkbox']");
+	fields.each(function() {
+		$(this).css('visibility', 'initial');
+		$('label[for="' + this.id + '"]').css('visibility', 'initial');
+		if ($(this).hasClass( "rid50-datepicker" ))
+			$(this).datepicker( "option", "disabled", false );
+
+		$(this).removeAttr('disabled');
+	});
+	
+	fields = form.find("input[type='radio'], input[type='checkbox']");
+	fields.each(function() {
+		$(this).css('visibility', 'initial');
+		$('label[for="' + this.id + '"]').css('visibility', 'initial');
+		$(this).each(function() {
+			$('label[for="' + this.id + '"]').css('visibility', 'initial');
+		})
+
+		$(this).removeAttr('disabled');
+	});
 }
-*/
+
 function applyAcl(office_groupName, manager_loginName, employee_loginName) {
 	//console.log("appl");
 	function setAcl(prop) {
@@ -1129,68 +1163,11 @@ function applyAcl(office_groupName, manager_loginName, employee_loginName) {
 						}
 					}
 				} 
-				//else
-					//el.removeAttr('disabled');
-				
-//				el.css('visibility', 'initial');
-/*			
-				if (userInfo[0].loginName in _acl[id]) {
-					if ("write" in _acl[id][userInfo[0].loginName]) {
-						if (!_acl[id][userInfo[0].loginName].write) {
-							if (!el.attr('readonly')) {
-								if (nodeType == "span") {
-									el.addClass( "my-ui-state-disabled" );
-								} if (nodeType == "table") {
-									el.find('input').attr('disabled', 'disabled');
-									el.find('button').css('visibility', 'hidden');
-									//$('.addRow').css('visibility', 'hidden');
-								} else if (nodeType == "div") {
-									el.find('#formButtonSet button').not('#print').fadeTo("fast", .5).attr('disabled', 'disabled');
-									//$('#' + el.attr('data-link')).attr('disabled', 'disabled');
-									//$('#' + el.attr('data-link')).fadeTo("fast", .5).removeAttr("href"); 
-								} else if (nodeType == "button") {
-									$('#formButtonSet #print').fadeTo("fast", .5).attr('disabled', 'disabled');
-									el.fadeTo("fast", .5).attr('disabled', 'disabled');
-								} else
-									el.attr('disabled', 'disabled');
-							}
-						}
-					}
-					
-					if ("read" in _acl[id][userInfo[0].loginName]) {
-						if (!_acl[id][userInfo[0].loginName].read) {
-							if (nodeType == "span") {
-								el.addClass( "my-ui-state-disabled" );
-							} if (nodeType == "table") {
-								el.find('button').css('visibility', 'hidden');
-							} if (nodeType == "text") {
-								$('label[for="' + id + '"]').css('visibility', 'hidden');
-							} else if (nodeType == "radio" || nodeType == "checkbox") {
-								$('label[for="' + id + '"]').css('visibility', 'hidden');
-								el.each(function() {
-									$('label[for="' + this.id + '"]').css('visibility', 'hidden');
-								})
-							} else if (nodeType == "div") {
-								$('#' + el.attr('data-link')).attr('disabled', 'disabled');
-								$('#' + el.attr('data-link')).fadeTo("fast", .5).removeAttr("href"); 
-							} else if (nodeType == "button") {
-								$('#formButtonSet #print').fadeTo("fast", .5).attr('disabled', 'disabled');
-								el.fadeTo("fast", .5).attr('disabled', 'disabled');
-							}
-
-							if (nodeType != "button")
-								el.css('visibility', 'hidden');
-						}
-					}
-				}
-*/				
 			}
 		}
 	}
 	
-	//var prop = $('#jstree').jstree(true).get_node(sectionId).data["data-memberof"];
 	setAcl(office_groupName);
-	//prop = userInfo[0].loginName;
 	setAcl(manager_loginName);
 	setAcl(employee_loginName);
 	
@@ -1820,7 +1797,7 @@ function fillUserLoginCombo() {
 		setTimeout(function() {
 			$("#resourceManagement").css("display", "none");
 			
-			//resetAcl();
+			resetAcl();
 			start(val, 'db', function() {		// 'db' - get Actors from database
 				$("#accordion").accordion( "option", "active", 0 );
 				//setAccordionState();
@@ -3576,7 +3553,7 @@ $(function() {
 	});
 	
 })
-
+/*
 function insertForm(that) {
 	saveForm(that, "insertForm");
 }
@@ -3584,7 +3561,7 @@ function insertForm(that) {
 function updateForm(that) {
 	saveForm(that, "updateForm");
 }
-
+*/
 //function saveForm(that, func) {
 function saveForm(that) {
 	var currForm = $('#' + _currentForm);
@@ -3809,10 +3786,13 @@ function saveForm(that) {
 	//	param["application-date"] = myHelper.getCurrentDate();
 	//}
 
-	param["application-number-old-value"] = $('#application-number')[0].defaultValue;
+	if ("main-form" == _currentForm) {
+		param["application-number-old-value"] = $('#application-number')[0].defaultValue;
+		if (param["application-number-old-value"] == "")
+			param["application-date"] = myHelper.getCurrentDate();
+	} else if ("load-form" == _currentForm)
+		param["file-number-old-value"] = $('#file-number')[0].defaultValue;
 
-	if (param["application-number-old-value"] == "")
-		param["application-date"] = myHelper.getCurrentDate();
 	
 	param["application-creator"] = userInfo[0].displayName;
 	param["office-id"] = sectionId;	
@@ -3880,6 +3860,9 @@ function saveForm(that) {
 				}
 				updateLoadForm();
 			} else if ("load-form" == _currentForm) {
+				if (param["file-number"] != param["file-number-old-value"])
+					$('#file-number')[0].defaultValue = $('#file-number')[0].value;
+					
 				//if ($('#file-number').attr('readonly') == undefined)
 				//	$('#file-number').attr('readonly', 'readonly');
 			}
@@ -3949,6 +3932,7 @@ function clearForm() {
 		$("#grid").jqGrid('resetSelection');
 		_rowId = _page = 0;
 	} else if ("load-form" == _currentForm) {
+		$('#file-number')[0].defaultValue = "";
 		//$('#file-number').removeAttr('readonly');
 	}
 
