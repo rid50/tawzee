@@ -443,6 +443,7 @@ input[type='checkbox'] {
 	float: left;
 	margin-left: 40px;
 	margin-top: 13px;
+	padding: 10px;
 }
 
 #jstree_userlist,

@@ -513,11 +513,11 @@ class DatabaseRepository {
 			//$que = $dbh->query("SELECT COUNT(*) FROM Application WHERE ApplicationNumber = {$this->hyphensToCamel($param['schema'][2]['primary-key'])}");
 			//$que = $dbh->query("SELECT COUNT(*) FROM Application WHERE ApplicationNumber = {$param[$param['schema'][2]['primary-key']]}");
 			
-			$inserNewOrUpdateKey = $param["application-number"] != $param["application-number-old-value"];
 
 			//throw new Exception($param['schema']);
-			
+			$inserNewOrUpdateKey = false;
 			if ($param['schema'] == 'main-form') {
+				$inserNewOrUpdateKey = $param["application-number"] != $param["application-number-old-value"];
 				if ($inserNewOrUpdateKey) {		// insert new / update key
 					$que = $dbh->query("SELECT COUNT(*) FROM Application WHERE ApplicationNumber = '{$param['application-number']}'");
 
@@ -525,13 +525,16 @@ class DatabaseRepository {
 						$param['application-number'] = "somevalue";		// will be updated soon
 				}
 			} else if ($param['schema'] == 'load-form') {
-				$que = $dbh->query("SELECT COUNT(*) FROM ApplicationLoad WHERE FileNumber = '{$param['file-number']}'");
+				$inserNewOrUpdateKey = $param["file-number"] != $param["file-number-old-value"];
+				if ($inserNewOrUpdateKey)		// insert new / update key
+					$que = $dbh->query("SELECT COUNT(*) FROM ApplicationLoad WHERE FileNumber = '{$param['file-number']}'");
 			} else
 				throw new Exception('Wrong form: ' . $param['schema']);;
 
 			if($inserNewOrUpdateKey && $que->fetchColumn() != 0)
 				throw new Exception("23000"); //"The document already exists"
 
+			//throw new Exception($param["file-number-old-value"]);
 				
 			//$que = $dbh->query("SELECT LAST_INSERT_ID()");
 			//$application = $dbh->lastInsertId();
@@ -595,7 +598,7 @@ class DatabaseRepository {
 				//if ($key == 'feed-points')
 				//	throw new Exception($key . " --- " . $val);
 
-				if ($key == 'schema' || $key == 'table' || $key == 'area' || $key == 'application-number-old-value')
+				if ($key == 'schema' || $key == 'table' || $key == 'area' || $key == 'application-number-old-value' || $key == 'file-number-old-value')
 					continue;
 
 				if ($key == 'application-date' || $key == 'load-date') {
@@ -649,7 +652,23 @@ class DatabaseRepository {
 						$st = "UPDATE Application SET " . $columnsToUpdate . " WHERE ApplicationNumber = '{$param['application-number']}'";
 				}
 			} else if ($param['schema'] == 'load-form') {
-				$st = "INSERT INTO ApplicationLoad (" . $fields . ")" . "VALUES (" . $values . ") ON DUPLICATE KEY UPDATE " . $columnsToUpdate;
+				if ($param["file-number-old-value"] == "") {		// insert new
+					//$st = "INSERT INTO ApplicationLoad (" . $fields . ")" . "VALUES (" . $values . ") ON DUPLICATE KEY UPDATE " . $columnsToUpdate;
+					$st = "INSERT INTO ApplicationLoad (" . $fields . ")" . "VALUES (" . $values . ")";
+				} else {
+					if ($inserNewOrUpdateKey)		// update key
+						$st = "DELETE FROM ApplicationLoadDetail WHERE FileNumber = '{$param['file-number-old-value']}'";
+					else
+						$st = "DELETE FROM ApplicationLoadDetail WHERE FileNumber = '{$param['file-number']}'";
+						
+					$ds = $dbh->prepare($st);
+					$ds->execute();
+
+					if ($inserNewOrUpdateKey)		// update key
+						$st = "UPDATE ApplicationLoad SET " . $columnsToUpdate . " WHERE FileNumber = '{$param['file-number-old-value']}'";
+					else
+						$st = "UPDATE ApplicationLoad SET " . $columnsToUpdate . " WHERE FileNumber = '{$param['file-number']}'";
+				}
 			} else
 				throw new Exception('Wrong form: ' . $param['schema']);;
 				
