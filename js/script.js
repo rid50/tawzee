@@ -79,21 +79,22 @@ function xml2Str(xmlNode) {
 	return false;
 }
 
-function moveScroller() {
-    var move = function() {
+//function moveScroller() {
+function setScroller() {
+    //var move = function() {
 		var s = $("#terms");
 		var s2 = $("#formButtonSet");
 
 		var left, left2;
 		if ($("body[dir='ltr']").length) {
 			left = $("#left-section").offset().left + 5;
-			left2 = $("#left-section").offset().left + $("#left-section").width() - s2.width() - 10;
+			left2 = $("#left-section").offset().left + $("#left-section").width() - s2.width() - 20;
 			//right = "auto";
 		} else {
 			//left = "184.5px";
 			//left = "";
 			left = $("#left-section").offset().left + $("#left-section").width() - s.width() - 5;
-			left2 = $("#left-section").offset().left + 10;
+			left2 = $("#left-section").offset().left + 20;
 		}
 		
 		//console.log(left2);
@@ -134,11 +135,13 @@ function moveScroller() {
             }
         }
 */		
-    };
+    //};
     //$("#left-section").scroll(move);
-    $(window).resize(move);
-    move();
+    //$(window).resize(move);
+    //move();
 }
+
+$(window).resize(setScroller);
 
 $(document).ready(function () {
 	$.ajaxSetup({ cache: false, async: false });
@@ -260,6 +263,7 @@ $(document).ready(function () {
 		//if (_applicationNumber == "") {
 			//$('#application-number').removeAttr('readonly');
 			setTimeout(function() {
+				setScroller();
 				setFocus();
 				//$('#application-number').focus();
 			}, 100 );
@@ -284,6 +288,7 @@ $(document).ready(function () {
 	$('#load-form').on('show', function() {
 		//if ($('#file-number').attr('readonly') === undefined) {
 			setTimeout(function() {
+				setScroller();
 				setFocus();
 				//$('#file-number').focus();
 			}, 100 );
@@ -740,7 +745,7 @@ $(document).ready(function () {
 	
 	setEventToDeleteRowButtons();
 
-	moveScroller();
+	//moveScroller();
 			
 	//start(_userLoginName, 'db', function(){ applyAcl() });	// 'db' - get Actors from database
 	start(_userLoginName, 'db', null);	// 'db' - get Actors from database
@@ -785,10 +790,13 @@ $(document).ready(function () {
 		$('#accordion').show();
 	}
 
-	_myCustomEvent = new Event('MyCustomEvent');
+	//_myCustomEvent = new Event('MyCustomEvent');
+	_myCustomEvent = document.createEvent('Event');
+	_myCustomEvent.initEvent('MyCustomEvent', true, true);
 	document.addEventListener('MyCustomEvent', function (e) {
 		setTimeout(function() {
 			getAcl();
+			//moveScroller();
 		}, 100 );
 	}, false);
 	//applyAcl();
@@ -4280,7 +4288,8 @@ function toggleLanguage(lang, dir) {
 		}				
 	});
 	
-	moveScroller();			
+	setScroller();
+	//moveScroller();			
 
 }
 /*	
