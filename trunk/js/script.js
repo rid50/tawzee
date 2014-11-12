@@ -772,12 +772,12 @@ $(document).ready(function () {
 			toggleGrid(lang);
 			$("#divGrid").show();
 		}
-
+/*
 		if (_admin != userInfo[0].loginName) {
 			$('#userImportButton').attr('disabled', 'disabled').fadeTo("fast", .5);		// user assignment tab
 			$('#userExportButton').attr('disabled', 'disabled').fadeTo("fast", .5);		// user assignment tab
 		}
-		
+*/		
 		$('#accordion').show();
 	} else if (_admin == userInfo[0].loginName) {
 		$("#main-div").removeClass("accessRejected");
@@ -803,9 +803,9 @@ $(document).ready(function () {
 });
 
 function setFocus() {
-	var currForm = $('#' + _currentForm);
-	var fields;
-
+	//var currForm = $('#' + _currentForm);
+	var fields = $('#' + _currentForm).find("input[type='text']").not("#error-box");
+/*
 	if ("main-form" == _currentForm) {
 		fields = currForm.find("input[type='text']").not("#error-box").filter(function() {
 			return $(this).parent()[0].tagName != "TD";
@@ -815,7 +815,7 @@ function setFocus() {
 			return $(this).parent()[0].tagName != "TD";
 		});
 	}
-
+*/
 	fields.each(function() {
 		if ($(this).attr('disabled') != 'disabled' && $(this).attr('readonly') != 'readonly' && $(this).css('visibility') != 'hidden') {
 			$(this).focus();
@@ -932,50 +932,57 @@ function getAcl() {
 }
 
 function resetAcl() {
-	var form = "main-form";
-	form = $('#' + form);
-	var fields = form.find("input[type='text']").not("#error-box");
-	fields.each(function() {
-		$(this).css('visibility', 'initial');
-		$('label[for="' + this.id + '"]').css('visibility', 'initial');
-		if ($(this).hasClass( "rid50-datepicker" ))
-			$(this).datepicker( "option", "disabled", false );
-
-		$(this).removeAttr('disabled');
-	});
-	
-	fields = form.find("input[type='radio'], input[type='checkbox']");
-	fields.each(function() {
-		$(this).css('visibility', 'initial');
-		$('label[for="' + this.id + '"]').css('visibility', 'initial');
-		$(this).each(function() {
+	function reset(form, fields) {
+		fields.each(function() {
+			$(this).css('visibility', 'initial');
 			$('label[for="' + this.id + '"]').css('visibility', 'initial');
-		})
+			if ($(this).hasClass( "rid50-datepicker" ))
+				$(this).datepicker( "option", "disabled", false );
 
-		$(this).removeAttr('disabled');
-	});
-
-	form = "load-form";
-	form = $('#' + form);	
-	fields = form.find("input[type='text']").not("#error-box, #owner-name2, #project-name2, #area2, #block2, #plot2, #construction-exp-date2, #feed-points2");
-	fields.each(function() {
-		$(this).css('visibility', 'initial');
-		$('label[for="' + this.id + '"]').css('visibility', 'initial');
-		if ($(this).hasClass( "rid50-datepicker" ))
-			$(this).datepicker( "option", "disabled", false );
-
-		$(this).removeAttr('disabled');
-	});
-	
-	fields = form.find("input[type='radio'], input[type='checkbox']");
-	fields.each(function() {
-		$(this).css('visibility', 'initial');
-		$('label[for="' + this.id + '"]').css('visibility', 'initial');
-		$(this).each(function() {
+			$(this).removeAttr('disabled');
+		});
+		
+		fields = form.find("input[type='radio'], input[type='checkbox']");
+		fields.each(function() {
+			$(this).css('visibility', 'initial');
 			$('label[for="' + this.id + '"]').css('visibility', 'initial');
-		})
+			$(this).each(function() {
+				$('label[for="' + this.id + '"]').css('visibility', 'initial');
+			})
 
-		$(this).removeAttr('disabled');
+			$(this).removeAttr('disabled');
+		});
+
+		fields = form.find("button");
+		fields.each(function() {
+			$('#formButtonSet #print').fadeTo("fast", 1.0).removeAttr('disabled');
+			$(this).fadeTo("fast", 1.0).removeAttr('disabled');
+		});
+		
+		fields = form.find("table");
+		fields.each(function() {
+			$(this).css('visibility', 'initial');
+			$(this).find('button').css('visibility', 'initial');
+			$(this).find('input').removeAttr('disabled');
+		});
+	}
+	
+	var form = $('#main-form');
+	form.css('visibility', 'initial');
+	var fields = form.find("input[type='text'], select").not("#error-box");
+	reset(form, fields);
+	var form = $('#load-form');
+	form.css('visibility', 'initial');
+	fields = form.find("input[type='text'], select").not("#error-box");
+	//fields = form.find("input[type='text'], select").not("#error-box, #owner-name2, #project-name2, #area2, #block2, #plot2, #construction-exp-date2, #feed-points2");
+	reset(form, fields);
+	
+	fields = $(".ui-accordion-header");
+	fields.css('visibility', 'initial');
+	fields.each(function() {
+		if ($(this).hasClass( "my-ui-state-disabled" )) {
+			$(this).removeClass( "my-ui-state-disabled" );
+		}
 	});
 }
 
@@ -1042,6 +1049,7 @@ function applyAcl(office_groupName, manager_loginName, employee_loginName) {
 					}
 					if ("read" in _acl[id][prop]) {
 						if (_acl[id][prop].read) {
+							el.css('visibility', 'initial');
 							el.find('button').css('visibility', 'initial');
 							el.find('input').removeAttr('disabled');
 						} else {
@@ -1075,7 +1083,7 @@ function applyAcl(office_groupName, manager_loginName, employee_loginName) {
 							$('#formButtonSet button').not('#print').fadeTo("fast", .5).attr('disabled', 'disabled');
 						}
 					}
-				} else if (nodeType == "text") {
+				} else if (nodeType == "text" || nodeType == "select") {
 					if ("write" in _acl[id][prop] && !el.attr('readonly')) {
 						if (_acl[id][prop].write) {
 							el.css('visibility', 'initial');
@@ -1170,7 +1178,7 @@ function applyAcl(office_groupName, manager_loginName, employee_loginName) {
 							el.fadeTo("fast", .5).attr('disabled', 'disabled');
 						}
 					}
-				} 
+				}
 			}
 		}
 	}
@@ -1208,18 +1216,36 @@ function initAccordion() {
 						return false;
 					}
 					
-					var anchor = $('#' + $('#load-form').attr('data-link'));
-					if ($('#application-number').val().match("[/\\\\]")) {
-						//anchor.css('visibility', 'initial');
-						anchor.removeAttr('disabled');
-						anchor.fadeTo("fast", 1.0).attr("href", "#");
-						//$('#formButtonSet button').not('#print').fadeTo("fast", 1.0).removeAttr('disabled');
-					} else {
-						anchor.attr('disabled', 'disabled');
-						anchor.fadeTo("fast", .5).removeAttr("href"); 
-						//$('#formButtonSet button').not('#print').fadeTo("fast", .5).attr('disabled', 'disabled');
+					//var jstree = $('#jstree').jstree(true);
+					var node = $('#jstree').jstree(true).get_node(sectionId);
+					//var manager_loginName, employee_loginName;
+					//var office_groupName = _acl['load-form'][node.data["data-memberof"]];
+					var read = true, write = true;
+					if (_acl['load-form'][node.data["data-memberof"]] != undefined) {
+						if ("write" in _acl['load-form'][node.data["data-memberof"]])
+							write = _acl['load-form'][node.data["data-memberof"]].write;
+							
+						if ("read" in _acl['load-form'][node.data["data-memberof"]])
+							read = _acl['load-form'][node.data["data-memberof"]].read;
 					}
-				
+
+					var anchor = $('#' + $('#load-form').attr('data-link'));
+					
+					if (!read) {
+						anchor.css('visibility', 'hidden');
+					} else {
+						anchor.css('visibility', 'initial');
+						if ($('#application-number').val().match("[/\\\\]") && write) {
+							//anchor.css('visibility', 'initial');
+							anchor.removeAttr('disabled');
+							anchor.fadeTo("fast", 1.0).attr("href", "#");
+							//$('#formButtonSet button').not('#print').fadeTo("fast", 1.0).removeAttr('disabled');
+						} else {
+							anchor.attr('disabled', 'disabled');
+							anchor.fadeTo("fast", .5).removeAttr("href"); 
+							//$('#formButtonSet button').not('#print').fadeTo("fast", .5).attr('disabled', 'disabled');
+						}
+					}
 					//dataLink.attr('data-link').click();
 					$("#" + $('#' + _currentForm).attr('data-link')).click();
 					divGrid.hide();
@@ -1541,9 +1567,21 @@ function setAccordionState() {
 		$(accTabs[3]).addClass( "ui-state-disabled" );			// drawings and scanned images tab
 	}
 	
+	if (actor == actor_enum.employee)
+		$(accTabs[4]).addClass( "ui-state-disabled" );			// user assignment tab
+	else
+		$(accTabs[4]).removeClass( "ui-state-disabled" );		// user assignment tab
+	
 	if (_directors.indexOf(userInfo[0].loginName) == -1)
 		$(accTabs[5]).addClass( "ui-state-disabled" );			// access control tab
 
+	if (_admin != userInfo[0].loginName) {
+		$('#userImportButton').attr('disabled', 'disabled').fadeTo("fast", .5);		// user assignment tab
+		$('#userExportButton').attr('disabled', 'disabled').fadeTo("fast", .5);		// user assignment tab
+	} else {
+		$('#userImportButton').fadeTo("fast", 1.0).removeAttr('disabled');
+		$('#userExportButton').fadeTo("fast", 1.0).removeAttr('disabled');
+	}
 }
 
 function start(userLoginName, actorsSource, func) {
@@ -2378,7 +2416,7 @@ initDepartmentTree = function(actorsSource) {
 				else if (sectionId == this.id)
 					data.instance.open_node(this);
 				else
-					$('#' + this.id).hide(); 
+					$('#jstree li#' + this.id).hide(); 
 			
 			})
 
