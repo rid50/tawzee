@@ -152,7 +152,7 @@ if ($idp == "SAML") {
 					</div>
 					<span>Form</span>
 					<div style="text-align:right;">
-						<a href="#" id="application-form-link" data-form="main-form">Electric Delivery Application</a><br/><br/>
+						<a href="#" id="application-form-link" data-form="main-form" style="white-space:nowrap">Electric Delivery Application</a><br/><br/>
 						<a href="#" id="load-form-link" data-form="load-form">Load Requirements</a>
 						<!--button id="addNew" title="Add new">Add</button>
 						<button id="delete" title="Delete form">Delete</button-->
