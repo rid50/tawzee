@@ -1012,6 +1012,20 @@ function applyAcl(office_groupName, manager_loginName, employee_loginName) {
 					if (!el.hasClass('ui-accordion-header'))
 						continue;
 					
+					if ("read" in _acl[id][prop]) {
+						if (_acl[id][prop].read) {
+							if (el.hasClass( "my-ui-state-disabled" )) {
+								el.removeClass( "my-ui-state-disabled" );
+							}
+						} else {
+							el.css('visibility', 'hidden');
+							if (!el.hasClass( "my-ui-state-disabled" )) {
+								el.addClass( "my-ui-state-disabled" );
+							}
+							continue;
+						}
+					}
+
 					if ("write" in _acl[id][prop]) {
 						if (_acl[id][prop].write) {
 							el.css('visibility', 'initial');
@@ -1024,19 +1038,19 @@ function applyAcl(office_groupName, manager_loginName, employee_loginName) {
 							}
 						}
 					}
+				} else if (nodeType == "table") {
 					if ("read" in _acl[id][prop]) {
 						if (_acl[id][prop].read) {
-							if (el.hasClass( "my-ui-state-disabled" )) {
-								el.removeClass( "my-ui-state-disabled" );
-							}
+							el.css('visibility', 'initial');
+							el.find('button').css('visibility', 'initial');
+							el.find('input').removeAttr('disabled');
 						} else {
 							el.css('visibility', 'hidden');
-							if (!el.hasClass( "my-ui-state-disabled" )) {
-								el.addClass( "my-ui-state-disabled" );
-							}
+							el.find('button').css('visibility', 'hidden');
+							continue;							
 						}
 					}
-				} else if (nodeType == "table") {
+
 					if ("write" in _acl[id][prop]) {
 						if (_acl[id][prop].write) {
 							el.css('visibility', 'initial');
@@ -1047,17 +1061,22 @@ function applyAcl(office_groupName, manager_loginName, employee_loginName) {
 							el.find('button').css('visibility', 'hidden');
 						}
 					}
+				} else if (nodeType == "div") {
 					if ("read" in _acl[id][prop]) {
 						if (_acl[id][prop].read) {
 							el.css('visibility', 'initial');
-							el.find('button').css('visibility', 'initial');
-							el.find('input').removeAttr('disabled');
+							$('#' + el.attr('data-link')).removeAttr('disabled');
+							$('#' + el.attr('data-link')).fadeTo("fast", 1.0).attr("href", "#");
+							$('#formButtonSet button').not('#print').fadeTo("fast", 1.0).removeAttr('disabled');
 						} else {
 							el.css('visibility', 'hidden');
-							el.find('button').css('visibility', 'hidden');
+							$('#' + el.attr('data-link')).attr('disabled', 'disabled');
+							$('#' + el.attr('data-link')).fadeTo("fast", .5).removeAttr("href"); 
+							$('#formButtonSet button').not('#print').fadeTo("fast", .5).attr('disabled', 'disabled');
+							continue;							
 						}
 					}
-				} else if (nodeType == "div") {
+
 					if ("write" in _acl[id][prop]) {
 						if (_acl[id][prop].write) {
 							el.css('visibility', 'initial');
@@ -1070,20 +1089,25 @@ function applyAcl(office_groupName, manager_loginName, employee_loginName) {
 							$('#formButtonSet button').not('#print').fadeTo("fast", .5).attr('disabled', 'disabled');
 						}
 					}
-					if ("read" in _acl[id][prop]) {
+				} else if (nodeType == "text" || nodeType == "select") {
+					if ("read" in _acl[id][prop] && !el.attr('readonly')) {
 						if (_acl[id][prop].read) {
-							el.css('visibility', 'initial');
-							$('#' + el.attr('data-link')).removeAttr('disabled');
-							$('#' + el.attr('data-link')).fadeTo("fast", 1.0).attr("href", "#");
-							$('#formButtonSet button').not('#print').fadeTo("fast", 1.0).removeAttr('disabled');
+							$('label[for="' + id + '"]').css('visibility', 'initial');
+							if (el.hasClass( "rid50-datepicker" ))
+								el.datepicker( "option", "disabled", false );
+
+							el.removeAttr('disabled');
 						} else {
 							el.css('visibility', 'hidden');
-							$('#' + el.attr('data-link')).attr('disabled', 'disabled');
-							$('#' + el.attr('data-link')).fadeTo("fast", .5).removeAttr("href"); 
-							$('#formButtonSet button').not('#print').fadeTo("fast", .5).attr('disabled', 'disabled');
+							$('label[for="' + id + '"]').css('visibility', 'hidden');
+							if (el.hasClass( "rid50-datepicker" ))
+								el.datepicker( "option", "disabled", true );
+
+							el.attr('disabled', 'disabled');
+							continue;														
 						}
 					}
-				} else if (nodeType == "text" || nodeType == "select") {
+
 					if ("write" in _acl[id][prop] && !el.attr('readonly')) {
 						if (_acl[id][prop].write) {
 							el.css('visibility', 'initial');
@@ -1099,35 +1123,7 @@ function applyAcl(office_groupName, manager_loginName, employee_loginName) {
 							el.attr('disabled', 'disabled');
 						}
 					}
-					if ("read" in _acl[id][prop] && !el.attr('readonly')) {
-						if (_acl[id][prop].read) {
-							$('label[for="' + id + '"]').css('visibility', 'initial');
-							if (el.hasClass( "rid50-datepicker" ))
-								el.datepicker( "option", "disabled", false );
-
-							el.removeAttr('disabled');
-						} else {
-							el.css('visibility', 'hidden');
-							$('label[for="' + id + '"]').css('visibility', 'hidden');
-							if (el.hasClass( "rid50-datepicker" ))
-								el.datepicker( "option", "disabled", true );
-
-							el.attr('disabled', 'disabled');
-						}
-					}
 				} else if (nodeType == "radio" || nodeType == "checkbox") {
-					if ("write" in _acl[id][prop]) {
-						if (_acl[id][prop].write) {
-							el.css('visibility', 'initial');
-							$('label[for="' + id + '"]').css('visibility', 'initial');
-							el.each(function() {
-								$('label[for="' + this.id + '"]').css('visibility', 'initial');
-							})
-							el.removeAttr('disabled');
-						} else {
-							el.attr('disabled', 'disabled');
-						}
-					}
 					if ("read" in _acl[id][prop]) {
 						if (_acl[id][prop].read) {
 							$('label[for="' + id + '"]').css('visibility', 'initial');
@@ -1141,9 +1137,32 @@ function applyAcl(office_groupName, manager_loginName, employee_loginName) {
 							el.each(function() {
 								$('label[for="' + this.id + '"]').css('visibility', 'hidden');
 							})
+							continue;																					
+						}
+					}
+
+					if ("write" in _acl[id][prop]) {
+						if (_acl[id][prop].write) {
+							el.css('visibility', 'initial');
+							$('label[for="' + id + '"]').css('visibility', 'initial');
+							el.each(function() {
+								$('label[for="' + this.id + '"]').css('visibility', 'initial');
+							})
+							el.removeAttr('disabled');
+						} else {
+							el.attr('disabled', 'disabled');
 						}
 					}
 				} else if (nodeType == "fieldset") {
+					if ("read" in _acl[id][prop]) {
+						if (_acl[id][prop].read) {
+							el.removeAttr('disabled');
+						} else {
+							el.css('visibility', 'hidden');
+							continue;																												
+						}
+					}
+
 					if ("write" in _acl[id][prop]) {
 						if (_acl[id][prop].write) {
 							el.css('visibility', 'initial');
@@ -1152,25 +1171,20 @@ function applyAcl(office_groupName, manager_loginName, employee_loginName) {
 							el.attr('disabled', 'disabled');
 						}
 					}
+				} else if (nodeType == "button") {
 					if ("read" in _acl[id][prop]) {
 						if (_acl[id][prop].read) {
-							el.removeAttr('disabled');
-						} else {
-							el.css('visibility', 'hidden');
-						}
-					}
-				} else if (nodeType == "button") {
-					if ("write" in _acl[id][prop]) {
-						if (_acl[id][prop].write) {
 							$('#formButtonSet #print').fadeTo("fast", 1.0).removeAttr('disabled');
 							el.fadeTo("fast", 1.0).removeAttr('disabled');
 						} else {
 							$('#formButtonSet #print').fadeTo("fast", .5).attr('disabled', 'disabled');
 							el.fadeTo("fast", .5).attr('disabled', 'disabled');
+							continue;																												
 						}
 					}
-					if ("read" in _acl[id][prop]) {
-						if (_acl[id][prop].read) {
+
+					if ("write" in _acl[id][prop]) {
+						if (_acl[id][prop].write) {
 							$('#formButtonSet #print').fadeTo("fast", 1.0).removeAttr('disabled');
 							el.fadeTo("fast", 1.0).removeAttr('disabled');
 						} else {
@@ -3029,7 +3043,9 @@ function initResourceTree() {
 						(this.type == "fieldset" || this.type == "table") ? this.id :
 						(this.type == "text" && this.id == "" && this.attributes.class != undefined) ? this.attributes.class.value : this.id,
 				},
-				'type': (this.nodeName.toLowerCase() == "fieldset") ? "fieldset" : (this.nodeName.toLowerCase() == "table") ? "table" : (this.nodeName.toLowerCase() == "select") ? "select" : "field",
+				'type': (this.nodeName.toLowerCase() == "fieldset") ? "fieldset" :
+					(this.nodeName.toLowerCase() == "table") ? "table" :
+					(this.nodeName.toLowerCase() == "select") ? "select" : "field",
 				'text': (function(obj){
 					if (obj.type == "radio" || obj.type == "checkbox") {
 						labelobj = $('label[for="' + obj.name + '"]');
@@ -3078,74 +3094,6 @@ function initResourceTree() {
 		.on("uncheck_node.jstree", function (e, data) {
 			check_uncheck_node(e, data);
 		})
-		
-		//.on("check_node.jstree", check_uncheck_node(e, data))
-		//.on("uncheck_node.jstree", check_uncheck_node(e, data))
-		
-/*		
-		.on("check_node.jstree", function (e, data) {
-			if (data.event.originalEvent) {
-				var jstree = $('#jstree').jstree(true);
-				var node = jstree.get_selected(true);
-				if (node.length) {
-					node = node[0];
-					
-					var clearChildrenAcls = function(node) {
-						$(node.children).each(function(i, id) {
-							var node = jstree.get_node(id);
-							var prop = node.data["data-loginname"];
-							if (Object.keys(_acl[data.node.data.id]).indexOf(prop) != -1) {
-								delete _acl[data.node.data.id][prop];
-								//if (Object.keys(_acl[data.node.data.id]).length === 0) {
-								//	delete _acl[data.node.data.id];
-								//}
-							}
-							//node = jstree.get_node($('#' + id));
-							clearChildrenAcls(node);
-						})
-					}
-					//var children;
-					//if (node.type == "department")
-					//	children = $('#jstree').jstree(true).get_children_dom(node);
-						
-					var prop = node.type == "department" ? node.data["data-memberof"] : node.data["data-loginname"];
-					
-					_acl[data.node.data.id] = _acl[data.node.data.id] || {};
-					_acl[data.node.data.id][prop] = _acl[data.node.data.id][prop] || {};
-					if ($(data.event.target).hasClass('jstree-checkbox'))
-						_acl[data.node.data.id][prop].read = true;
-						//delete _acl[data.node.data.id][prop].read;
-					else if ($(data.event.target).hasClass('jstree-checkbox2'))
-						_acl[data.node.data.id][prop].write = true;
-						//delete _acl[data.node.data.id][prop].write;
-						
-					clearChildrenAcls(node);
-					
-					//if (Object.keys(_acl[data.node.data.id][prop]).length === 0) {
-					//	delete _acl[data.node.data.id][prop];
-					//	if (Object.keys(_acl[data.node.data.id]).length === 0) {
-					//		delete _acl[data.node.data.id];
-					//	}
-					//}
-				}
-			}
-		})
-		.on("uncheck_node.jstree", function (e, data) {
-			if (data.event.originalEvent) {
-				var node = $('#jstree').jstree(true).get_selected(true);
-				if (node.length) {
-					node = node[0];
-					var prop = node.type == "department" ? node.data["data-memberof"] : node.data["data-loginname"];
-					_acl[data.node.data.id] = _acl[data.node.data.id] || {};
-					_acl[data.node.data.id][prop] = _acl[data.node.data.id][prop] || {};
-					if ($(data.event.target).hasClass('jstree-checkbox'))
-						_acl[data.node.data.id][prop].read = false;
-					else if ($(data.event.target).hasClass('jstree-checkbox2'))
-						_acl[data.node.data.id][prop].write = false;
-				}
-			}
-		})
-*/		
 		.jstree({
 			"core" : {
 				"data" : data,
