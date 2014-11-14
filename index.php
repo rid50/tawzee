@@ -61,12 +61,13 @@ if ($idp == "SAML") {
 	
 	
 	<link rel="stylesheet" media="all" href="css/ui.jqgrid.css" />	
-    <link rel="stylesheet" media="screen" type="text/css" href="css/style.css"/>
-    <link rel="stylesheet" media="print" type="text/css" href="css/style.css"/>
 
 	<link rel="stylesheet" href="css/flexslider.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="js/themes/default/style.css" />
 	<link rel="stylesheet" href="js/themes/default/style2.css" />
+
+    <link rel="stylesheet" media="screen" type="text/css" href="css/style.css"/>
+    <link rel="stylesheet" media="print" type="text/css" href="css/style.css"/>
 	
 	<!--script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script--> 
 	<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script> 
@@ -106,11 +107,12 @@ if ($idp == "SAML") {
 			background-size: auto !important;
 			width: inherit;
 		}
-	
+/*	
 		.ui-accordion .ui-accordion-content {
 			overflow: hidden;
 			padding: 1em 8px;
 		}
+*/	
 	</style>	
 </head>
 
@@ -134,16 +136,18 @@ if ($idp == "SAML") {
             <section id="left-section" class="floatLeft ui-corner-all">
 			</section>
 
-            <section id="right-section" class="floatRight ui-corner-all">
+            <section id="right-section" class="floatRight ui-corner-all">			
 				<div id="accordion" style="display:none">
 					<span>Application</span>
 					<div>
 						<button id="sync" class="floatLeft" title="Go to last selected row"></button>
 						<div><span>App</span>#&nbsp;<input type="text" id="app-number-search" readonly="readonly" maxlength="10" size="10" class="text ui-widget-content ui-corner-all" value="" /></div>
 						<br/>
-						<button id="newForm" title="Add a new form"></button>
-						<button id="editForm" title="Edit form"></button>
-						<button id="printForm" title="Print form"></button>
+						<div id="formButtonSet555" class="button-set" style="display:inline">
+							<button id="newForm" title="Add form"></button>
+							<button id="editSelectedForm" title="Edit form"></button>
+							<button id="printSelectedForm" title="Print form"></button>
+						</div>
 						<!--button id="startService" title="Start Service"></button-->
 						
 						
@@ -230,25 +234,32 @@ if ($idp == "SAML") {
 <div id="main-form" class="forms" style="display:none; padding:20px; font-size:1.2em" class="floatLeft"
 	data-link="application-form-link" data-parent-table="Application" data-child-table="ApplicationDetail" data-key-field="application-number">
 		<div>
-			<div id="terms-anchor"></div>
-			<div id="terms">
+			<!--div id="terms-anchor"></div-->
+			<div id="terms" style="display:inline">
 				<!--img src="images/terms_conditions.png" alt="Terms & Conditions" title="Terms & Conditions" /-->
 				<button id="terms-button" title="Terms & Conditions">Terms & Conditions</button>
 			</div>
-			<script type="text/javascript"> 
+			<!--script type="text/javascript"> 
 				$(function() {
-				/*
+				
 					var s = $("#scroller");
 					s.css({
 						position: "fixed",
 						top: ($("#left-section").offset().top + 51) + "px",
 						left: ($("#left-section").offset().left + 1) + "px",
 					});
-				*/
+				
 					//moveScroller();
 				});
-			</script> 
+			</script--> 
 
+			<div class="button-set" style="display:inline">
+				<button id="addFormApp" title="Add form"></button>
+				<button id="saveFormApp" title="Save form"></button>
+				<button id="printFormApp" title="Print form"></button>
+				<button id="deleteFormApp" title="Delete form"></button>
+			</div>
+			
 			<!--input type="text" id="error_box" /-->
 			<!--div style="position: absolute; top:10px; right:0px;">
 				<button id="add" title="Add a new form"></button>
@@ -494,12 +505,13 @@ if ($idp == "SAML") {
 <div id="load-form" class="forms" data-link="load-form-link" style="display:none; padding:20px; font-size:1.2em" class="floatLeft"
 		data-key-field="file-number">
 		<div>
-			<!--div style="position: absolute; top:10px; right:0px;">
-				<button id="add" title="Add a new form"></button>
-				<button id="save" title="Save form"></button>
-				<button id="print" title="Print form"></button>
-				<button id="delete" title="Delete form"></button>
-			</div-->
+			<div id="formButtonSet" class="button-set" style="display:inline">
+				<button id="addFormLoad" title="Add form"></button>
+				<button id="saveFormLoad" title="Save form"></button>
+				<button id="printFormLoad" title="Print form"></button>
+				<button id="deleteFormLoad" title="Delete form"></button>
+			</div>
+
 			<label for="file-number">File Number</label>
 			<input type="text" id="file-number" autofocus maxlength="24" class="text ui-widget-content ui-corner-all" data-is-required="true" />
 			<label for="load-date">Date</label>
@@ -631,14 +643,14 @@ if ($idp == "SAML") {
 		</div>
 </div>
 
-
+<!--
 <div id="formButtonSet">
 	<button id="add" title="Add a new form"></button>
 	<button id="save" title="Save form"></button>
 	<button id="print" title="Print form"></button>
 	<button id="delete" title="Delete form"></button>
 </div>
-
+-->
 
 <!--
 <div id="amazingslider" style="display:none;">

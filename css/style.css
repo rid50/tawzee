@@ -104,11 +104,12 @@ fieldset.possibility {
 	border-radius: 4px;
 }
 
-#add, #newForm, #editForm, #save, #print, #printForm, #delete
+/* #add, #newForm, #editForm, #save, #print, #printForm, #delete */
+.button-set>button
 {
-    background-repeat: no-repeat;
-	background-color:transparent;
-    border: none;
+    background-repeat: no-repeat !important;
+	background-color:transparent !important;
+    border: none !important;
 	width:24px;
 	height:24px;
 	margin:0 10px;
@@ -126,12 +127,14 @@ fieldset.possibility {
 	text-shadow: 0px 1px 0px rgba(255,255,255,.3), 0px -1px 0px rgba(0,0,0,.7);
 }
 
-#add {background-image: url(../images/add24.png)}
-#save {background-image: url(../images/save24.png)}
-#print, #printForm {background-image: url(../images/print24.png)}
-#delete {background:url(../images/sprite.png) 0 -72px;}   
+#terms-button>span {white-space:nowrap}
+
+#addFormApp, #addFormLoad {background-image: url(../images/add24.png)}
+#saveFormApp, #saveFormLoad {background-image: url(../images/save24.png)}
+#printFormApp, #printFormLoad, #printSelectedForm {background-image: url(../images/print24.png)}
+#deleteFormApp, #deleteFormLoad {background:url(../images/sprite.png) 0 -72px;}   
 #newForm {background-image: url(../images/new24.png)} 
-#editForm {background-image: url(../images/edit24.png)}
+#editSelectedForm {background-image: url(../images/edit24.png)}
 //#terms-button {background-image: url(../images/terms_conditions.png)}
 
 .addRow, .deleteRow
@@ -271,7 +274,8 @@ footer {
 }
 
 .ui-accordion .ui-accordion-content {
-	padding: 1em 8px 1em 0px;
+	//padding: 1em 8px 1em 0px;
+	padding: 1em 8px;
 	overflow: hidden;
 }
 
@@ -492,6 +496,7 @@ input[type='checkbox'] {
 	//padding-bottom: 1px;
 }
 */
+/*
 #formButtonSet {
 	display:none;
 	//position: absolute;
@@ -499,7 +504,7 @@ input[type='checkbox'] {
 	//right: 10px;
 	//top: 10px;
 }
-
+*/
 #error-box {
 	position: absolute;
 	left: 10px;

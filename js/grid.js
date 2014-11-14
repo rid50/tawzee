@@ -125,9 +125,9 @@ Grid = {
 					if (window.console) window.console.log(event[0].error);
 					alert (event[0].error);
 				} else {
-					if (_rowId && _page == $grid.jqGrid("getGridParam", "page"))
+					if (_rowId && _page == $grid.jqGrid("getGridParam", "page")) {
 						$grid.jqGrid('setSelection', _rowId);
-
+					}
 					//this.p.lastSelected = lastSelected; // set this.p.lastSelected
 					//scrollTo(5);
 
@@ -142,7 +142,8 @@ Grid = {
 				
 				fillFormFields(this, rowId);
 				setAccordionState();
-				_currentForm = "main-form";
+				if (!$('.forms').is(':visible'))
+					_currentForm = "main-form";
 				//$(".dragclone").remove();
             },
 			ondblClickRow: function (rowId) {

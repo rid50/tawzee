@@ -17,7 +17,7 @@ var reportTo = null;
 var areaNames;
 
 var _currentForm;
-var _formButtonSet;
+//var _formButtonSet;
 var _applicationNumber = "";
 var	_jasperReportsServerConnection = false;
 var _jasperReportsURL = "http://" + location.hostname +  ":8084/TawzeeJasperReports/JasperServlet";
@@ -82,9 +82,18 @@ function xml2Str(xmlNode) {
 //function moveScroller() {
 function setScroller() {
     //var move = function() {
+		if (!$('.forms').is(':visible'))
+			return;
+	
 		var s = $("#terms");
-		var s2 = $("#formButtonSet");
-
+		var s2 = $("#" + _currentForm + " .button-set");
+			
+		//console.log("1: " + $("body[dir='ltr']").length);
+		//console.log("2: " + $("#left-section").offset().left);
+		//console.log("3: " + $("#left-section").width());
+		//console.log("4: " + s.width());
+		//return;
+		
 		var left, left2;
 		if ($("body[dir='ltr']").length) {
 			left = $("#left-section").offset().left + 5;
@@ -405,9 +414,9 @@ $(document).ready(function () {
 
 					var currForm = $('#' + _currentForm);
 					if ("main-form" == _currentForm) {
-						currForm.find("input[type='text']").not("#application-number, #application-date, #owner-name, #project-name, #area, #block, #plot, #construction-exp-date, #feed-points").val("");
-						currForm.find(':radio').not("input[name='project-type']").prop('checked', false);
-						currForm.find(':checkbox').prop('checked', false);
+						//currForm.find("input[type='text']").not("#application-number, #application-date, #owner-name, #project-name, #area, #block, #plot, #construction-exp-date, #feed-points").val("");
+						//currForm.find(':radio').not("input[name='project-type']").prop('checked', false);
+						//currForm.find(':checkbox').prop('checked', false);
 
 						if (result.length == 0) {
 							//$('#main-form').children().val("");
@@ -472,7 +481,7 @@ $(document).ready(function () {
 							});
 						}
 					} else if ("load-form" == _currentForm) {
-						currForm.find("input[type='text']").not("#owner-name2, #project-name2, #area2, #block2, #plot2, #construction-exp-date2, #feed-points2").val("");
+						//currForm.find("input[type='text']").not("#owner-name2, #project-name2, #area2, #block2, #plot2, #construction-exp-date2, #feed-points2").val("");
 						if (result.length == 0) {
 							$('#file-number')[0].defaultValue = "";
 							//$('#file-number').removeAttr('readonly');
@@ -541,6 +550,7 @@ $(document).ready(function () {
 		//var errBox = '<input type="text" id="error-box" tabindex="-1" />';
 		$('.forms').each(function() {
 			if (this.id == _currentForm) {
+/*
 				if (_formButtonSet === undefined) {
 					//$(this).append(errBox);
 					$(this).append($('#formButtonSet'));
@@ -556,7 +566,7 @@ $(document).ready(function () {
 					_formButtonSet.appendTo($(this));
 					_formButtonSet = null;
 				}
-
+*/
 				$(this).show();
 				//console.log('show: ' + this.id);
 			} else {
@@ -612,14 +622,15 @@ $(document).ready(function () {
 			})
 	});
 */	
-	$("#add, #newForm, #editForm, #save, #print, #printForm, #delete").button({
+//	$("#add, #newForm, #editForm, #save, #print, #printForm, #delete").button({
+	$(".button-set>button").button({
 		icons: {primary: null},
 		text: false
 	}) //.addClass('printButton')
 	//.attr({target: '_blank', href: 'http://localhost:8084/TawsilatJasperReports/JasperServlet?ApplicationNumber=45678'});
 	
 	.on("click", function(event){
-		if (this.id == "add") {
+		if (this.id == "addFormApp" || this.id == "addFormLoad") {
 			clearForm();
 			if ($('#' + _currentForm).is(":visible")) {
 				fillControlCenterDDBox();
@@ -629,7 +640,7 @@ $(document).ready(function () {
 			clearForm();
 			$("#accordion").accordion( "option", "active", 1 );				
 			//clearForm();
-		} else if (this.id == "save") {
+		} else if (this.id == "saveFormApp" || this.id == "saveFormLoad") {
 			$.blockUI();
 			saveForm(this);
 			//if ($('#application-number').val() == "")
@@ -649,7 +660,7 @@ $(document).ready(function () {
 			var keyFieldValue = $("#" + $('#' + _currentForm).attr('data-key-field')).val();
 			if (keyFieldValue != "") {
 			//if (_applicationNumber != "") {
-				if (this.id == "print" || this.id == "printForm") {
+				if (this.id == "printFormApp" || this.id == "printFormLoad" || this.id == "printSelectedForm") {
 					printReport(function(reportName) {
 						window.open(_jasperReportsURL + '?reportName=' + reportName + '&applicationNumber=' + _applicationNumber + '&keyFieldValue=' + keyFieldValue + '&renderAs=pdf', '_blank');
 					});
@@ -677,13 +688,13 @@ $(document).ready(function () {
 					window.setTimeout(onTimeOutHandler, 5000);
 					CheckConnection();
 				*/
-				} else if (this.id == "delete") {
+				} else if (this.id == "deleteFormApp" || this.id == "deleteFormLoad") {
 					confirm("AreYouSure", null, function() {
 						$.blockUI();
 						deleteForm();
 						$.unblockUI();
 					});
-				} else if (this.id == "editForm") {
+				} else if (this.id == "editSelectedForm") {
 					$("#accordion").accordion( "option", "active", 1 );				
 				}
 			}
@@ -728,11 +739,13 @@ $(document).ready(function () {
 		text: false
 	});
 	
-	$("#add, .addRow, #newForm, #editForm, #save, #print, #printForm, #delete, #terms-button").on("mousedown", function(){
+	//$("#add, .addRow, #newForm, #editForm, #save, #print, #printForm, #delete, #terms-button").on("mousedown", function(){
+	$(".button-set>button, #terms-button").on("mousedown", function(){
 		$(this).animate({'top': '+=1px', 'left': '+=1px'}, 100);
 	});
 
-	$("#add, .addRow, #newForm, #editForm, #save, #print, #printForm, #delete, #terms-button").on("mouseup", function(){
+	//$("#add, .addRow, #newForm, #editForm, #save, #print, #printForm, #delete, #terms-button").on("mouseup", function(){
+	$(".button-set>button, #terms-button").on("mouseup", function(){
 		$(this).animate({'top': '-=1px', 'left': '-=1px'}, 100);
 	});
 
@@ -3013,20 +3026,24 @@ function initResourceTree() {
 	
 	var data = [], fields_data = [], node, id;
 	var forms = $('.forms, #accordion>span');
-	forms.push($('#printForm')[0]);
+	forms.push($('#printSelectedForm')[0]);
 	forms.each(function(index) {
 		data.push({
 			'data': {
 				'id': this.id,
 			},
-			'type': (this.nodeName.toLowerCase() == "span") ? "accordion" : (this.nodeName.toLowerCase() == "button") ? "print_button" : "form",
+			'type': (this.nodeName.toLowerCase() == "span") ? "accordion" :
+				(this.nodeName.toLowerCase() == "button") ? "print_button" :
+				(this.nodeName.toLowerCase() == "div") ? "form" : "form",
 			'text': (function(obj){
 				if (obj.nodeName.toLowerCase() == "span")
 					return $(obj).text();
 				if (obj.nodeName.toLowerCase() == "button")
 					return obj.title;
-				else
+				if (obj.nodeName.toLowerCase() == "div")
 					return $('#' + obj.attributes['data-link'].value).text();
+				else
+					return "?";
 			})(this),
 			'state' : { 'opened' : true, 'selected' : false },
 		});
@@ -3034,17 +3051,38 @@ function initResourceTree() {
 		fields_data = [];
 		var fields = $(this).find('input, select, fieldset.access-control, table.access-control')
 							.not('fieldset.access-control input, table.access-control input');
+
+		//var ar = [1, 2, 3];
+		//var ar2 = $(ar);
+		
+		//fields = fields.add($(this).find('.button-set>button'));
+		$(this).find('.button-set>button').each(function() {
+			fields.push(this);
+		})
+		
+		//if (this.nodeName.toLowerCase() == "div") {
+		//	fields.push($('#add')[0]);		//button
+		//	fields.push($('#save')[0]);		//button
+		//	fields.push($('#print')[0]);	//button
+		//	fields.push($('#delete')[0]);	//buttons
+		//}
+		
 		var labelobj
 		fields.each(function() {
 			node = {
 				'data': {
 					'id': (this.type == "radio" || this.type == "checkbox")	? this.name : 
 						(this.type == "select-one") ? this.id :
+						(this.type == "button" || this.type == "select-one") ? this.id :
 						(this.type == "fieldset" || this.type == "table") ? this.id :
 						(this.type == "text" && this.id == "" && this.attributes.class != undefined) ? this.attributes.class.value : this.id,
 				},
 				'type': (this.nodeName.toLowerCase() == "fieldset") ? "fieldset" :
 					(this.nodeName.toLowerCase() == "table") ? "table" :
+					(this.nodeName.toLowerCase() == "button" && (this.id == "addFormApp" || this.id == "addFormLoad")) ? "add_button" :
+					(this.nodeName.toLowerCase() == "button" && (this.id == "saveFormApp" || this.id == "saveFormLoad")) ? "save_button" :
+					(this.nodeName.toLowerCase() == "button" && (this.id == "printFormApp" || this.id == "printFormLoad")) ? "print_button" :
+					(this.nodeName.toLowerCase() == "button" && (this.id == "deleteFormApp" || this.id == "deleteFormLoad")) ? "delete_button" :
 					(this.nodeName.toLowerCase() == "select") ? "select" : "field",
 				'text': (function(obj){
 					if (obj.type == "radio" || obj.type == "checkbox") {
@@ -3071,6 +3109,8 @@ function initResourceTree() {
 						return $('fieldset[id="' + obj.id + '"] legend').text().replace(/:$/, "");
 					} else if (obj.nodeName.toLowerCase() == "select") {
 						return $('label[for="' + obj.id + '"]').text().replace(/:$/, "");
+					} else if (obj.nodeName.toLowerCase() == "button") {
+						return obj.title;
 					} else if (obj.nodeName.toLowerCase() == "table") {
 						return $.i18n.prop(obj.attributes['data-label'].value);
 					}
@@ -3129,10 +3169,18 @@ function initResourceTree() {
 				"accordion" : {
 					"icon" : "images/accordion.png"
 				},
+				"add_button" : {
+					"icon" : "images/add16.png"
+				},
+				"save_button" : {
+					"icon" : "images/save16.png"
+				},
 				"print_button" : {
 					"icon" : "images/print16.png"
-				}
-				
+				},
+				"delete_button" : {
+					"icon" : "images/delete16.png"
+				}				
 			},
 			"plugins" : [ "checkbox", "types" ]
 		});
@@ -4134,11 +4182,11 @@ function toggleLanguage(lang, dir) {
 			//$('#terms-button').attr({title: $.i18n.prop('TermsConditions')});
 			$('#terms-button').button({ label: $.i18n.prop('TermsConditions')});
 			
-			$('#add, #newForm').attr({title: $.i18n.prop('AddForm')});
-			$('#editForm').attr({title: $.i18n.prop('EditForm')});
-			$('#save').attr({title: $.i18n.prop('SaveForm')});
-			$('#print, #printForm').attr({title: $.i18n.prop('PrintForm')});
-			$('#delete').attr({title: $.i18n.prop('DeleteForm')});
+			$('#addFormApp, #addFormLoad, #newForm').attr({title: $.i18n.prop('AddForm')});
+			$('#editSelectedForm').attr({title: $.i18n.prop('EditForm')});
+			$('#saveFormApp, #saveFormLoad').attr({title: $.i18n.prop('SaveForm')});
+			$('#printFormApp, #printFormLoad, #printSelectedForm').attr({title: $.i18n.prop('PrintForm')});
+			$('#deleteFormApp, #deleteFormLoad').attr({title: $.i18n.prop('DeleteForm')});
 			$('.addRow').attr({title: $.i18n.prop('AddRow')});
 			$('.deleteRow').attr({title: $.i18n.prop('DeleteRow')});
 			$('#sync').attr({title: $.i18n.prop('GoToLastSelectedRow')});
@@ -4274,9 +4322,9 @@ function toggleLanguage(lang, dir) {
 		}				
 	});
 	
-	setScroller();
-	//moveScroller();			
-
+	setTimeout(function() {
+		setScroller();
+	}, 100 );
 }
 /*	
 this.confirm = function(text, param, func) {
