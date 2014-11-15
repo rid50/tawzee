@@ -966,17 +966,19 @@ function resetAcl() {
 			$(this).removeAttr('disabled');
 		});
 
-		fields = form.find("button");
+		fields = form.find(".button-set>button");
 		fields.each(function() {
-			$('#formButtonSet #print').fadeTo("fast", 1.0).removeAttr('disabled');
+			//$('#formButtonSet #print').fadeTo("fast", 1.0).removeAttr('disabled');
+			$(this).css('visibility', 'initial');
 			$(this).fadeTo("fast", 1.0).removeAttr('disabled');
 		});
 		
 		fields = form.find("table");
 		fields.each(function() {
 			$(this).css('visibility', 'initial');
-			$(this).find('button').css('visibility', 'initial');
 			$(this).find('input').removeAttr('disabled');
+			$(this).find('button').css('visibility', 'initial');
+			$(this).find('button').fadeTo("fast", 1.0).removeAttr('disabled')
 		});
 	}
 	
@@ -1027,21 +1029,22 @@ function applyAcl(office_groupName, manager_loginName, employee_loginName) {
 					
 					if ("read" in _acl[id][prop]) {
 						if (_acl[id][prop].read) {
-							if (el.hasClass( "my-ui-state-disabled" )) {
-								el.removeClass( "my-ui-state-disabled" );
-							}
+							el.css('visibility', 'initial');
+							//if (el.hasClass( "my-ui-state-disabled" )) {
+							//	el.removeClass( "my-ui-state-disabled" );
+							//}
 						} else {
 							el.css('visibility', 'hidden');
-							if (!el.hasClass( "my-ui-state-disabled" )) {
-								el.addClass( "my-ui-state-disabled" );
-							}
+							//if (!el.hasClass( "my-ui-state-disabled" )) {
+							//	el.addClass( "my-ui-state-disabled" );
+							//}
 							continue;
 						}
 					}
 
 					if ("write" in _acl[id][prop]) {
 						if (_acl[id][prop].write) {
-							el.css('visibility', 'initial');
+							//el.css('visibility', 'initial');
 							if (el.hasClass( "my-ui-state-disabled" )) {
 								el.removeClass( "my-ui-state-disabled" );
 							}
@@ -1056,7 +1059,7 @@ function applyAcl(office_groupName, manager_loginName, employee_loginName) {
 						if (_acl[id][prop].read) {
 							el.css('visibility', 'initial');
 							el.find('button').css('visibility', 'initial');
-							el.find('input').removeAttr('disabled');
+							//el.find('input').removeAttr('disabled');
 						} else {
 							el.css('visibility', 'hidden');
 							el.find('button').css('visibility', 'hidden');
@@ -1066,64 +1069,68 @@ function applyAcl(office_groupName, manager_loginName, employee_loginName) {
 
 					if ("write" in _acl[id][prop]) {
 						if (_acl[id][prop].write) {
-							el.css('visibility', 'initial');
-							el.find('button').css('visibility', 'initial');
+							//el.css('visibility', 'initial');
+							//el.find('button').css('visibility', 'initial');
 							el.find('input').removeAttr('disabled');
+							el.find('button').fadeTo("fast", 1.0).removeAttr('disabled');
 						} else {
+							//el.find('button').css('visibility', 'hidden');
 							el.find('input').attr('disabled', 'disabled');
-							el.find('button').css('visibility', 'hidden');
+							el.find('button').fadeTo("fast", .5).attr('disabled', 'disabled');
 						}
 					}
 				} else if (nodeType == "div") {
 					if ("read" in _acl[id][prop]) {
 						if (_acl[id][prop].read) {
 							el.css('visibility', 'initial');
-							$('#' + el.attr('data-link')).removeAttr('disabled');
-							$('#' + el.attr('data-link')).fadeTo("fast", 1.0).attr("href", "#");
-							$('#formButtonSet button').not('#print').fadeTo("fast", 1.0).removeAttr('disabled');
+							//el.find('.button-set>button').fadeTo("fast", 1.0).removeAttr('disabled');
+							//$('#' + el.attr('data-link')).removeAttr('disabled');
+							//$('#' + el.attr('data-link')).fadeTo("fast", 1.0).attr("href", "#");
 						} else {
 							el.css('visibility', 'hidden');
-							$('#' + el.attr('data-link')).attr('disabled', 'disabled');
-							$('#' + el.attr('data-link')).fadeTo("fast", .5).removeAttr("href"); 
-							$('#formButtonSet button').not('#print').fadeTo("fast", .5).attr('disabled', 'disabled');
+							//$('#' + el.attr('data-link')).attr('disabled', 'disabled');
+							//$('#' + el.attr('data-link')).fadeTo("fast", .5).removeAttr("href"); 
 							continue;							
 						}
 					}
 
 					if ("write" in _acl[id][prop]) {
 						if (_acl[id][prop].write) {
-							el.css('visibility', 'initial');
-							$('#' + el.attr('data-link')).removeAttr('disabled');
-							$('#' + el.attr('data-link')).fadeTo("fast", 1.0).attr("href", "#");
-							$('#formButtonSet button').not('#print').fadeTo("fast", 1.0).removeAttr('disabled');
+							//el.css('visibility', 'initial');
+							el.removeAttr('readonly');
+							el.find('.button-set>button').not("#printFormApp, #printFormLoad").fadeTo("fast", 1.0).removeAttr('disabled');
+							//$('#' + el.attr('data-link')).removeAttr('disabled');
+							//$('#' + el.attr('data-link')).fadeTo("fast", 1.0).attr("href", "#");
 						} else {
-							$('#' + el.attr('data-link')).attr('disabled', 'disabled');
-							$('#' + el.attr('data-link')).fadeTo("fast", .5).removeAttr("href"); 
-							$('#formButtonSet button').not('#print').fadeTo("fast", .5).attr('disabled', 'disabled');
+							el.attr('readonly', 'readonly');
+							el.find('.button-set>button').not("#printFormApp, #printFormLoad").fadeTo("fast", .5).attr('disabled', 'disabled');
+							//$('#' + el.attr('data-link')).attr('disabled', 'disabled');
+							//$('#' + el.attr('data-link')).fadeTo("fast", .5).removeAttr("href"); 
 						}
 					}
 				} else if (nodeType == "text" || nodeType == "select") {
 					if ("read" in _acl[id][prop] && !el.attr('readonly')) {
 						if (_acl[id][prop].read) {
+							el.css('visibility', 'initial');
 							$('label[for="' + id + '"]').css('visibility', 'initial');
-							if (el.hasClass( "rid50-datepicker" ))
-								el.datepicker( "option", "disabled", false );
+							//if (el.hasClass( "rid50-datepicker" ))
+							//	el.datepicker( "option", "disabled", false );
 
-							el.removeAttr('disabled');
+							//el.removeAttr('disabled');
 						} else {
 							el.css('visibility', 'hidden');
 							$('label[for="' + id + '"]').css('visibility', 'hidden');
-							if (el.hasClass( "rid50-datepicker" ))
-								el.datepicker( "option", "disabled", true );
+							//if (el.hasClass( "rid50-datepicker" ))
+							//	el.datepicker( "option", "disabled", true );
 
-							el.attr('disabled', 'disabled');
+							//el.attr('disabled', 'disabled');
 							continue;														
 						}
 					}
 
 					if ("write" in _acl[id][prop] && !el.attr('readonly')) {
 						if (_acl[id][prop].write) {
-							el.css('visibility', 'initial');
+							//el.css('visibility', 'initial');
 							$('label[for="' + id + '"]').css('visibility', 'initial');
 							if (el.hasClass( "rid50-datepicker" ))
 								el.datepicker( "option", "disabled", false );
@@ -1139,11 +1146,12 @@ function applyAcl(office_groupName, manager_loginName, employee_loginName) {
 				} else if (nodeType == "radio" || nodeType == "checkbox") {
 					if ("read" in _acl[id][prop]) {
 						if (_acl[id][prop].read) {
+							el.css('visibility', 'initial');
 							$('label[for="' + id + '"]').css('visibility', 'initial');
 							el.each(function() {
 								$('label[for="' + this.id + '"]').css('visibility', 'initial');
 							})
-							el.removeAttr('disabled');
+							//el.removeAttr('disabled');
 						} else {
 							el.css('visibility', 'hidden');
 							$('label[for="' + id + '"]').css('visibility', 'hidden');
@@ -1156,11 +1164,11 @@ function applyAcl(office_groupName, manager_loginName, employee_loginName) {
 
 					if ("write" in _acl[id][prop]) {
 						if (_acl[id][prop].write) {
-							el.css('visibility', 'initial');
-							$('label[for="' + id + '"]').css('visibility', 'initial');
-							el.each(function() {
-								$('label[for="' + this.id + '"]').css('visibility', 'initial');
-							})
+							//el.css('visibility', 'initial');
+							//$('label[for="' + id + '"]').css('visibility', 'initial');
+							//el.each(function() {
+							//	$('label[for="' + this.id + '"]').css('visibility', 'initial');
+							//})
 							el.removeAttr('disabled');
 						} else {
 							el.attr('disabled', 'disabled');
@@ -1169,7 +1177,8 @@ function applyAcl(office_groupName, manager_loginName, employee_loginName) {
 				} else if (nodeType == "fieldset") {
 					if ("read" in _acl[id][prop]) {
 						if (_acl[id][prop].read) {
-							el.removeAttr('disabled');
+							el.css('visibility', 'initial');
+							//el.removeAttr('disabled');
 						} else {
 							el.css('visibility', 'hidden');
 							continue;																												
@@ -1178,7 +1187,7 @@ function applyAcl(office_groupName, manager_loginName, employee_loginName) {
 
 					if ("write" in _acl[id][prop]) {
 						if (_acl[id][prop].write) {
-							el.css('visibility', 'initial');
+							//el.css('visibility', 'initial');
 							el.removeAttr('disabled');
 						} else {
 							el.attr('disabled', 'disabled');
@@ -1187,21 +1196,24 @@ function applyAcl(office_groupName, manager_loginName, employee_loginName) {
 				} else if (nodeType == "button") {
 					if ("read" in _acl[id][prop]) {
 						if (_acl[id][prop].read) {
-							$('#formButtonSet #print').fadeTo("fast", 1.0).removeAttr('disabled');
-							el.fadeTo("fast", 1.0).removeAttr('disabled');
+							//$('#formButtonSet #print').fadeTo("fast", 1.0).removeAttr('disabled');
+							el.css('visibility', 'initial');
+							//el.fadeTo("fast", 1.0).removeAttr('disabled');
 						} else {
-							$('#formButtonSet #print').fadeTo("fast", .5).attr('disabled', 'disabled');
-							el.fadeTo("fast", .5).attr('disabled', 'disabled');
+							//$('#formButtonSet #print').fadeTo("fast", .5).attr('disabled', 'disabled');
+							el.css('visibility', 'hidden');
+							//el.fadeTo("fast", .5).attr('disabled', 'disabled');
 							continue;																												
 						}
 					}
 
 					if ("write" in _acl[id][prop]) {
 						if (_acl[id][prop].write) {
-							$('#formButtonSet #print').fadeTo("fast", 1.0).removeAttr('disabled');
+							//$('#formButtonSet #print').fadeTo("fast", 1.0).removeAttr('disabled');
+							//el.css('visibility', 'initial');
 							el.fadeTo("fast", 1.0).removeAttr('disabled');
 						} else {
-							$('#formButtonSet #print').fadeTo("fast", .5).attr('disabled', 'disabled');
+							//$('#formButtonSet #print').fadeTo("fast", .5).attr('disabled', 'disabled');
 							el.fadeTo("fast", .5).attr('disabled', 'disabled');
 						}
 					}
