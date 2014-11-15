@@ -215,9 +215,9 @@ if ($idp == "SAML") {
 	</fieldset>
 	<fieldset id="aclLegend" class="jstree-default" dir="ltr" style="display:none">
 		<legend>Legend</legend>
-		<span>Read Write</span><br/>
+		<span>Show | Enable</span><br/>
 		<div class="jstree-checked">
-			<i class="jstree-icon jstree-checkbox"></i>&nbsp;&nbsp;
+			<i class="jstree-icon jstree-checkbox"></i>&nbsp;&nbsp;&nbsp;&nbsp;
 			<i class="jstree-icon jstree-checkbox"></i>
 		</div>
 	</fieldset>
