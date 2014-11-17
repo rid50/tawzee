@@ -714,19 +714,23 @@ $(document).ready(function () {
 		text: false
 	}).on("click", function(event){
 	
+		if ($('#app-number-search').val() == "")
+			return;
+			
 		var records = [];
 		url = "json_db_pdo.php";
-		$.get(url, {"func":"getAppByAppNumber", "param":{}})
+		$.get(url, {"func":"getRowNumber", "param":{"applicationNumber": $('#app-number-search').val(), "rowNum": $grid.jqGrid("getGridParam", "rowNum")}})
 			.done(function( data ) {
 				if (isAjaxError(data))
 					return;
 			
 				//records = [];
-				var o, result;
-				if (data.d == undefined)
-					result = data;
-				else
-					result = data.d.Data;
+				//var o, result;
+				if (!data)
+					return;
+					
+			$("#grid").setGridParam({page:data.page, selrow:data.rowNumber}).trigger('reloadGrid');
+			//$grid.jqGrid('setSelection', rowid);
 /*				
 				var index = -1;
 				//data.d.Data.forEach(function(o) {
@@ -737,16 +741,16 @@ $(document).ready(function () {
 					}
 				});
 */				
-				console.log(result);
+				//console.log(data);
 			})
 			.fail(function(jqXHR, textStatus, errorThrown) {
-				alert("getAppByAppNumber - error: " + errorThrown);
+				alert("getRowNumber - error: " + errorThrown);
 			});
 	
 	
 	
 		//if (_rowId && _page)
-		//	$("#grid").setGridParam({page:_page, current:true}).trigger('reloadGrid');
+		//	$("#grid").setGridParam({page:_page, selrow: idToSelect, current:true}).trigger('reloadGrid');
 	});
 	
 	$(".addRow").button({
