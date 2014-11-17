@@ -713,8 +713,40 @@ $(document).ready(function () {
 		icons: {primary: null},
 		text: false
 	}).on("click", function(event){
-		if (_rowId && _page)
-			$("#grid").setGridParam({page:_page, current:true}).trigger('reloadGrid');
+	
+		var records = [];
+		url = "json_db_pdo.php";
+		$.get(url, {"func":"getAppByAppNumber", "param":{}})
+			.done(function( data ) {
+				if (isAjaxError(data))
+					return;
+			
+				//records = [];
+				var o, result;
+				if (data.d == undefined)
+					result = data;
+				else
+					result = data.d.Data;
+/*				
+				var index = -1;
+				//data.d.Data.forEach(function(o) {
+				result.some(function(r, idx) {
+					if (r.ApplicationNumber == '2/12345') {
+						index = idx;
+						return false;
+					}
+				});
+*/				
+				console.log(result);
+			})
+			.fail(function(jqXHR, textStatus, errorThrown) {
+				alert("getAppByAppNumber - error: " + errorThrown);
+			});
+	
+	
+	
+		//if (_rowId && _page)
+		//	$("#grid").setGridParam({page:_page, current:true}).trigger('reloadGrid');
 	});
 	
 	$(".addRow").button({

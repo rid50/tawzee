@@ -240,6 +240,30 @@ class DatabaseRepository {
 */
 	}
 
+	
+	public function getAppByAppNumber($param) {
+		$dbh = $this->connect();
+		try {
+			//$st = "SELECT id FROM Application WHERE ApplicationNumber = '2/12345'";
+			$st = "SELECT ApplicationNumber FROM Application ORDER BY ApplicationDate desc";
+			$ds = $dbh->query($st);
+		} catch (PDOException $e) {
+			//throw new Exception($st);
+			throw new Exception('Failed to execute/prepare query: ' . $e->getMessage());
+		}
+
+		$param['applicationNumber'] = '2/12345';
+		$index = -1;
+		while($r = $ds->fetch(PDO::FETCH_ASSOC, $index++)) {
+			$r2 = (object)$r;
+			if ($r2 -> ApplicationNumber == $param['applicationNumber']) {
+				$this->result = $index;
+				break;
+			}
+		}
+		return $this->result;
+	}	
+	
 	public function getApps($param) {
 		$page = $_GET['page']; // get the requested page
 		$limit = $_GET['rows']; // get how many rows we want to have into the grid
@@ -343,7 +367,7 @@ class DatabaseRepository {
 			$st = "SELECT ApplicationNumber, ApplicationDate, OwnerName, ProjectName, ControlCenterId, ProjectType, AreaName AS Area, Block, Plot, ConstructionExpDate, FeedPoints
 				FROM Application LEFT JOIN Area ON Application.AreaID = Area.ID ";
 
-				if ($where == "")
+			if ($where == "")
 				$st .= " ORDER BY $sidx $sord LIMIT $start, $limit";
 			else
 				$st .= " WHERE " . $where . " ORDER BY $sidx $sord LIMIT $start, $limit";
