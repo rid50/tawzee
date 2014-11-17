@@ -141,7 +141,7 @@ if ($idp == "SAML") {
 					<span>Application</span>
 					<div>
 						<button id="sync" class="floatLeft" title="Go to last selected row"></button>
-						<div><span>App</span>#&nbsp;<input type="text" id="app-number-search" readonly="readonly" maxlength="10" size="10" class="text ui-widget-content ui-corner-all" value="" /></div>
+						<div><span>App</span>#&nbsp;<input type="text" id="app-number-search" maxlength="10" size="10" class="text ui-widget-content ui-corner-all" /></div>
 						<br/>
 						<div id="formButtonSet555" class="button-set" style="display:inline">
 							<button id="newForm" title="Add form"></button>

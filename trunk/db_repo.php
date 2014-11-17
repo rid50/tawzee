@@ -241,7 +241,7 @@ class DatabaseRepository {
 	}
 
 	
-	public function getAppByAppNumber($param) {
+	public function getRowNumber($param) {
 		$dbh = $this->connect();
 		try {
 			//$st = "SELECT id FROM Application WHERE ApplicationNumber = '2/12345'";
@@ -252,15 +252,18 @@ class DatabaseRepository {
 			throw new Exception('Failed to execute/prepare query: ' . $e->getMessage());
 		}
 
-		$param['applicationNumber'] = '2/12345';
+		//$param['applicationNumber'] = '2/12345';
 		$index = -1;
 		while($r = $ds->fetch(PDO::FETCH_ASSOC, $index++)) {
 			$r2 = (object)$r;
 			if ($r2 -> ApplicationNumber == $param['applicationNumber']) {
-				$this->result = $index;
+				$this->result = array();
+				$this->result['page'] = (int)($index / $param['rowNum']);
+				$this->result['rowNumber'] = $index % $param['rowNum'];
 				break;
 			}
 		}
+		
 		return $this->result;
 	}	
 	
