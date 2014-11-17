@@ -117,8 +117,8 @@ public class JasperReportsCGI {
 			
 			JasperReport report = JasperCompileManager.compileReport(design);
 
-			//Locale locale = new Locale("ar", "KW");
-			Locale locale = new Locale("en", "US");
+			Locale locale = new Locale("ar", "KW");
+			//Locale locale = new Locale("en", "US");
 			parameters.put(JRParameter.REPORT_LOCALE, locale);
 
 			// parameters.put(JRParameter.REPORT_LOCALE, Locale.AR);
