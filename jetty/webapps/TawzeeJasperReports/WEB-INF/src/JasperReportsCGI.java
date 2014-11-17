@@ -1,16 +1,6 @@
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URI;
-import java.net.URLDecoder;
 import java.nio.charset.Charset;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.List;
@@ -18,25 +8,20 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URLEncodedUtils;
 
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperPrintManager;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.export.JRGraphics2DExporter;
 import net.sf.jasperreports.engine.export.JRGraphics2DExporterParameter;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
 
 import com.JDesignerExtension;
 import com.JasperReportsWrapper;
@@ -102,11 +87,18 @@ public class JasperReportsCGI {
 	        
 			//System.out.println("Content-Type: text/html\n\n");
 	        //System.out.println(path);
+	        //System.out.println(System.getProperty("java.class.path"));
 	        //if (true)
 	        //	return;
 	        
 			//String filePath = getServletContext().getRealPath(rName + ".jrxml");
 			String filePath = path + "/" + rName + ".jrxml";
+
+			//System.out.println("Content-Type: text/html\n\n");
+	        //System.out.println(path);
+	        //System.out.println(filePath);
+	        //if (true)
+	        //	return;
 			
 			HashMap<String, Object> parameters = new HashMap<String, Object>();
 			parameters.put("ApplicationNumber", applicationNumber);
@@ -125,7 +117,8 @@ public class JasperReportsCGI {
 			
 			JasperReport report = JasperCompileManager.compileReport(design);
 
-			Locale locale = new Locale("ar", "KW");
+			//Locale locale = new Locale("ar", "KW");
+			Locale locale = new Locale("en", "US");
 			parameters.put(JRParameter.REPORT_LOCALE, locale);
 
 			// parameters.put(JRParameter.REPORT_LOCALE, Locale.AR);
