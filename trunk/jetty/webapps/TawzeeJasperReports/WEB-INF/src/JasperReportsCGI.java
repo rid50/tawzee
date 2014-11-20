@@ -28,9 +28,9 @@ import com.JDesignerExtension;
 import com.JasperReportsWrapper;
 
 public class JasperReportsCGI {
-	//private static final long serialVersionUID = 4350549139109004305L;
+	private static final long serialVersionUID = 4350549139109004305L;
 	
-	//private static final Logger LOG = Logger.getLogger(JasperReportsCGI.class);
+	private static final Logger LOG = Logger.getLogger(JasperReportsCGI.class);
 
 	public static void main( String args[] ) throws IOException {
 		String server_name = System.getProperty("cgi.server_name");
@@ -121,8 +121,6 @@ public class JasperReportsCGI {
 			JasperReport report = JasperCompileManager.compileReport(design);
 			
 
-			//LOG.info("report: " + report);
-			
 			//System.out.println("Content-Type: text/html\n\n");
 	        //System.out.println("report: " + report + " :report");
 	        //if (true)
@@ -148,7 +146,10 @@ public class JasperReportsCGI {
 				//System.out.println("Content-Type: text/html\n\n");
 		        //System.out.println("renderAs: " + renderAs);
 				
-				System.out.println("Content-Type: image/png\n\n\n");
+//				System.out.println("Content-Type: image/png\n\n");
+				
+		        //if (true)
+		        //	return;
 				
 				//System.out.println("Content-Type: text/plain\n\n");
 				//System.out.println("renderAs: " + renderAs);
@@ -197,14 +198,17 @@ public class JasperReportsCGI {
 				exporter.exportReport();
 
 				//ImageIO.write((BufferedImage) image, "png", out);
+				System.out.flush();
+				System.out.println("Content-Type: image/png\n\n");
 				ImageIO.write((BufferedImage) image, "png", System.out);
+				
 				//System.out.close();
 			} else {
 				//response.setContentType("application/pdf");
 				//System.out.println("Content-Type: text/html\n\n");
 		        //System.out.println("renderAs: " + renderAs);
 
-		        System.out.println("Content-Type: application/pdf\n\n");
+//		        System.out.println("Content-Type: application/pdf\n\n");
 
 				//System.out.println("Content-Type: text/html\n\n");
 		        //System.out.println("renderAs: " + renderAs);
@@ -221,7 +225,14 @@ public class JasperReportsCGI {
 				//		response.getOutputStream());
 				exporter.setParameter(JRExporterParameter.OUTPUT_STREAM,
 						System.out);
+
+				System.out.flush();
+		        System.out.println("Content-Type: application/pdf\n\n");
 				exporter.exportReport();
+				
+				
+				//LOG.info("**** 55 ****");
+				
 				
 				
 		        //if (true)
