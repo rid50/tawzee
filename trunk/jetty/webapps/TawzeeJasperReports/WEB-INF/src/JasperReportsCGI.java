@@ -22,15 +22,17 @@ import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.log4j.Logger;
 
 import com.JDesignerExtension;
 import com.JasperReportsWrapper;
 
 public class JasperReportsCGI {
 	//private static final long serialVersionUID = 4350549139109004305L;
+	
+	//private static final Logger LOG = Logger.getLogger(JasperReportsCGI.class);
 
 	public static void main( String args[] ) throws IOException {
-		
 		String server_name = System.getProperty("cgi.server_name");
 		String query_string = System.getProperty("cgi.query_string");
 		//System.out.println(server_name);
@@ -77,6 +79,7 @@ public class JasperReportsCGI {
 			Connection conn = wrapper.getConnection();
 			
 	        if (conn == null) {
+				System.out.println("Content-Type: text/html\n\n");
 	            System.out.println("Connection failed!");
 	            return;
 	        }
@@ -96,10 +99,10 @@ public class JasperReportsCGI {
 
 			//System.out.println("Content-Type: text/html\n\n");
 	        //System.out.println(path);
-	        //System.out.println(filePath);
+	        //System.out.println("filePath: " + filePath + " :filePath");
 	        //if (true)
 	        //	return;
-			
+
 			HashMap<String, Object> parameters = new HashMap<String, Object>();
 			parameters.put("ApplicationNumber", applicationNumber);
 
@@ -114,23 +117,40 @@ public class JasperReportsCGI {
 				//jd.addImages(design, parameters, request);
 				jd.addImages(design, parameters, server_name);
 			}
-			
-			JasperReport report = JasperCompileManager.compileReport(design);
 
-			Locale locale = new Locale("ar", "KW");
+			JasperReport report = JasperCompileManager.compileReport(design);
+			
+
+			//LOG.info("report: " + report);
+			
+			//System.out.println("Content-Type: text/html\n\n");
+	        //System.out.println("report: " + report + " :report");
+	        //if (true)
+	        //	return;
+
+			//Locale locale = new Locale("ar", "KW");
 			//Locale locale = new Locale("en", "US");
-			parameters.put(JRParameter.REPORT_LOCALE, locale);
+			//parameters.put(JRParameter.REPORT_LOCALE, locale);
 
 			// parameters.put(JRParameter.REPORT_LOCALE, Locale.AR);
 			// Fill compiled JRXML file with data
-			JasperPrint print = wrapper.fillReport(report, parameters,
-					wrapper.getConnection());
+			//JasperPrint print = wrapper.fillReport(report, parameters,	wrapper.getConnection());
+			JasperPrint print = wrapper.fillReport(report, parameters, conn);
 
+			//System.out.println("Content-Type: text/html\n\n");
+	        //System.out.println("renderAs: " + renderAs);
+	        //if (true)
+	        //	return;
+			
 			if (renderAs.equals("png")) {
 				//response.setContentType("image/png");
-				System.out.println("Content-Type: image/png\n");
+				
+				//System.out.println("Content-Type: text/html\n\n");
+		        //System.out.println("renderAs: " + renderAs);
+				
+				System.out.println("Content-Type: image/png\n\n\n");
+				
 				//System.out.println("Content-Type: text/plain\n\n");
-
 				//System.out.println("renderAs: " + renderAs);
 				//if (true)
 				//	return;
@@ -181,10 +201,19 @@ public class JasperReportsCGI {
 				//System.out.close();
 			} else {
 				//response.setContentType("application/pdf");
-				System.out.println("Content-Type: application/pdf\n");
+				//System.out.println("Content-Type: text/html\n\n");
+		        //System.out.println("renderAs: " + renderAs);
 
+		        System.out.println("Content-Type: application/pdf\n\n");
+
+				//System.out.println("Content-Type: text/html\n\n");
+		        //System.out.println("renderAs: " + renderAs);
+		        //if (true)
+		        //	return;
+				
 				// Export PDF file to browser window
 				JRPdfExporter exporter = new JRPdfExporter();
+				
 				exporter.setParameter(JRExporterParameter.CHARACTER_ENCODING,
 						"UTF-8");
 				exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
@@ -193,9 +222,25 @@ public class JasperReportsCGI {
 				exporter.setParameter(JRExporterParameter.OUTPUT_STREAM,
 						System.out);
 				exporter.exportReport();
+				
+				
+		        //if (true)
+		        //	return;
+
+				
+				//System.out.println("Content-Type: text/html\n\n");
+		        //System.out.println("exporter: " + exporter);
+		        //if (true)
+		        //	return;
+				
 			}			
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("Content-Type: text/html\n\n");
+	        //System.out.println(e.toString());
+	        //if (true)
+	        //	return;
+			
+			e.printStackTrace(System.out);
 		}
 		
 	}

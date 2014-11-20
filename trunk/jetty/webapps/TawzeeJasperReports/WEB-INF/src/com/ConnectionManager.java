@@ -28,6 +28,7 @@ public class ConnectionManager
         	
           	is = ConnectionManager.class.getClassLoader().getResourceAsStream("database.properties");
           	if (is == null) {
+        		System.out.println("Content-Type: text/html\n\n");
 	            System.out.println("Can't find 'database.properties' file");
 	            return;
           	}
@@ -40,21 +41,31 @@ public class ConnectionManager
             connection = DriverManager.getConnection(props.getProperty("DB_URL"), 
             		props.getProperty("DB_USERNAME"), 
             		props.getProperty("DB_PASSWORD"));
+
+            //System.out.println("connection: " + connection);
+            
             
         } catch (Exception e) {
-            e.printStackTrace();
+            //System.out.println("connection error: " + e.toString());
+            //if (true)
+            //	return;
+			System.out.println("Content-Type: text/html\n\n");
+			e.printStackTrace(System.out);
         } finally {
 			if (is != null) {
 				try {
 					is.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+					System.out.println("Content-Type: text/html\n\n");
+					e.printStackTrace(System.out);
 				}
 			}
         }
 
-        if (connection == null)
+        if (connection == null) {
+			System.out.println("Content-Type: text/html\n\n");
             System.out.println("Connection failed!");
+        }
     }
 
     public Connection getConnection() {
@@ -67,7 +78,8 @@ public class ConnectionManager
         {
             connection.close();
         } catch (Exception e) {
-            e.printStackTrace();
+			System.out.println("Content-Type: text/html\n\n");
+			e.printStackTrace(System.out);
         }
     }
 
