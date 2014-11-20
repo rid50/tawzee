@@ -77,7 +77,7 @@ public class JasperReportsWrapper
             e.printStackTrace();
         }
     }
-
+/*
     public static void main(String[] args)
     {
         File file = new File("TawzeeReport.jrxml");
@@ -91,5 +91,5 @@ public class JasperReportsWrapper
         JasperPrint jasperPrint = wrapper.fillReport(jasperReport, null, connection);
         wrapper.saveReportInPDF(jasperPrint, pdfFileName);
     }//main
-
+*/
 }
