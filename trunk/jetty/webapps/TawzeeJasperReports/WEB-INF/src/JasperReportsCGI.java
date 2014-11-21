@@ -32,7 +32,7 @@ public class JasperReportsCGI {
 	
 	private static final Logger LOG = Logger.getLogger(JasperReportsCGI.class);
 
-	public static void main( String args[] ) throws IOException {
+	public static void main( String args[] ) {
 		String server_name = System.getProperty("cgi.server_name");
 		String query_string = System.getProperty("cgi.query_string");
 		//System.out.println(server_name);
@@ -120,19 +120,26 @@ public class JasperReportsCGI {
 
 			JasperReport report = JasperCompileManager.compileReport(design);
 			
-
 			//System.out.println("Content-Type: text/html\n\n");
 	        //System.out.println("report: " + report + " :report");
 	        //if (true)
 	        //	return;
 
-			//Locale locale = new Locale("ar", "KW");
+			Locale locale = new Locale("ar", "KW");
 			//Locale locale = new Locale("en", "US");
-			//parameters.put(JRParameter.REPORT_LOCALE, locale);
+			parameters.put(JRParameter.REPORT_LOCALE, locale);
 
 			// parameters.put(JRParameter.REPORT_LOCALE, Locale.AR);
 			// Fill compiled JRXML file with data
 			//JasperPrint print = wrapper.fillReport(report, parameters,	wrapper.getConnection());
+
+			if (true)
+			if (report == null)
+				throw new Exception("report == null");
+			else
+				throw new Exception("report != null");
+				
+			
 			JasperPrint print = wrapper.fillReport(report, parameters, conn);
 
 			//System.out.println("Content-Type: text/html\n\n");
@@ -140,13 +147,12 @@ public class JasperReportsCGI {
 	        //if (true)
 	        //	return;
 			
+			
 			if (renderAs.equals("png")) {
 				//response.setContentType("image/png");
 				
 				//System.out.println("Content-Type: text/html\n\n");
 		        //System.out.println("renderAs: " + renderAs);
-				
-//				System.out.println("Content-Type: image/png\n\n");
 				
 		        //if (true)
 		        //	return;
@@ -197,10 +203,17 @@ public class JasperReportsCGI {
 
 				exporter.exportReport();
 
+				LOG.info("**** PNG ****");
+				if (true)
+					throw new Exception("kuku");
+
+				LOG.info("**** PNG2 ****");
+				
 				//ImageIO.write((BufferedImage) image, "png", out);
-				System.out.flush();
+				//System.out.flush();
 				System.out.println("Content-Type: image/png\n\n");
 				ImageIO.write((BufferedImage) image, "png", System.out);
+
 				
 				//System.out.close();
 			} else {
@@ -208,7 +221,7 @@ public class JasperReportsCGI {
 				//System.out.println("Content-Type: text/html\n\n");
 		        //System.out.println("renderAs: " + renderAs);
 
-//		        System.out.println("Content-Type: application/pdf\n\n");
+		        //System.out.println("Content-Type: application/pdf\n\n");
 
 				//System.out.println("Content-Type: text/html\n\n");
 		        //System.out.println("renderAs: " + renderAs);
@@ -226,10 +239,13 @@ public class JasperReportsCGI {
 				exporter.setParameter(JRExporterParameter.OUTPUT_STREAM,
 						System.out);
 
-				System.out.flush();
+				//System.out.flush();
 		        System.out.println("Content-Type: application/pdf\n\n");
 				exporter.exportReport();
 				
+				LOG.info("**** PDF ****");
+
+				//System.out.close();
 				
 				//LOG.info("**** 55 ****");
 				
@@ -247,7 +263,7 @@ public class JasperReportsCGI {
 			}			
 		} catch (Exception e) {
 			System.out.println("Content-Type: text/html\n\n");
-	        //System.out.println(e.toString());
+	        System.out.println("kuku22");
 	        //if (true)
 	        //	return;
 			
