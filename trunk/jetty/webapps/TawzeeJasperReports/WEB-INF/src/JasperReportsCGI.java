@@ -118,6 +118,13 @@ public class JasperReportsCGI {
 				jd.addImages(design, parameters, server_name);
 			}
 
+			//System.out.println("Content-Type: text/html\n\n");
+	        //System.out.println("+++++++++++++++++++++ OK +++++++++++++++++++");
+
+			//if (true)
+			//	return;
+				//throw new Exception("************* Ok ******************");
+			
 			JasperReport report = JasperCompileManager.compileReport(design);
 			
 			//System.out.println("Content-Type: text/html\n\n");
@@ -133,13 +140,6 @@ public class JasperReportsCGI {
 			// Fill compiled JRXML file with data
 			//JasperPrint print = wrapper.fillReport(report, parameters,	wrapper.getConnection());
 
-			if (true)
-			if (report == null)
-				throw new Exception("report == null");
-			else
-				throw new Exception("report != null");
-				
-			
 			JasperPrint print = wrapper.fillReport(report, parameters, conn);
 
 			//System.out.println("Content-Type: text/html\n\n");
@@ -147,6 +147,11 @@ public class JasperReportsCGI {
 	        //if (true)
 	        //	return;
 			
+			if (true)
+			if (print == null)
+				throw new Exception("print == null");
+			else
+				throw new Exception("print != null");
 			
 			if (renderAs.equals("png")) {
 				//response.setContentType("image/png");
@@ -262,7 +267,7 @@ public class JasperReportsCGI {
 				
 			}			
 		} catch (Exception e) {
-			System.out.println("Content-Type: text/html\n\n");
+			//System.out.println("Content-Type: text/html\n\n");
 	        System.out.println("kuku22");
 	        //if (true)
 	        //	return;
