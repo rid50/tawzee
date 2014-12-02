@@ -30,7 +30,7 @@ import com.JasperReportsWrapper;
 public class JasperReportsCGI {
 	private static final long serialVersionUID = 4350549139109004305L;
 	
-	private static final Logger LOG = Logger.getLogger(JasperReportsCGI.class);
+	//private static final Logger LOG = Logger.getLogger(JasperReportsCGI.class);
 
 	public static void main( String args[] ) {
 		String server_name = System.getProperty("cgi.server_name");
@@ -121,11 +121,10 @@ public class JasperReportsCGI {
 			//System.out.println("Content-Type: text/html\n\n");
 	        //System.out.println("+++++++++++++++++++++ OK +++++++++++++++++++");
 
-			//if (true)
-			//	return;
-				//throw new Exception("************* Ok ******************");
 			
 			JasperReport report = JasperCompileManager.compileReport(design);
+			
+	        //System.out.println("*************** JasperCompileManager: OK ****************");
 			
 			//System.out.println("Content-Type: text/html\n\n");
 	        //System.out.println("report: " + report + " :report");
@@ -140,18 +139,23 @@ public class JasperReportsCGI {
 			// Fill compiled JRXML file with data
 			//JasperPrint print = wrapper.fillReport(report, parameters,	wrapper.getConnection());
 
+			//if (true)
+			//	throw new Exception("************* Ok ******************");
+			
 			JasperPrint print = wrapper.fillReport(report, parameters, conn);
 
-			//System.out.println("Content-Type: text/html\n\n");
-	        //System.out.println("renderAs: " + renderAs);
-	        //if (true)
-	        //	return;
+	        //System.out.println("*************** fillReport: OK ****************");
 			
-			if (true)
-			if (print == null)
-				throw new Exception("print == null");
-			else
-				throw new Exception("print != null");
+			System.out.println("Content-Type: text/html\n\n");
+	        System.out.println("print: " + print);
+	        if (true)
+	        	return;			
+			
+			//if (true)
+			//if (print == null)
+			//	throw new Exception("print == null");
+			//else
+			//	throw new Exception("print != null");
 			
 			if (renderAs.equals("png")) {
 				//response.setContentType("image/png");
@@ -208,11 +212,11 @@ public class JasperReportsCGI {
 
 				exporter.exportReport();
 
-				LOG.info("**** PNG ****");
-				if (true)
-					throw new Exception("kuku");
+				//LOG.info("**** PNG ****");
+				//if (true)
+				//	throw new Exception("kuku");
 
-				LOG.info("**** PNG2 ****");
+				//LOG.info("**** PNG2 ****");
 				
 				//ImageIO.write((BufferedImage) image, "png", out);
 				//System.out.flush();
@@ -248,7 +252,7 @@ public class JasperReportsCGI {
 		        System.out.println("Content-Type: application/pdf\n\n");
 				exporter.exportReport();
 				
-				LOG.info("**** PDF ****");
+				//LOG.info("**** PDF ****");
 
 				//System.out.close();
 				
@@ -267,13 +271,8 @@ public class JasperReportsCGI {
 				
 			}			
 		} catch (Exception e) {
-			//System.out.println("Content-Type: text/html\n\n");
-	        System.out.println("kuku22");
-	        //if (true)
-	        //	return;
-			
+			System.out.println("Content-Type: text/html\n\n");
 			e.printStackTrace(System.out);
 		}
-		
 	}
 }
