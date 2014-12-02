@@ -1,0 +1,24 @@
+
+http://www.webos-internals.org/wiki/Building_JamVM_and_GNU_Classpath_and_Jikes_(for_Java_support_in_webOS)_with_scratchbox2#Install_Escher_needed_by_Gnu_Classpath_.28optionnal_-_only_for_GUI_mode.29
+
+yum groupinstall 'X Window System'
+yum install gtk+-devel gtk2-devel
+yum install GConf2-devel
+yum install libX11-devel 				********************* ??? **************************
+yum groupinstall "Development Tools"	********************* ??? **************************
+
+[root@tawzee escher]# wget http://sourceforge.net/projects/escher/files/escher/0.3/escher-0.3.tar.gz
+tar xzvf escher-0.3.tar.gz
+
+cd /var/www/escher
+wget http://sourceforge.net/projects/escher/files/escher/0.3/escher-0.3.tar.gz
+tar xzvf escher-0.3.tar.gz
+
+wget http://gcc.gnu.org/bugzilla/attachment.cgi?id=18352		!!!! doesn't work, but you can work on it
+mv patch_escher-0.3_with_gnu-classpath-0.98.patch /var/www/jamvm-installation/classpath
+patch -p0 < patch_escher-0.3_with_gnu-classpath-0.98.patch
+
+./configure --prefix=/var/www/jamvm-1.5.4 --with-x --disable-qt-peer --disable-gtk-peer --disable-gconf-peer --disable-tools --disable-plugin --disable-alsa --disable-examples --disable-debug --disable-Werror --with-escher=/var/www/escher/escher-0.3/src --enable-default-toolkit=gnu.java.awt.peer.x.XToolkit
+
+make
+

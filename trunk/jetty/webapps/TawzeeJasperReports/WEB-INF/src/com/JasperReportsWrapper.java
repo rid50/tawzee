@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -55,27 +56,17 @@ public class JasperReportsWrapper
     }
 
 	//@SuppressWarnings("unchecked")
-    public JasperPrint fillReport(JasperReport jasperReport, HashMap<String, Object>params, Connection conn)
+    public JasperPrint fillReport(JasperReport jasperReport, HashMap<String, Object>params, Connection conn) throws Exception
     {
-		JasperPrint jp = null;
-        try
-        {
-            jp = JasperFillManager.fillReport(jasperReport, params, conn);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
-        return jp;
+        //if (true)
+        //	throw new Exception("ReportWrapper");
+
+		return JasperFillManager.fillReport(jasperReport, params, conn);
     }
 
-    public void saveReportInPDF (JasperPrint jPrint, String pdfFileName)
+    public void saveReportInPDF (JasperPrint jPrint, String pdfFileName) throws Exception
     {
-        try
-        {
-            JasperExportManager.exportReportToPdfFile(jPrint, pdfFileName);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        JasperExportManager.exportReportToPdfFile(jPrint, pdfFileName);
     }
 /*
     public static void main(String[] args)
