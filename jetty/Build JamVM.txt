@@ -1,3 +1,13 @@
+alternatives --config java
+
+[root@tawzee classpath-0.98]# java -version
+java version "1.7.0_45"
+OpenJDK Runtime Environment (rhel-2.4.3.3.el6-x86_64 u45-b15)
+OpenJDK 64-Bit Server VM (build 24.45-b08, mixed mode)
+[root@tawzee classpath-0.98]#
+
+
+======================= GNU Classpath ==============================
 
 http://www.webos-internals.org/wiki/Building_JamVM_and_GNU_Classpath_and_Jikes_(for_Java_support_in_webOS)_with_scratchbox2#Install_Escher_needed_by_Gnu_Classpath_.28optionnal_-_only_for_GUI_mode.29
 
@@ -6,6 +16,7 @@ yum install gtk+-devel gtk2-devel
 yum install GConf2-devel
 yum install libX11-devel 				********************* ??? **************************
 yum groupinstall "Development Tools"	********************* ??? **************************
+yum install java-gcj	********************* ??? **************************
 
 [root@tawzee escher]# wget http://sourceforge.net/projects/escher/files/escher/0.3/escher-0.3.tar.gz
 tar xzvf escher-0.3.tar.gz
@@ -15,10 +26,52 @@ wget http://sourceforge.net/projects/escher/files/escher/0.3/escher-0.3.tar.gz
 tar xzvf escher-0.3.tar.gz
 
 wget http://gcc.gnu.org/bugzilla/attachment.cgi?id=18352		!!!! doesn't work, but you can work on it
-mv patch_escher-0.3_with_gnu-classpath-0.98.patch /var/www/jamvm-installation/classpath
+# mv patch_escher-0.3_with_gnu-classpath-0.98.patch /var/www/jamvm-installation/classpath
+mv patch_escher-0.3_with_gnu-classpath-0.98.patch /var/www/classpath
 patch -p0 < patch_escher-0.3_with_gnu-classpath-0.98.patch
 
-./configure --prefix=/var/www/jamvm-1.5.4 --with-x --disable-qt-peer --disable-gtk-peer --disable-gconf-peer --disable-tools --disable-plugin --disable-alsa --disable-examples --disable-debug --disable-Werror --with-escher=/var/www/escher/escher-0.3/src --enable-default-toolkit=gnu.java.awt.peer.x.XToolkit
 
-make
+yum install libxslt-devel
+--enable-xmlj
+
+yum install ecj
+--enable-tools
+
+--enable-default-toolkit=gnu.java.awt.peer.x.XToolkit
+./configure --prefix=/var/www/jamvm-1.5.4 --with-x --with-escher=/var/www/escher/escher-0.3/src --enable-jni --enable-core-jni --enable-load-library --disable-rpath --disable-gtk-peer --enable-tools --disable-qt-peer --disable-gconf-peer --disable-plugin --disable-alsa --disable-dssi --disable-gjdoc --disable-examples --disable-debug --disable-Werror --enable-xmlj --enable-default-toolkit=gnu.java.awt.peer.x.XToolkit
+
+--enable-default-toolkit=gnu.java.awt.peer.gtk.GtkToolkit
+./configure --prefix=/var/www/jamvm-1.5.4 --with-x --with-escher=/var/www/escher/escher-0.3/src --enable-gtk-peer --enable-tools --disable-qt-peer --disable-gconf-peer --disable-plugin --disable-alsa --disable-dssi --disable-gjdoc --disable-examples --disable-debug --disable-Werror --enable-xmlj --enable-default-toolkit=gnu.java.awt.peer.gtk.GtkToolkit
+
+======================= IcedTee =======================
+
+yum install ant-devel
+yum install ant-nodeps
+yum install cups-devel
+yum install libXtst-devel
+yum install alsa-lib-devel
+
+wget http://icedtea.classpath.org/download/source/icedtea-2.5.3.tar.gz
+tar xzvf icedtea-2.5.3.tar.gz
+cd /var/www/IcedTea/icedtea-2.5.3
+./configure --prefix=/var/www/jamvm-1.5.4 --enable-jamvm --disable-Werror --disable-system-kerberos --disable-system-jpeg --disable-system-gif --disable-system-lcms --disable-compile-against-syscalls
+
+
+======================= CACAO =======================
+
+Build Gnu Classpath first
+./configure --prefix=/var/www/cacao-1.6.1 --with-x --with-escher=/var/www/escher/escher-0.3/src --enable-jni --enable-core-jni --enable-load-library --disable-rpath --disable-gtk-peer --enable-tools --disable-qt-peer --disable-gconf-peer --disable-plugin --disable-alsa --disable-dssi --disable-gjdoc --disable-examples --disable-debug --disable-Werror --enable-xmlj --enable-default-toolkit=gnu.java.awt.peer.x.XToolkit
+
+wget http://www.complang.tuwien.ac.at/cacaojvm/download/cacao-1.6.1/cacao-1.6.1.tar.gz
+tar xzvf cacao-1.6.1.tar.gz
+cd /var/www/cacao/cacao-1.6.1
+
+
+--with-java-runtime-library=gnuclasspath - default
+--with-java-runtime-library=openjdk7
+
+--with-jasmin-jar=/var/www/cacao
+--with-junit-jar=/var/www/cacao
+
+./configure --prefix=/var/www/cacao-1.6.1 --with-java-runtime-library=gnuclasspath --with-java-runtime-library-prefix=/var/www/cacao-1.6.1/share/classpath --with-jni_h=/var/www/cacao-1.6.1/include --with-jni_md_h=/var/www/cacao-1.6.1/include --with-junit-jar=/var/www/cacao/junit-4.12.jar --enable-jre-layout
 

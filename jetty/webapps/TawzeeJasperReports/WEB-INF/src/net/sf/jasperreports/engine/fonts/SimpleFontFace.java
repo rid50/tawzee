@@ -217,7 +217,7 @@ public class SimpleFontFace implements FontFace, JRCloneable
 				font = new Font(ttf, Font.PLAIN, JRPropertiesUtil.getInstance(jasperReportsContext).getIntegerProperty(JRFont.DEFAULT_FONT_SIZE));
 			}
 			
-			//log.info(" ********** FONT: " + font);
+			log.info(" ********** FONT ************************: " + font);
 			
 			
 		}

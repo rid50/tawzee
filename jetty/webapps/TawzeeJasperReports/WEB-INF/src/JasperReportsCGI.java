@@ -1,3 +1,4 @@
+import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -51,6 +52,17 @@ public class JasperReportsCGI {
         //if (true)
         //	return;
 		
+/*		
+    	String path = System.getProperty("gnu.classpath.boot.library.path");
+        path = path.substring(0, path.lastIndexOf('/', path.length()));
+    	System.setProperty("java.library.path", path + "/amd64");
+    	System.setProperty("java.library.path", "/var/www/java-se-7-ri/jre/lib/amd64");    	
+
+    	System.out.println("<br/>java.class.path: " + System.getProperty("java.class.path") + "<br/>");
+        System.out.println("java.library.path: " + System.getProperty("java.library.path") + "<br/>");
+        System.out.println("sun.boot.class.path: " + System.getProperty("sun.boot.class.path") + "<br/>");
+        System.out.println("gnu.classpath.boot.library.path: " + System.getProperty("gnu.classpath.boot.library.path") + "<br/>");
+*/		
 		
 		try {
 /*			
@@ -84,13 +96,16 @@ public class JasperReportsCGI {
 	            return;
 	        }
 
-	        String path = JasperReportsCGI.class.getResource("").getPath();
-	        path = path.substring(0, path.lastIndexOf('/', path.length() - 2));
+	        String path = JasperReportsCGI.class.getClassLoader().getResource("JasperReportsCGI.class").getPath();
+	        //path = path.substring(0, path.lastIndexOf('/', path.length() - 2));
+	        path = path.substring(0, path.lastIndexOf('/', path.length()));
+	        path = path.substring(0, path.lastIndexOf('/', path.length()));
 	        path = path.substring(0, path.lastIndexOf('/', path.length()));
 	        
 			//System.out.println("Content-Type: text/html\n\n");
 	        //System.out.println(path);
-	        //System.out.println(System.getProperty("java.class.path"));
+	        //System.out.println("java.class.path: " + System.getProperty("java.class.path"));
+	        //System.out.println("sun.boot.class.path: " + System.getProperty("sun.boot.class.path"));
 	        //if (true)
 	        //	return;
 	        
@@ -98,7 +113,8 @@ public class JasperReportsCGI {
 			String filePath = path + "/" + rName + ".jrxml";
 
 			//System.out.println("Content-Type: text/html\n\n");
-	        //System.out.println(path);
+		    //System.out.println("Headless mode: " + GraphicsEnvironment.isHeadless());	        
+	        //System.out.println("PATH: " + JasperReportsCGI.class.getClassLoader().getResource("JasperReportsCGI.class").getPath());
 	        //System.out.println("filePath: " + filePath + " :filePath");
 	        //if (true)
 	        //	return;
@@ -146,10 +162,10 @@ public class JasperReportsCGI {
 
 	        //System.out.println("*************** fillReport: OK ****************");
 			
-			System.out.println("Content-Type: text/html\n\n");
-	        System.out.println("print: " + print);
-	        if (true)
-	        	return;			
+			//System.out.println("Content-Type: text/html\n\n");
+	        //System.out.println("print: " + print);
+	        //if (true)
+	        //	return;			
 			
 			//if (true)
 			//if (print == null)
