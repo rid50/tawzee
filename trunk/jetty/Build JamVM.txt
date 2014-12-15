@@ -7,6 +7,22 @@ OpenJDK 64-Bit Server VM (build 24.45-b08, mixed mode)
 [root@tawzee classpath-0.98]#
 
 
+
+======================= JamVM ==============================
+
+wget http://sourceforge.net/projects/jamvm/files/jamvm/JamVM%202.0.0/jamvm-2.0.0.tar.gz
+tar xzvf jamvm-2.0.0.tar.gz
+cd /var/www/jamvm/jamvm-2.0.0
+
+
+
+--with-java-runtime-library=gnuclasspath - default
+--with-java-runtime-library=openjdk7
+
+./configure --with-java-runtime-library=openjdk7 --prefix=/var/www/jamvm-2.0.0
+make
+make install-strip
+
 ======================= GNU Classpath ==============================
 
 http://www.webos-internals.org/wiki/Building_JamVM_and_GNU_Classpath_and_Jikes_(for_Java_support_in_webOS)_with_scratchbox2#Install_Escher_needed_by_Gnu_Classpath_.28optionnal_-_only_for_GUI_mode.29
@@ -54,11 +70,39 @@ yum install alsa-lib-devel
 wget http://icedtea.classpath.org/download/source/icedtea-2.5.3.tar.gz
 tar xzvf icedtea-2.5.3.tar.gz
 cd /var/www/IcedTea/icedtea-2.5.3
-./configure --prefix=/var/www/jamvm-1.5.4 --enable-jamvm --disable-Werror --disable-system-kerberos --disable-system-jpeg --disable-system-gif --disable-system-lcms --disable-compile-against-syscalls
+
+JvmVM					
+--disable-bootstrap
+--with-openjdk-src-zip=/var/www/openjdk-7-b146-linux-x64-20_jun_2011.zip  ????????????????????????????????????????????????????????????
+with jamvm-2.0.0 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! - download snapshot http://sourceforge.net/p/jamvm/code/
+./configure --prefix=/var/www/jamvm-2.0.0 --enable-jamvm --with-jamvm-src-zip=/var/www/jamvm/jamvm-2.0.0.zip --disable-Werror --disable-system-kerberos --disable-system-jpeg --disable-system-gif --disable-system-lcms --disable-compile-against-syscalls --disable-docs
+./configure --prefix=/var/www/jamvm-code-b9003dd9d1b4053e825d0e17fae700c3264aee70 --enable-jamvm --with-jamvm-src-zip=/var/www/jamvm/jamvm-code-b9003dd9d1b4053e825d0e17fae700c3264aee70.zip --disable-Werror --disable-system-kerberos --disable-system-jpeg --disable-system-gif --disable-system-lcms --disable-compile-against-syscalls --disable-docs
+
+
+Cocao
+ --with-cacao-src-dir=/var/www/cacao/cacao-1.6.1/src
+ --with-openjdk-src-zip=/var/www/openjdk-7-b146-linux-x64-20_jun_2011.zip
+ --with-cacao-home=/var/www/cacao/cacao-1.6.1
+ 
+ALT_HOTSPOT_IMPORT_PATH=/var/www/java-se-7-ri
+./configure --prefix=/var/www/cacao-1.6.1 --enable-cacao --with-cacao-home=/var/www/cacao-1.6.1 --with-cacao-src-dir=/var/www/cacao/cacao-1.6.1/src --with-openjdk-src-zip=/var/www/openjdk-7-b146-linux-x64-20_jun_2011.zip --disable-Werror --disable-system-kerberos --disable-system-jpeg --disable-system-gif --disable-system-lcms --disable-compile-against-syscalls --disable-native-debuginfo --disable-java-debuginfo --disable-docs --disable-bootstrap
 
 
 ======================= CACAO =======================
 
+Jasmin develop
+wget https://github.com/Sable/jasmin/archive/develop.zip
+unzip develop
+cd /var/www/jasmin/jasmin-develop
+
+Jasmin 2.4
+download jasmin-2.4.zip
+unzip jasmin-2.4.zip
+cd /var/www/jasmin/jasmin-2.4
+dos2unix build.sh
+./build.sh all
+
+GNU Classpath
 Build Gnu Classpath first
 ./configure --prefix=/var/www/cacao-1.6.1 --with-x --with-escher=/var/www/escher/escher-0.3/src --enable-jni --enable-core-jni --enable-load-library --disable-rpath --disable-gtk-peer --enable-tools --disable-qt-peer --disable-gconf-peer --disable-plugin --disable-alsa --disable-dssi --disable-gjdoc --disable-examples --disable-debug --disable-Werror --enable-xmlj --enable-default-toolkit=gnu.java.awt.peer.x.XToolkit
 
@@ -67,11 +111,13 @@ tar xzvf cacao-1.6.1.tar.gz
 cd /var/www/cacao/cacao-1.6.1
 
 
---with-java-runtime-library=gnuclasspath - default
---with-java-runtime-library=openjdk7
+--with-jasmin-jar=/var/www/jasmin/jasmin-2.4/jasmin.jar
+--with-junit-jar=/var/www/cacao/junit-4.12.jar
+--disable-test-dependency-checks
+--enable-jre-layout
+./configure --prefix=/var/www/cacao-1.6.1 --with-java-runtime-library=gnuclasspath --with-java-runtime-library-prefix=/var/www/cacao-1.6.1/share/classpath --with-java-runtime-library-classes=/var/www/cacao-1.6.1/share/classpath/glibj.zip --with-java-runtime-library-libdir=/var/www/cacao-1.6.1/lib --with-jni_h=/var/www/cacao-1.6.1/include --with-jni_md_h=/var/www/cacao-1.6.1/include --with-junit-jar=/var/www/cacao/junit-4.12.jar --with-jasmin-jar=/var/www/jasmin/jasmin-2.4/jasmin.jar --disable-debug --disable-dump
 
---with-jasmin-jar=/var/www/cacao
---with-junit-jar=/var/www/cacao
-
-./configure --prefix=/var/www/cacao-1.6.1 --with-java-runtime-library=gnuclasspath --with-java-runtime-library-prefix=/var/www/cacao-1.6.1/share/classpath --with-jni_h=/var/www/cacao-1.6.1/include --with-jni_md_h=/var/www/cacao-1.6.1/include --with-junit-jar=/var/www/cacao/junit-4.12.jar --enable-jre-layout
+OpenJDK
+JAVA_RUNTIME_LIBRARY_PREFIX=/var/www/IcedTea/icedtea-2.5.3/openjdk-boot
+./configure --prefix=/var/www/cacao-1.6.1 --with-java-runtime-library=openjdk7 --with-java-runtime-library-prefix=/var/www/IcedTea/icedtea-2.5.3/openjdk-boot --with-junit-jar=/var/www/cacao/junit-4.12.jar --with-jasmin-jar=/var/www/jasmin/jasmin-2.4/jasmin.jar --disable-debug --disable-dump
 
