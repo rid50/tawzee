@@ -21,6 +21,7 @@ var _currentForm;
 var _applicationNumber = "";
 var	_jasperReportsServerConnection = false;
 var _jasperReportsURL = "http://" + location.hostname +  ":8084/TawzeeJasperReports/JasperServlet";
+var _jasperReportsURL_CGI = "http://" + location.hostname +  "/cgi-bin/RunJasperReportsCGI.pl";
 var _runJettyEmbedded = "http://tawzee/jetty/webapps/TawzeeJasperReports/WEB-INF/cgi-bin/RunJasperReportsCGI.bat";
 
 var _myCustomEvent;
@@ -190,6 +191,9 @@ $(document).ready(function () {
 			documentSource = data.documentSource;
 			lang = data.lang;
 			searchInterval = data.searchInterval;
+			
+			if (data.jasperReportsServer == "cgi")
+				_jasperReportsURL = _jasperReportsURL_CGI;
 			
 			switch (data.jquery_theme) {
 				case "uilightness":
