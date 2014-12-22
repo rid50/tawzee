@@ -109,12 +109,18 @@ Get the latest snapshot http://sourceforge.net/p/jamvm/code/
 cd /var/www/jamvm
 git clone git://git.code.sf.net/p/jamvm/code jamvm-code
 cd jamvm-code
-git archive --prefix=jamvm-2.0.0/ HEAD | gzip > ../jamvm-2.0.0.tgz
+git archive --prefix=jamvm-2.0.0/ HEAD | gzip > ../jamvm-2.0.0.tar.gz
 
+rm -rf icedtea-build
 mkdir icedtea-build
 cd icedtea-build	
-../icedtea-2.5.3/configure --prefix=/var/www/jamvm-2.0.0 --enable-jamvm --with-jamvm-src-zip=/var/www/jamvm/jamvm-2.0.0.tgz --disable-Werror --disable-system-gio --disable-system-kerberos --disable-system-jpeg --disable-system-gif --disable-system-lcms --disable-compile-against-syscalls --disable-native-debuginfo --disable-java-debuginfo --disable-docs
+../icedtea-2.5.3/configure --prefix=/var/www/jamvm-2.0.0 --enable-jamvm --with-jamvm-src-zip=/var/www/jamvm/jamvm-2.0.0.tar.gz --disable-Werror --disable-system-gio --disable-system-kerberos --disable-system-jpeg --disable-system-gif --disable-system-lcms --disable-compile-against-syscalls --disable-native-debuginfo --disable-java-debuginfo --disable-docs
+../icedtea-2.5.3/configure --enable-jamvm --with-jamvm-src-zip=/var/www/jamvm/jamvm.tgz --disable-Werror --disable-system-gio --disable-system-kerberos --disable-system-jpeg --disable-system-gif --disable-system-lcms --disable-compile-against-syscalls --disable-native-debuginfo --disable-java-debuginfo --disable-docs
+
+look for JAMVM_SHA256SUM
+
 make
+
 
 Cacao
 Just to have JDK classes being downloaded first

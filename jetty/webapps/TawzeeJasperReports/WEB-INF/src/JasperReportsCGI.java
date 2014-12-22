@@ -36,6 +36,11 @@ public class JasperReportsCGI {
 	public static void main( String args[] ) {
 		String server_name = System.getProperty("cgi.server_name");
 		String query_string = System.getProperty("cgi.query_string");
+		if (query_string.equals("CheckConnection")) {
+			System.out.println("Content-Type: text/html\n\n");
+			return;
+		}
+			
 		//System.out.println(server_name);
 		//System.out.println(query_string);
 		//String query_string = "reportName=TawzeeApplicationForm&applicationNumber=12345&keyFieldValue=12345&renderAs=png";
@@ -175,6 +180,7 @@ public class JasperReportsCGI {
 			
 			if (renderAs.equals("png")) {
 				//response.setContentType("image/png");
+				//System.out.println("Content-Type: image/png\n\n");
 				
 				//System.out.println("Content-Type: text/html\n\n");
 		        //System.out.println("renderAs: " + renderAs);
@@ -236,10 +242,8 @@ public class JasperReportsCGI {
 				
 				//ImageIO.write((BufferedImage) image, "png", out);
 				//System.out.flush();
-				System.out.println("Content-Type: image/png\n\n");
+				System.out.println("Content-Type: image/png\n");	// error, the second \n create an empty row in at the beginning of PNG file
 				ImageIO.write((BufferedImage) image, "png", System.out);
-
-				
 				//System.out.close();
 			} else {
 				//response.setContentType("application/pdf");
@@ -265,7 +269,7 @@ public class JasperReportsCGI {
 						System.out);
 
 				//System.out.flush();
-		        System.out.println("Content-Type: application/pdf\n\n");
+		        System.out.println("Content-Type: application/pdf\n");
 				exporter.exportReport();
 				
 				//LOG.info("**** PDF ****");
