@@ -141,6 +141,8 @@ public class JasperReportsCGI {
 
 			//System.out.println("Content-Type: text/html\n\n");
 	        //System.out.println("+++++++++++++++++++++ OK +++++++++++++++++++");
+	        //if (true)
+	        //	return;
 
 			
 			JasperReport report = JasperCompileManager.compileReport(design);

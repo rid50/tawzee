@@ -68,20 +68,25 @@ try {
 	//error_log(strrpos($dir, '/') . PHP_EOL, 3, "errors.log");		
 	$dir = substr($dir, 0, strrpos($dir, '/'));
 	//error_log($dir . PHP_EOL, 3, "errors.log");		
-	$url = strtolower(array_shift(explode("/",$_SERVER['SERVER_PROTOCOL'])))."://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].$dir;	
+	//$url = strtolower(array_shift(explode("/",$_SERVER['SERVER_PROTOCOL'])))."://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].$dir;	
+	$url = "http://".$_SERVER['SERVER_NAME'].$dir;	
 	//error_log($url . PHP_EOL, 3, "errors.log");		
 	
 	$handle = fopen($url."/get_image.php", "rb", false, $context);
 	//$handle = fopen("http://tawsilat/get_image.php", "rb", false, $context);
-
-	//if ($handle)
-	//	print 'Ok';
-	//else
-	//	print 'No';
+/*
+	if ($handle)
+		//print 'Ok';
+		error_log("OK: " . $postdata . PHP_EOL, 3, "errors.log");		
+	else
+		//print 'No';
+		error_log("NO: " . $postdata  . PHP_EOL, 3, "errors.log");		
+*/		
 	//print fgets($child);
 	print stream_get_contents($handle);
 	fclose($handle);
 } catch (PDOException $e) {
+	//error_log("Error: " . $e->getMessage() . PHP_EOL, 3, "errors.log");		
 	header('Content-type: text/plain; charset=utf-8');
 	print $e->getMessage();
 }

@@ -76,7 +76,6 @@ $opti = getopt("content");
 	//$st = "SELECT Image FROM Attachments WHERE ApplicationNumber='{$param['applicationNumber']}'" . " AND ID = 34";
 	//throw new Exception($st);
 	
-	//error_log($st, 3, "errors.log");
 	
 	$ds = $dbh->query($st);
 
@@ -84,12 +83,15 @@ $opti = getopt("content");
 
 	//list($name, $type, $size, $content) = mysql_fetch_array($result);
 	
+	//error_log($ds->rowCount() . PHP_EOL, 3, "errors.log");
+	
 	if ($ds->rowCount() != 0) {
 		$r = $ds->fetch(PDO::FETCH_ASSOC);
 		//$result = r2;
 	} else
 		throw new Exception('not found');
 
+		
 	//imagejpeg($r2);
 	//$image = imagecreatefromjpeg($r);
 	//if (isset($_GET['thumb'])) {
@@ -130,7 +132,7 @@ $opti = getopt("content");
 	} else
 		print $r['Image'];
 */
-	if (isset($param['applicationNumber'])) {
+	if (isset($param['applicationNumber'])) {		// attachments
 		if (isset($param['thumb'])) {
 			//header("Content-Type: image/jpg");
 			print $r['Thumb'];
@@ -145,7 +147,7 @@ $opti = getopt("content");
 			//header("Content-Type: image/png");
 			print $r['Image'];
 	}
-	
+
 	//print $thumb;
 	//print $r['Image'];
 	exit;

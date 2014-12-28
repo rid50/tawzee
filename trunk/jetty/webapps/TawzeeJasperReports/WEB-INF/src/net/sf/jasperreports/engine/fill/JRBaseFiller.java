@@ -924,6 +924,18 @@ public abstract class JRBaseFiller implements JRDefaultStyleProvider
 			parameterValues = new HashMap<String,Object>();
 		}
 
+		
+		//System.out.println("Content-Type: text/html\n\n");
+        //System.out.println("D: " + (log.isDebugEnabled() == true));
+
+        //if (true)
+        //	throw new JRException("***** JRBaseFiller *******");
+		
+		//if (log.isInfoEnabled())
+		//{
+		//	log.info("Fill " + fillerId + ": filling report");
+		//}
+
 		if (log.isDebugEnabled())
 		{
 			log.debug("Fill " + fillerId + ": filling report");
@@ -986,10 +998,15 @@ public abstract class JRBaseFiller implements JRDefaultStyleProvider
 //				jasperPrint.addStyle((JRStyle) it.next());
 //			}
 
-			if (log.isDebugEnabled())
+			if (log.isInfoEnabled())
 			{
-				log.debug("Fill " + fillerId + ": ended");
+				log.info("Fill " + fillerId + ": ended");
 			}
+
+			//if (log.isDebugEnabled())
+			//{
+			//	log.debug("Fill " + fillerId + ": ended");
+			//}
 
 			success = true;
 			return jasperPrint;

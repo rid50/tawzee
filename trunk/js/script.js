@@ -20,9 +20,9 @@ var _currentForm;
 //var _formButtonSet;
 var _applicationNumber = "";
 var	_jasperReportsServerConnection = false;
-var _jasperReportsURL = "http://" + location.hostname +  ":8084/TawzeeJasperReports/JasperServlet";
-var _jasperReportsURL_CGI = "http://" + location.hostname +  "/cgi-bin/RunJasperReportsCGI.pl";
-var _runJettyEmbedded = "http://tawzee/jetty/webapps/TawzeeJasperReports/WEB-INF/cgi-bin/RunJasperReportsCGI.bat";
+var _jasperReportsURL = "//" + location.hostname +  ":8084/TawzeeJasperReports/JasperServlet";
+var _jasperReportsURL_CGI = "//" + location.hostname +  "/cgi-bin/RunJasperReportsCGI.pl";
+var _runJettyEmbedded = "//tawzee/jetty/webapps/TawzeeJasperReports/WEB-INF/cgi-bin/RunJasperReportsCGI.bat";
 
 var _myCustomEvent;
 var _slider; 
@@ -197,13 +197,13 @@ $(document).ready(function () {
 			
 			switch (data.jquery_theme) {
 				case "uilightness":
-					$("#stylesheet").attr({href : "http://code.jquery.com/ui/1.11.1/themes/ui-lightness/jquery-ui.min.css"});
+					$("#stylesheet").attr({href : "//code.jquery.com/ui/1.11.1/themes/ui-lightness/jquery-ui.min.css"});
 					break;
 				case "redmond":
-					$("#stylesheet").attr({href : "http://code.jquery.com/ui/1.11.1/themes/redmond/jquery-ui.min.css"});
+					$("#stylesheet").attr({href : "//code.jquery.com/ui/1.11.1/themes/redmond/jquery-ui.min.css"});
 					break;
 				//default:
-					//$("#stylesheet").attr({href : "http://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css"});
+					//$("#stylesheet").attr({href : "//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css"});
 			}
 		});
 	
@@ -1026,7 +1026,8 @@ function resetAcl() {
 	form.css('visibility', 'initial');
 	var fields = form.find("input[type='text'], select").not("#error-box");
 	reset(form, fields);
-	var form = $('#load-form');
+	
+	form = $('#load-form');
 	form.css('visibility', 'initial');
 	fields = form.find("input[type='text'], select").not("#error-box");
 	//fields = form.find("input[type='text'], select").not("#error-box, #owner-name2, #project-name2, #area2, #block2, #plot2, #construction-exp-date2, #feed-points2");
@@ -1295,23 +1296,48 @@ function initAccordion() {
 						return false;
 					}
 					
-					//var jstree = $('#jstree').jstree(true);
-					var node = $('#jstree').jstree(true).get_node(sectionId);
-					//var manager_loginName, employee_loginName;
-					//var office_groupName = _acl['load-form'][node.data["data-memberof"]];
+					var jstree = $('#jstree').jstree(true);
+					var node = jstree.get_node(sectionId);
+					var acl_actor = node.data["data-memberof"];
+					node.children.some(function(id) {
+						var node = jstree.get_node(id);
+						//manager_loginName = node.data["data-loginname"];
+						if (node.data["data-loginname"] == userInfo[0].loginName) {
+							if (_acl['load-form'][node.data["data-loginname"]] != undefined)
+								acl_actor = node.data["data-loginname"];
+							return true;
+						}
+						
+						var found = false;
+						$(node.children).each(function(i, id) {
+							var node = jstree.get_node(id);
+							if (node.data["data-loginname"] == userInfo[0].loginName) {
+								//employee_loginName = userInfo[0].loginName;
+								if (_acl['load-form'][node.data["data-loginname"]] != undefined)
+									acl_actor = node.data["data-loginname"];
+								found = true;
+								return false;
+							}
+						})
+						
+						if (found)
+							return true;
+					})
+					
 					var read = true, write = true;
-					if (_acl['load-form'][node.data["data-memberof"]] != undefined) {
-						if ("write" in _acl['load-form'][node.data["data-memberof"]])
-							write = _acl['load-form'][node.data["data-memberof"]].write;
+					if (_acl['load-form'][acl_actor] != undefined) {
+						if ("write" in _acl['load-form'][acl_actor])
+							write = _acl['load-form'][acl_actor].write;
 							
-						if ("read" in _acl['load-form'][node.data["data-memberof"]])
-							read = _acl['load-form'][node.data["data-memberof"]].read;
+						if ("read" in _acl['load-form'][acl_actor])
+							read = _acl['load-form'][acl_actor].read;
 					}
 
 					var anchor = $('#' + $('#load-form').attr('data-link'));
 					
 					if (!read) {
 						anchor.css('visibility', 'hidden');
+						_currentForm = "main-form";
 					} else {
 						anchor.css('visibility', 'initial');
 						if ($('#application-number').val().match("[/\\\\]") && write) {

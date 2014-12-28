@@ -54,8 +54,8 @@ if ($idp == "SAML") {
 	<!--link rel="stylesheet" media="all" href="themes/smoothness/jquery-ui-1.10.3.custom.min.css" /-->	
 	<!--link rel="stylesheet" media="all" href="themes/uilightness/jquery-ui.min.css" /-->	
 	<!--link rel="stylesheet" media="all" href="themes/smoothness/jquery-ui.min.css" /-->
-	<!--link id="stylesheet" rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" /-->
-	<link id="stylesheet" rel="stylesheet" href="http://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.min.css" />
+	<link id="stylesheet" rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.min.css" />
+	<!--link id="stylesheet" rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.min.css" /-->
 	
 	<!--link rel="stylesheet" media="all" href="themes/redmond/jquery-ui.min.css" /-->
 	
@@ -69,12 +69,12 @@ if ($idp == "SAML") {
     <link rel="stylesheet" media="screen" type="text/css" href="css/style.css"/>
     <link rel="stylesheet" media="print" type="text/css" href="css/style.css"/>
 	
-	<!--script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script--> 
-	<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script> 
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> 
+	<!--script src="//code.jquery.com/jquery-1.11.1.min.js"></script--> 
 
 	<!--script src="js/jquery-ui.min.js" type="text/javascript"></script-->
-	<!--script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script-->
-	<script src="http://code.jquery.com/ui/1.10.4/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+	<!--script src="//code.jquery.com/ui/1.10.4/jquery-ui.min.js" type="text/javascript"></script-->
     
     <script src="js/jqGridJs/i18n/grid.locale-ar.js" type="text/javascript"></script>
     <script src="js/jqGridJs/i18n/grid.locale-en.js" type="text/javascript"></script>

@@ -88,9 +88,12 @@ public final class JRFiller
 	        //System.out.println("conn: " + conn);
 
 	        //if (true)
-	        //	throw new Exception("Filler");
+	        //	throw new Exception("Filler Before");
 			
 			jasperPrint = filler.fill(parameters, conn);
+	        
+			//if (true)
+	        //	throw new Exception("Filler After");
 		}
 		catch(JRFillInterruptedException e)
 		{
@@ -98,7 +101,7 @@ public final class JRFiller
 		}
 		//catch(Exception e)
 		//{
-		//	throw new JRException("Filler2", e);
+		//	throw new JRException("Filler22", e);
 		//}
 		
 		return jasperPrint;
