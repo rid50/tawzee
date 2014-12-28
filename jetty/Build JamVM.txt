@@ -1,5 +1,13 @@
 alternatives --config java
 
+------------------------------------ !!!!!!!! ----------------------------------------------
+Exception in thread "main" java.lang.UnsatisfiedLinkError: Native library `awt' not found (as file `libawt.so') in gnu.classpath.boot.library.path and java.library.path 
+ldd /usr/lib/jvm/java-1.7.0-openjdk-1.7.0.65.x86_64/jre/lib/amd64/libawt.so
+ln -s /usr/lib/jvm/java-1.7.0-openjdk-1.7.0.65.x86_64/jre/lib/amd64/server/libjvm.so /lib64/libjvm.so
+------------------------------------ !!!!!!!! ----------------------------------------------
+
+ 
+
 [root@tawzee classpath-0.98]# java -version
 java version "1.7.0_45"
 OpenJDK Runtime Environment (rhel-2.4.3.3.el6-x86_64 u45-b15)
@@ -96,7 +104,7 @@ cd icedtea
 
 wget http://icedtea.classpath.org/download/source/icedtea-2.5.3.tar.gz
 tar xzf icedtea-2.5.3.tar.gz
-cd /var/www/IcedTea/icedtea-2.5.3
+cd /var/www/icedtea/icedtea-2.5.3
 
 mkdir icedtea-build
 cd icedtea-build
@@ -115,7 +123,6 @@ rm -rf icedtea-build
 mkdir icedtea-build
 cd icedtea-build	
 ../icedtea-2.5.3/configure --prefix=/var/www/jamvm-2.0.0 --enable-jamvm --with-jamvm-src-zip=/var/www/jamvm/jamvm-2.0.0.tar.gz --disable-Werror --disable-system-gio --disable-system-kerberos --disable-system-jpeg --disable-system-gif --disable-system-lcms --disable-compile-against-syscalls --disable-native-debuginfo --disable-java-debuginfo --disable-docs
-../icedtea-2.5.3/configure --enable-jamvm --with-jamvm-src-zip=/var/www/jamvm/jamvm.tgz --disable-Werror --disable-system-gio --disable-system-kerberos --disable-system-jpeg --disable-system-gif --disable-system-lcms --disable-compile-against-syscalls --disable-native-debuginfo --disable-java-debuginfo --disable-docs
 
 look for JAMVM_SHA256SUM
 
@@ -123,6 +130,30 @@ make
 
 
 Cacao
+
+cd /var/www/cacao/cacao-code
+unzip cacao-staging.zip
+mv  cacao-staging.zip ..
+cd ..
+tar -cvf cacao-staging.tar cacao-staging
+gzip cacao-staging.tar
+
+ 
+cd /var/www/icedtea
+rm -rf icedtea-build
+mkdir icedtea-build
+cd icedtea-build
+
+../icedtea-2.5.3/configure --prefix=/var/www/cacao-1.6.1 --enable-cacao --with-cacao-src-dir=/var/www/cacao/cacao-1.6.1 --disable-Werror --disable-system-gio --disable-system-kerberos --disable-system-jpeg --disable-system-gif --disable-system-lcms --disable-compile-against-syscalls --disable-native-debuginfo --disable-java-debuginfo --disable-docs
+../icedtea-2.5.3/configure --prefix=/var/www/cacao-1.6.1 --enable-cacao --with-cacao-src-zip=/var/www/cacao/cacao-staging.tar.gz --disable-Werror --disable-system-gio --disable-system-kerberos --disable-system-jpeg --disable-system-gif --disable-system-lcms --disable-compile-against-syscalls --disable-native-debuginfo --disable-java-debuginfo --disable-docs
+
+../../src/native/jni.hpp:75:26: error: /var/www/IcedTea/icedtea-2.5.3/openjdk-boot/jdk/src/solaris/javavm/export/jni_md.h: No such file or directory
+
+
+look for CACAO_SHA256SUM
+
+make
+
 Just to have JDK classes being downloaded first
 ./configure --enable-cacao --disable-system-kerberos --disable-system-jpeg --disable-system-gif --disable-system-lcms --disable-compile-against-syscalls
 
@@ -170,6 +201,7 @@ cd /var/www/cacao/cacao-1.6.1
 ./configure --prefix=/var/www/cacao-1.6.1 --with-java-runtime-library=gnuclasspath --with-java-runtime-library-prefix=/var/www/cacao-1.6.1/share/classpath --with-java-runtime-library-classes=/var/www/cacao-1.6.1/share/classpath/glibj.zip --with-java-runtime-library-libdir=/var/www/cacao-1.6.1/lib --with-jni_h=/var/www/cacao-1.6.1/include --with-jni_md_h=/var/www/cacao-1.6.1/include --with-junit-jar=/var/www/cacao/junit-4.12.jar --with-jasmin-jar=/var/www/jasmin/jasmin-2.4/jasmin.jar --disable-debug --disable-dump
 
 OpenJDK
-JAVA_RUNTIME_LIBRARY_PREFIX=/var/www/IcedTea/icedtea-2.5.3/openjdk-boot
-./configure --prefix=/var/www/cacao-1.6.1 --with-java-runtime-library=openjdk7 --with-java-runtime-library-prefix=/var/www/IcedTea/icedtea-2.5.3/openjdk-boot --with-junit-jar=/var/www/cacao/junit-4.12.jar --with-jasmin-jar=/var/www/jasmin/jasmin-2.4/jasmin.jar --disable-debug --disable-dump
+JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.65.x86_64
+JAVA_RUNTIME_LIBRARY_PREFIX=/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.65.x86_64/lib
+./configure --prefix=/var/www/cacao-1.6.1 --with-java-runtime-library=openjdk7 --with-java-runtime-library-prefix=/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.65.x86_64/lib --with-junit-jar=/var/www/cacao/junit-4.12.jar --with-jasmin-jar=/var/www/jasmin/jasmin-2.4/jasmin.jar --disable-debug --disable-dump
 

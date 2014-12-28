@@ -132,6 +132,8 @@ public class JDesignerExtension {
 		    ResultSet resultSet = preparedStatement.executeQuery();
 		    //int count = 0;
 		    while (resultSet.next()) {
+				//LOG.info("SignatureID: " + resultSet.getInt("SignatureID"));
+		    	
 		        signatureID = resultSet.getInt("SignatureID");
 		        topPos = resultSet.getFloat("TopPos");
 		        leftPos = resultSet.getFloat("LeftPos");
@@ -143,14 +145,17 @@ public class JDesignerExtension {
 		        parameterName = "s" + Integer.toString(signatureID);
 				parameter.setName(parameterName);
 				parameter.setValueClass(java.awt.Image.class);
+
 				design.addParameter(parameter);
-				
+
 				//parameters.put(parameterName, com.rid50.reports.util.JrUtils.getSignature(Integer.toString(signatureID), request));
 				parameters.put(parameterName, com.rid50.reports.util.JrUtils.getSignature(Integer.toString(signatureID), reqUrl));
 				
 				//scale = false;
-				
+
 				image = new JRDesignImage(design);
+				
+				//LOG.info("image: " + image);
 				
 				expression = new JRDesignExpression();
 				expression.setText("$P{s" + Integer.toString(signatureID) + "}");

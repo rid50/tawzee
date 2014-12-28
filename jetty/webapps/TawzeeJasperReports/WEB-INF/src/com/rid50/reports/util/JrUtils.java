@@ -21,7 +21,7 @@ import org.apache.log4j.Logger;
 public class JrUtils {
 	public static final int JAPER_REPORTS_DPI = 72;
 	
-//	private static final Logger LOG = Logger.getLogger(JrUtils.class);
+	//private static final Logger LOG = Logger.getLogger(JrUtils.class);
 	
 	public static boolean isCheckboxMatch(Integer value, int bitmask) throws Exception {
 		// if (value != -1) {
@@ -91,8 +91,9 @@ public class JrUtils {
 
 			// convert byte array back to BufferedImage
 			InputStream in = new ByteArrayInputStream(imageInByte);
-			BufferedImage bImage = ImageIO.read(in);
 
+			BufferedImage bImage = ImageIO.read(in);
+			
             //ImageIO.write(bImage, "png", new File("bImage.png"));
 			
 			if (scale) {
@@ -113,6 +114,7 @@ public class JrUtils {
 				//LOG.info("Width: " + bImage.getWidth());
 				//return bImage;
 	            g2d.dispose();
+	            
 				return scaledBufImage;
 			} else
 				return bImage;
