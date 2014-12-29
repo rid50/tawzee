@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -34,8 +36,17 @@ import com.JasperReportsWrapper;
 public class JasperServlet extends HttpServlet {
 	private static final long serialVersionUID = 4350549139109004305L;
 
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	//private static final Logger LOG = Logger.getLogger(JasperServlet.class);
+	
+	public void doGet(HttpServletRequest request, HttpServletResponse response)	throws ServletException, IOException {
+		go(request, response);
+	}
+
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		go(request, response);
+	}
+	
+	void go(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 			if (request.getParameter("CheckConnection") != null) {
 				response.addHeader("Access-Control-Allow-Origin", "*");
@@ -52,6 +63,8 @@ public class JasperServlet extends HttpServlet {
 			String keyFieldValue = request.getParameter("keyFieldValue");
 			String renderAs = request.getParameter("renderAs");
 
+			//LOG.info("****rname: " + rName);
+			
 			// Connect to DB and compile JRXML file
 			JasperReportsWrapper wrapper = new JasperReportsWrapper();
 			Connection conn = wrapper.getConnection();

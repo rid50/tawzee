@@ -134,17 +134,18 @@ $opti = getopt("content");
 */
 	if (isset($param['applicationNumber'])) {		// attachments
 		if (isset($param['thumb'])) {
-			//header("Content-Type: image/jpg");
+			header("Content-Type: image/jpg");
 			print $r['Thumb'];
 		} else {
 			header("Content-Type: application/pdf");
+			
 			//header('Content-Disposition: inline;');
 			//header('Content-Disposition: attachment; filename="tawzee.pdf"');
 
 			print $r['Image'];
 		}
 	} else {
-			//header("Content-Type: image/png");
+			header("Content-Type: image/png");
 			print $r['Image'];
 	}
 

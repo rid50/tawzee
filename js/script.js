@@ -666,7 +666,8 @@ $(document).ready(function () {
 			//if (_applicationNumber != "") {
 				if (this.id == "printFormApp" || this.id == "printFormLoad" || this.id == "printSelectedForm") {
 					printReport(function(reportName) {
-						window.open(_jasperReportsURL + '?reportName=' + reportName + '&applicationNumber=' + _applicationNumber + '&keyFieldValue=' + keyFieldValue + '&renderAs=pdf', '_blank');
+						window.open('jetty_proxy.php?reportName=' + reportName + '&applicationNumber=' + _applicationNumber + '&keyFieldValue=' + keyFieldValue + '&renderAs=pdf', '_blank');
+						//window.open(_jasperReportsURL + '?reportName=' + reportName + '&applicationNumber=' + _applicationNumber + '&keyFieldValue=' + keyFieldValue + '&renderAs=pdf', '_blank');
 					});
 				
 				/*
@@ -1364,8 +1365,12 @@ function initAccordion() {
 					
 					printReport(function(reportName) {
 						$.blockUI();
-						$('<img src=\"' + _jasperReportsURL + '?reportName=' + reportName + '&applicationNumber=' + _applicationNumber + '&keyFieldValue=' + keyFieldValue + '&renderAs=png\" onload="$.unblockUI()" />').appendTo('#report-container');
+						$('<img src=\"jetty_proxy.php?reportName=' + reportName + '&applicationNumber=' + _applicationNumber + '&keyFieldValue=' + keyFieldValue + '&renderAs=png\" onload="$.unblockUI()" />').appendTo('#report-container');
+						//$('<img src=\"' + _jasperReportsURL + '?reportName=' + reportName + '&applicationNumber=' + _applicationNumber + '&keyFieldValue=' + keyFieldValue + '&renderAs=png\" onload="$.unblockUI()" />').appendTo('#report-container');
 					});
+					
+					
+					
 					
 					$("#signatureImages .drag").each(function() {
 						$(this).draggable( "option", "disabled", false );
@@ -2335,7 +2340,9 @@ function printReport(func) {
 function CheckConnection(timeoutID, func) {
 	var xhr = new XMLHttpRequest();
 	//try {
-	var url = _jasperReportsURL + "?CheckConnection&r=" + Math.random();
+	//var url = _jasperReportsURL + "?CheckConnection&r=" + Math.random();
+	var url = "jetty_proxy.php?CheckConnection&r=" + Math.random();
+	
 	xhr.open( "GET", url, true ); 	// true - the asynchronous operation 
 	//xhrTimeout = window.setTimeout(onTimeOutHandler, 5000);
 
@@ -2343,21 +2350,19 @@ function CheckConnection(timeoutID, func) {
 		//showError("");	
 		error("");	
 		if (xhr.status != 200) {
-			//showError("Error connecting to Jetty Reporting Service: " + xhr.status);
 			error("Error connecting to Jetty Reporting Service: " + xhr.status);
-			//errBox.val("Error connecting to Jetty Reporting Service: " + xhr.status);
-			//$('#error-box').val("Error connecting to Jetty Reporting Service: " + xhr.status);
-			//return false;
 		} else {
-			_jasperReportsServerConnection = true;
-			window.clearTimeout(timeoutID);
+			if (xhr.responseText != "666") {	// server is not running
+				_jasperReportsServerConnection = true;
+				window.clearTimeout(timeoutID);
 
-			func();
+				func();
+			} else
+				error("Jetty Reporting Service is not running");
 		}
 	}
 	
 	xhr.onerror = function() {
-		//showError("Jetty Reporting Service is not running");
 		error("Jetty Reporting Service is not running");
 	};
 	
