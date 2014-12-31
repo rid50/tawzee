@@ -666,9 +666,58 @@ $(document).ready(function () {
 			//if (_applicationNumber != "") {
 				if (this.id == "printFormApp" || this.id == "printFormLoad" || this.id == "printSelectedForm") {
 					printReport(function(reportName) {
-						window.open('jetty_proxy.php?reportName=' + reportName + '&applicationNumber=' + _applicationNumber + '&keyFieldValue=' + keyFieldValue + '&renderAs=pdf', '_blank');
+						//$('#left-section').append('<input type="text" id="error-box" tabindex="-1" />');
+					
+					/*
+						$.post('jetty_proxy.php', {
+							'reportName': reportName,
+							'applicationNumber' : _applicationNumber,
+							'renderAs' : 'pdf' }
+							, function(data) {
+								var win = window.open();
+								$(win.document.head).append('<title>Ministry of Electricity and Water</title>');
+								$(win.document.head).append('<link rel="shortcut icon" type="image/vnd.microsoft.icon" href="favicon.ico" />');
+								$(win.document.body).append('<embed id="pdf-embed" width="100%" height="100%" name="plugin" type="application/pdf">');
+								win.document.body.getElementsByTagName('embed')["pdf-embed"].innerHTML = data;
+								var i = 0;
+								//$('#pdf-embed').html(data);
+							}
+						);	
+					*/
+
+						var win = window.open();
+						$(win.document.head).append('<title>Ministry of Electricity and Water</title>');
+						$(win.document.head).append('<link rel="shortcut icon" type="image/vnd.microsoft.icon" href="favicon.ico" />');
+						var src = location.protocol + "//" + location.hostname + "/jetty_proxy.php?reportName=" + reportName + "&applicationNumber=" + _applicationNumber + "&keyFieldValue=" + keyFieldValue + "&renderAs=pdf";
+						$(win.document.body).append('<embed width="100%" height="100%" name="plugin" src="' + src + '" type="application/pdf">');
+									
+// http://tawzee.mew.gov.kw/jetty_proxy.php?reportName=TawzeeApplicationForm&applicationNumber=2/12345&keyFieldValue=2/12345&renderAs=pdf
+									
+						//var url = 'jetty_proxy.php?reportName=' + reportName + '&applicationNumber=' + _applicationNumber + '&keyFieldValue=' + keyFieldValue + '&renderAs=pdf';
+						//window.open(url, '_blank');
+									
+						//window.open('jetty_proxy.php?reportName=' + reportName + '&applicationNumber=' + _applicationNumber + '&keyFieldValue=' + keyFieldValue + '&renderAs=pdf', '_blank');
 						//window.open(_jasperReportsURL + '?reportName=' + reportName + '&applicationNumber=' + _applicationNumber + '&keyFieldValue=' + keyFieldValue + '&renderAs=pdf', '_blank');
 					});
+/*				
+$.post(URL, DATA, function(d){
+    var new_window = window.open();
+    $(new_window.document.body).append(d);
+});	
+
+
+<form id='theForm' method='post' action='/your/action' target='TheNewWindow'>
+  <input type='hidden' name='param_1' value='whatever'>
+</form>
+
+Then you get the results into your window like this:
+window.open('about:blank', 'TheNewWindow');
+document.getElementById('theForm').submit();
+
+			
+*/				
+				
+				
 				
 				/*
 					$.blockUI();
@@ -1444,8 +1493,15 @@ function initAccordion() {
 								});
 
 								$('#slider .slides img').on("click", function(event){
-									var url = 'get_image.php?applicationNumber=' + _applicationNumber + '&id=' + this.getAttribute("data-id") + '&rand=' + rand;
-									window.open(url, '_blank');
+									var win = window.open();
+									$(win.document.head).append('<title>Ministry of Electricity and Water</title>');
+									$(win.document.head).append('<link rel="shortcut icon" type="image/vnd.microsoft.icon" href="favicon.ico" />');
+									var src = location.protocol + "//" + location.hostname + '/get_image.php?applicationNumber=' + _applicationNumber + '&id=' + this.getAttribute("data-id") + '&rand=' + rand;
+									$(win.document.body).append('<object width="100%" height="100%" name="plugin" data="' + src + '" type="application/pdf"></object>');
+									//$(win.document.body).append('<embed width="100%" height="100%" name="plugin" src="' + src + '" type="application/pdf">');
+
+									//var url = 'get_image.php?applicationNumber=' + _applicationNumber + '&id=' + this.getAttribute("data-id") + '&rand=' + rand;
+									//window.open(url, '_blank');
 								});
 							})
 							.fail(function(jqXHR, textStatus, errorThrown) {

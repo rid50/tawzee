@@ -5,17 +5,17 @@
 $url = "http://". $_SERVER['SERVER_NAME'] . ":8084/TawzeeJasperReports/JasperServlet";
 
 if (!isset($_GET['CheckConnection'])) {
-	if ($_GET['renderAs'] == "png")
+	if ((isset($_GET['renderAs']) ? $_GET['renderAs'] : $_POST['renderAs']) == "png")
 		header("Content-Type: image/png");
 	else
 		header("Content-Type: application/pdf");
 	
 	$postdata = http_build_query(
 		array(
-			'reportName' => $_GET['reportName'],
-			'applicationNumber' => $_GET['applicationNumber'],
-			'keyFieldValue' => $_GET['keyFieldValue'],
-			'renderAs' => $_GET['renderAs'],
+			'reportName' => isset($_GET['reportName']) ? $_GET['reportName'] : $_POST['reportName'],
+			'applicationNumber' => isset($_GET['applicationNumber']) ? $_GET['applicationNumber'] : $_POST['applicationNumber'],
+			'keyFieldValue' => isset($_GET['keyFieldValue']) ? $_GET['keyFieldValue'] : $_POST['keyFieldValue'],
+			'renderAs' => isset($_GET['renderAs']) ? $_GET['renderAs'] : $_POST['renderAs'],
 		)
 	);
 } else {
@@ -28,6 +28,9 @@ if (!isset($_GET['CheckConnection'])) {
 }
 
 //$header = "Content-Type: application/pdf";
+
+//	error_log($postdata . PHP_EOL, 3, "errors.log");		
+
 
 $opts = array('http' =>
     array(
