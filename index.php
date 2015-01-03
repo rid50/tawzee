@@ -1,6 +1,6 @@
 <?php
 session_start();
-
+// http://tawzee/json_db_pdo.php?func=getApp&param%5BapplicationNumber%5D=2%2F12345&_=1420036158458
 if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
 	require_once('c:/simplesaml/lib/_autoload.php');
 else
@@ -32,8 +32,15 @@ if ($idp == "SAML") {
 			$as = new SimpleSAML_Auth_Simple('mewSQLAuth');
 	}
 	
-	$as->requireAuth();
-	$attributes = $as->getAttributes();
+	if (!$as->isAuthenticated ()) {
+		$as->requireAuth();
+		//$attributes = $as->getAttributes();
+		//$url = $url . '?loginName=' . $attributes["LoginName"];
+		//$_SESSION['loginName'] = $attributes["LoginName"];
+	}
+	
+	//$as->requireAuth();
+	//$attributes = $as->getAttributes();
 	//$url = $url . '?loginName=' . $attributes["LoginName"];
 	//$_SESSION['loginName'] = $attributes["LoginName"];
 }
