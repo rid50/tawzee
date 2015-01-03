@@ -1,3 +1,14 @@
-prunsrv //TS//JettyService	start
-prunsrv //SS//JettyService	stop
-prunsrv //DS//JettyService	delete
+start
+prunsrv //TS//JettyService
+
+stop
+prunsrv //SS//JettyService
+
+delete
+prunsrv //DS//JettyService
+
+version
+prunsrv //VS
+
+run service
+C:\tawzee\jetty\JettyService.exe //RS//JettyService

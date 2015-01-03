@@ -36,7 +36,7 @@ import com.JasperReportsWrapper;
 public class JasperServlet extends HttpServlet {
 	private static final long serialVersionUID = 4350549139109004305L;
 
-	//private static final Logger LOG = Logger.getLogger(JasperServlet.class);
+	private static final Logger LOG = Logger.getLogger(JasperServlet.class);
 	
 	public void doGet(HttpServletRequest request, HttpServletResponse response)	throws ServletException, IOException {
 		go(request, response);
