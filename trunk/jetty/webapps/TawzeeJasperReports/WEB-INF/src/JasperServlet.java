@@ -65,6 +65,7 @@ public class JasperServlet extends HttpServlet {
 
 			//LOG.info("****rname: " + rName);
 			
+			
 			// Connect to DB and compile JRXML file
 			JasperReportsWrapper wrapper = new JasperReportsWrapper();
 			Connection conn = wrapper.getConnection();
@@ -145,6 +146,7 @@ public class JasperServlet extends HttpServlet {
 				// Integer(1)); // lblPage & border
 				// exporter.setParameter(JRExporterParameter.OFFSET_Y, new
 				// Integer(1));
+				//LOG.info("****1: " + (print.getPageWidth() + 1) + " ----- " + (print.getPageHeight() + 1));
 
 				OutputStream out = response.getOutputStream();
 				exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, out);
@@ -153,9 +155,9 @@ public class JasperServlet extends HttpServlet {
 				// exporter.setParameter(JRExporterParameter.OUTPUT_FILE, out);
 
 				exporter.exportReport();
-
+				
 				ImageIO.write((BufferedImage) image, "png", out);
-				out.close();
+				//out.close();
 			} else {
 				response.setContentType("application/pdf");
 

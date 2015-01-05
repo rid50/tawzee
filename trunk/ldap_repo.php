@@ -1,5 +1,6 @@
 <?php
-session_start();
+//session_start();
+require_once('session.php');
 
 $ini = parse_ini_file("config.ini");
 $dc = $ini["ldap_dc"];

@@ -1,4 +1,6 @@
 <?php
+require_once('session.php');
+
 class DatabaseRepository {
 	private $dsn;
 	private $username;

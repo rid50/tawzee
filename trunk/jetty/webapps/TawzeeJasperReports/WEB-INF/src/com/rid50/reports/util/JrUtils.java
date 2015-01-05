@@ -18,7 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 //import java.io.FileInputStream;
 
-public class JrUtils {
+public class JrUtils
+{
 	public static final int JAPER_REPORTS_DPI = 72;
 	
 	//private static final Logger LOG = Logger.getLogger(JrUtils.class);
@@ -70,7 +71,9 @@ public class JrUtils {
 			//	reqUrl += "/" + request.getContextPath();
 			
 			//String hostName = InetAddress.getLocalHost().getHostName();
-			URL url = new URL("http://" + reqUrl + "/my_fopen.php?id=" + id);
+			//URL url = new URL("http://" + reqUrl + "/my_fopen.php?id=" + id);
+			//URL url = new URL("http://" + reqUrl + "/get_image.php?userAgent=jetty&id=" + id);
+			URL url = new URL("http://" + reqUrl + "/get_image.php?id=" + id);
 
 			//LOG.info("Id: " + id);
 			

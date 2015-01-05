@@ -1,112 +1,30 @@
 <?php
+require_once('session.php');
+
 /*
-
-$returnURL = ($_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://';
-$returnURL .= $_SERVER['HTTP_HOST'];
-$returnURL .= $_SERVER['SCRIPT_NAME'];
-
-if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { //HTTPS } 
-		$url = strtolower(array_shift(explode("/", $_SERVER['SERVER_PROTOCOL'])))."://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'];
-	
-		print $_SERVER['SERVER_PROTOCOL'] . "<br/>";
-		print explode("/", $_SERVER['SERVER_PROTOCOL']) . PHP_EOL;
-		print array_shift(explode("/", $_SERVER['SERVER_PROTOCOL'])) . PHP_EOL;
-		die();
-*/
 session_start();
 
-if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
-	require_once('c:/simplesaml/lib/_autoload.php');
-else
-	require_once('/var/www/simplesamlphp/lib/_autoload.php');
-	//require_once('/home/y...../public_html/simplesamlphp/lib/_autoload.php');
-	
-/* Load simpleSAMLphp, configuration and metadata */
-$config = SimpleSAML_Configuration::getInstance();
-$session = SimpleSAML_Session::getInstance();
-/* Check if valid local session exists.. */
-//if (!isset($session) || !$session->isValid('saml2') )
-if (!isset($session) || !$session->isAuthenticated( )) {
-	//SimpleSAML_Utilities::redirect( '/' . $config->getBaseURL() . 'saml2/sp/initSSO.php', array('RelayState' => 'http://www.aragorn2.cool/testsso/authenticated.html') );
-	//print $config->getBaseURL();
-	SimpleSAML_Utilities::redirect('http://tawzee/');
-}
-/*
- else {
-	print 'NO';
-}
+//foreach ($_SESSION as $key=>$value)
+//{
+//	print $key . " - " . $value . "<br/>";
+//}
 
-	die();
-*/	
-
-	
-	
-//SimpleSAML_Utilities::redirect( '/' . $config->getBaseURL() .
-/*
-if (SimpleSAML_Auth_Simple::isAuthenticated())
-	print 'OK';
+if(isset($_SESSION['loginName']))
+print $_SESSION['loginName'];
 else
-	print 'NO';
-	
+print 'NO';
 die();
-*/	
-//$url = 'http://mewdesigncomps/index.html';
 
-$ini = parse_ini_file("config.ini");
-$idp = $ini["IdP"];
-$idpSource = $ini["IdPSource"];
-
-$_SESSION['ini_lang'] = $ini["lang"];
-
-//throw new Exception(http_negotiate_language(array('en-US', 'ar-KW')));
-//throw new Exception($_SERVER['HTTP_ACCEPT_LANGUAGE']);
-
-//throw new Exception((preg_match('/^ar/', $_SERVER['HTTP_ACCEPT_LANGUAGE'])) == true);
-
-if ($idp == "SAML") {
-	if ($idpSource == "DB")
-		$as = new SimpleSAML_Auth_Simple('mewSQLAuth');
-	else {
-		//print(strpos($_SERVER["HTTP_VIA"], 'mew.gov.kw'));
-		//return;
-		if ($_SERVER["HTTP_VIA"] != null && strpos($_SERVER["HTTP_VIA"], 'mew.gov.kw') !== false)
-			$as = new SimpleSAML_Auth_Simple('mewADAuth');
-		else
-			$as = new SimpleSAML_Auth_Simple('mewSQLAuth');
-	}
-	
-	//if (!SimpleSAML_Auth_Simple::isAuthenticated()) {
-	if (!$as->isAuthenticated ()) {
-	/*
-		$url = strtolower(array_shift(explode("/", $_SERVER['SERVER_PROTOCOL'])))."://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'];
-	
-		print $_SERVER['SERVER_PROTOCOL'] . "<br/>";
-		print explode("/", $_SERVER['SERVER_PROTOCOL']) . PHP_EOL;
-		print array_shift(explode("/", $_SERVER['SERVER_PROTOCOL'])) . PHP_EOL;
-		die();
-	*/	
-		//$param = array (
-		//	'ReturnTo' => 'http://tawzee/' 
-		//);
-		//$as->requireAuth ( $param );
-	
-		//$as->requireAuth();
-		//$attributes = $as->getAttributes();
-		//$url = $url . '?loginName=' . $attributes["LoginName"];
-		//$_SESSION['loginName'] = $attributes["LoginName"];
-	}
-/*	
-	if (!$as->isAuthenticated ()) {
-		die ( 'ok' );
-	} else {
-		//$as->requireAuth();
-		//$attributes = $as->getAttributes();
-		//$url = $url . '?loginName=' . $attributes["LoginName"];
-		//$_SESSION['loginName'] = $attributes["LoginName"];
-	}
-*/	
+//check that the session exists
+if(!isset($_SESSION['loginName']))
+{
+	//the session does not exist, redirect
+	$redirect = ($_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://';
+	$redirect .= $_SERVER['HTTP_HOST'];
+	$redirect .= '/index.php';
+	header("location: $redirect");
 }
-
+*/
 require('db_repo.php');
 	
 $param = null;
