@@ -1,4 +1,5 @@
 <?php
+require_once('session.php');
 
 //error_log((isset($_GET['applicationNumber']) ? 'true' : 'false') . PHP_EOL, 3, "errors.log");
 

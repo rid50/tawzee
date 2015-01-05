@@ -1,5 +1,57 @@
 <?php
-session_start();
+//require_once('session.php');
+
+//session_start();
+/*
+//foreach ($_SESSION as $key=>$value)
+foreach ($_SERVER as $key=>$value)
+{
+	error_log($key . " - " . $value . "\r\n", 3, "errors.log");
+}
+
+error_log($_SERVER['HTTP_USER_AGENT'] . " ****" . "\r\n", 3, "errors.log");
+error_log($_GET['userAgent'] . " ****" . "\r\n", 3, "errors.log");
+*/
+//if (!(isset($_GET['userAgent']) && $_GET['userAgent'] == "jetty"){) {
+	if(isset($_SERVER['HTTP_USER_AGENT']))
+	{
+		if (strtolower(array_shift(explode("/", $_SERVER['HTTP_USER_AGENT']))) != "java")
+			require_once('session.php');
+	}
+//}
+//require_once('is_authenticated.php');
+/*
+print $_GET['applicationNumber'];
+die();
+
+
+if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+	require_once('c:/simplesaml/lib/_autoload.php');
+else
+	require_once('/var/www/simplesamlphp/lib/_autoload.php');
+	//require_once('/home/y...../public_html/simplesamlphp/lib/_autoload.php');
+
+$session = SimpleSAML_Session::getInstance();
+
+print $session->isAuthenticated();
+die();
+
+if (!isset($session) || !$session->isAuthenticated()) {
+	//SimpleSAML_Utilities::redirect( '/' . $config->getBaseURL() . 'saml2/sp/initSSO.php', array('RelayState' => 'http://www.aragorn2.cool/testsso/authenticated.html') );
+	//print $config->getBaseURL();
+	$redirect = ($_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://';
+	$redirect .= $_SERVER['HTTP_HOST'];
+	$redirect .= '/index.php';
+
+	//print $redirect;
+	//die();
+	
+	SimpleSAML_Utilities::redirect($redirect);
+}
+*/
+//print $_GET['applicationNumber'];
+//die();
+
 date_default_timezone_set('Asia/Kuwait');
 
 ini_set('memory_limit', '-1');
@@ -95,7 +147,7 @@ $opti = getopt("content");
 	//imagejpeg($r2);
 	//$image = imagecreatefromjpeg($r);
 	//if (isset($_GET['thumb'])) {
-//$thumb = 'thumb';	
+	//$thumb = 'thumb';	
 
 	if (false) {
 		$image = imagecreate(560, 260);
@@ -138,10 +190,6 @@ $opti = getopt("content");
 			print $r['Thumb'];
 		} else {
 			header("Content-Type: application/pdf");
-			
-			//header('Content-Disposition: inline;');
-			//header('Content-Disposition: attachment; filename="tawzee.pdf"');
-
 			print $r['Image'];
 		}
 	} else {

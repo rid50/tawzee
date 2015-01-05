@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<jdbcDataAdapter class="net.sf.jasperreports.data.jdbc.JdbcDataAdapterImpl"><name>Tawsilat (local)</name><driver>com.mysql.jdbc.Driver</driver><username>root</username><password>ab68bef8-959b-4636-a39c-32e01efabf47</password><savePassword>true</savePassword><url>jdbc:mysql://localhost/tawsilat</url><database></database><serverAddress></serverAddress><classpath>C:\Program Files (x86)\MySQL\MySQL Connector J\mysql-connector-java-5.1.29-bin.jar</classpath></jdbcDataAdapter>

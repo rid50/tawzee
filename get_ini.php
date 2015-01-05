@@ -1,4 +1,6 @@
 <?php
+require_once('session.php');
+
 $ini = parse_ini_file("config.ini");
 $idp = $ini["IdP"];
 $idpSource = $ini["IdPSource"];

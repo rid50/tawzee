@@ -1,6 +1,7 @@
 <?php
 session_start();
 // http://tawzee/json_db_pdo.php?func=getApp&param%5BapplicationNumber%5D=2%2F12345&_=1420036158458
+// http://tawzee/my_fopen.php?applicationNumber=2/12345&id=19&thumb&rand=0.2305707220829425
 if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
 	require_once('c:/simplesaml/lib/_autoload.php');
 else
