@@ -365,7 +365,7 @@ WHERE Application.ApplicationNumber = $P{ApplicationNumber}]]>
 				<textFieldExpression><![CDATA[$F{LoadDate}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="-1" y="146" width="81" height="25" uuid="d45bd199-4e29-403c-831e-795d2bc61cec">
+				<reportElement x="7" y="92" width="81" height="25" uuid="d45bd199-4e29-403c-831e-795d2bc61cec">
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>

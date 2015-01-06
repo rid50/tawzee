@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<jdbcDataAdapter class="net.sf.jasperreports.data.jdbc.JdbcDataAdapterImpl"><name>TawzeeAdapterMEW</name><driver>com.mysql.jdbc.Driver</driver><username>romanroot</username><password>a239eea2-7273-4dd7-ad86-4242c2ee06c2</password><savePassword>true</savePassword><url>jdbc:mysql://tawzee.mew.gov.kw/tawzee</url><database></database><serverAddress></serverAddress><classpath>C:\Program Files (x86)\MySQL\MySQL Connector J\mysql-connector-java-5.1.29-bin.jar</classpath></jdbcDataAdapter>
