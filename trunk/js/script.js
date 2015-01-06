@@ -486,12 +486,40 @@ $(document).ready(function () {
 						}
 					} else if ("load-form" == _currentForm) {
 						//currForm.find("input[type='text']").not("#owner-name2, #project-name2, #area2, #block2, #plot2, #construction-exp-date2, #feed-points2").val("");
+						$('.tr-load-detail').each(function(index, tr) {
+							if (index > 0)
+								$(tr).remove();
+						})
+
+						var diff = result.length - 1 - $('.tr-load-detail').length;
+						if (diff > 0) {
+							var lastRow, i;
+							for (i = 0; i < diff; i++) {
+								lastRow = $('.tr-load-detail:first').clone(true, true);
+								$('.tr-load-detail:first').after(lastRow);
+							}
+						}
+						
 						if (result.length == 0) {
+							$('#file-number').val("");
 							$('#file-number')[0].defaultValue = "";
-							//$('#file-number').removeAttr('readonly');
+							$('#load-date').val("");
+							$('#power-factor-summer').val("");
+							$('#power-factor-winter').val("");
+							$('#maximum-loads-summer').val("");
+							$('#maximum-loads-winter').val("");
+							tableRow = $('.tr-load-detail');
+							tableRow.find('td:first>input').val("");
+							tableRow.find('td:nth-child(2)>input').val("");
+							tableRow.find('td:nth-child(3)>input').val("");
+							tableRow.find('td:nth-child(4)>input').val("");
+							tableRow.find('td:nth-child(5)>input').val("");
+							tableRow = $('.tr-load-detail:last').next();
+							tableRow.find('td:eq(1)>input').val("");
+							tableRow.find('td:eq(2)>input').val("");
+							tableRow.find('td:eq(3)>input').val("");
 						} else {
-							//$('#file-number').attr('readonly','readonly');
-									
+/*									
 							$('.tr-load-detail').each(function(index, tr) {
 								if (index > 0)
 									$(tr).remove();
@@ -505,7 +533,7 @@ $(document).ready(function () {
 									$('.tr-load-detail:first').after(lastRow);
 								}
 							}
-
+*/
 							var ConnectorLoad = 0, SummerLoad = 0, WinterLoad = 0;
 							
 							var tableRow;
