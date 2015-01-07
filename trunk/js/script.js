@@ -2431,6 +2431,12 @@ function CheckConnection(timeoutID, func) {
 	//xhrTimeout = window.setTimeout(onTimeOutHandler, 5000);
 
 	xhr.onload = function(e) {
+		//var JSON = $.parseJSON(xhr.responseText);
+		//if (JSON == null || typeof (JSON) == 'undefined')
+		//{
+		//	JSON = $.parseJSON(data.firstChild.textContent);
+		//}
+	
 		//showError("");	
 		error("");	
 		if (xhr.status != 200) {
@@ -2450,6 +2456,8 @@ function CheckConnection(timeoutID, func) {
 		error("Jetty Reporting Service is not running");
 	};
 	
+	//xhr.onprogress = function(){ };
+	 
 	xhr.timeout = 3000;
 	xhr.ontimeout = function () {
 		xhr.abort();
@@ -2468,7 +2476,11 @@ function CheckConnection(timeoutID, func) {
 		}
 	}
 	*/
-	xhr.send();
+	setTimeout(function(){
+        xhr.send();
+    }, 0);
+	
+	//xhr.send();
 }
 
 function error(error) {
