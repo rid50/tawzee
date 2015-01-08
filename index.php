@@ -51,11 +51,11 @@ if ($idp == "SAML") {
 <!doctype html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
+    <title>Ministry of Electricity and Water</title>
+
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<meta name="description" content="MEW Distribution Department">
-  
-    <title>Ministry of Electricity and Water</title>
 	
 	<link rel="shortcut icon" type="image/vnd.microsoft.icon" href="favicon.ico" />
 
@@ -65,8 +65,6 @@ if ($idp == "SAML") {
 	<link rel="stylesheet" media="all" href="themes/smoothness/jquery-ui.min.css" />
 	<!--link id="stylesheet" rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.min.css" /-->
 	<!--link id="stylesheet" rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.min.css" /-->
-	
-	
 	
 	<link rel="stylesheet" media="all" href="css/ui.jqgrid.css" />	
 
@@ -122,7 +120,7 @@ if ($idp == "SAML") {
 			padding: 1em 8px;
 		}
 */	
-	</style>	
+	</style>
 </head>
 
 <body dir="ltr">

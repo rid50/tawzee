@@ -1,14 +1,38 @@
 <html>
 <head><title>Ministry of Electricity and Water</title>
-<link href="favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon"></head>
+<link href="favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon">
+<script>
+	var myWindow = null;
+	//window.open("JasperServlet.pdf", '_blank');
+/*	
+	myWindow = window.open();
+	//myWindow.window.onload = function() {
+	//function load() {
+		var obj = document.createElement('object');
+		obj.data='JasperServlet.pdf';
+		obj.width = "100";
+		obj.height = "100";
+		obj.type = "application/pdf";
+		myWindow.document.body.appendChild(obj);
+	//};
+	//document.body.appendChild(obj);
+*/
+	//myWindow.onload = load;
+	//myWindow.window.onload = load;
+</script>
+
+</head>
 <body>
+
 
 <!--embed name="plugin" width="100%" height="100%" src="http://tawzee:8084/TawzeeJasperReports/JasperServlet?reportName=TawzeeApplicationForm&applicationNumber=2/12345&keyFieldValue=2/12345&renderAs=pdf" type="application/pdf"-->
 <!--object width="100%" height="100%" data="http://tawzee:8084/TawzeeJasperReports/JasperServlet?reportName=TawzeeApplicationForm&applicationNumber=2/12345&keyFieldValue=2/12345&renderAs=pdf" type="application/pdf"></object-->
 
 <!--embed name="plugin" width="100%" height="100%" src="JasperServlet.pdf" type="application/pdf"-->
 
-<object width="100%" height="100%" data="JasperServlet.pdf" type="application/pdf"></object>
+<iframe width="100%" height="100%" src="JasperServlet.pdf"></iframe>
+
+<!--object width="100" height="100" data="JasperServlet.pdf" type="application/pdf"></object-->
 
 <!--embed name="plugin" width="100%" height="100%" src="http://tawzee/get_image.php?applicationNumber=2/12345&id=14&rand=0.45084575525408193" type="application/pdf"-->
 <!--object width="100%" height="100%" data="http://tawzee/get_image.php?applicationNumber=2/12345&id=14&rand=0.45084575525408193" type="application/pdf"></object-->
