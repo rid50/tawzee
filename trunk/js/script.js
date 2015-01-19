@@ -1348,7 +1348,39 @@ function applyAcl(office_groupName, manager_loginName, employee_loginName) {
 	setAcl(manager_loginName);
 	setAcl(employee_loginName);
 	
+	initAppButtonAcl();
 	setAccordionState();
+}
+
+function initAppButtonAcl() {
+	var newForm = $('#newForm');
+	if (addFormApp.disabled) {
+		newForm.attr('disabled', 'disabled');
+		newForm.fadeTo("fast", .5).removeAttr("href"); 
+	} else {
+		newForm.removeAttr('disabled');
+		newForm.fadeTo("fast", 1.0).attr("href", "#");
+	}
+
+	var s = jQuery('#grid').jqGrid('getGridParam','selrow');
+	
+	var editSelectedForm = $('#editSelectedForm');
+	if (!s || saveFormApp.disabled) {
+		editSelectedForm.attr('disabled', 'disabled');
+		editSelectedForm.fadeTo("fast", .5).removeAttr("href"); 
+	} else {
+		editSelectedForm.removeAttr('disabled');
+		editSelectedForm.fadeTo("fast", 1.0).attr("href", "#");
+	}
+	
+	var printSelectedForm = $('#printSelectedForm');
+	if (!s || printFormApp.disabled) {
+		printSelectedForm.attr('disabled', 'disabled');
+		printSelectedForm.fadeTo("fast", .5).removeAttr("href"); 
+	} else {
+		printSelectedForm.removeAttr('disabled');
+		printSelectedForm.fadeTo("fast", 1.0).attr("href", "#");
+	}
 }
 
 function initAccordion() {
@@ -1366,6 +1398,8 @@ function initAccordion() {
 		beforeActivate: function( event, ui ) {
 			switch (ui.newHeader.index()) {
 				case 0:
+					initAppButtonAcl();
+	
 					divGrid.show();
 					$('#' + _currentForm).hide();
 					report_container.hide();
@@ -1765,7 +1799,25 @@ function setAccordionState() {
 		$(accTabs[2]).addClass( "ui-state-disabled" );			// report preview tab
 		$(accTabs[3]).addClass( "ui-state-disabled" );			// drawings and scanned images tab
 	}
-	
+
+	var editSelectedForm = $('#editSelectedForm');
+	if (!s || saveFormApp.disabled) {
+		editSelectedForm.attr('disabled', 'disabled');
+		editSelectedForm.fadeTo("fast", .5).removeAttr("href"); 
+	} else {
+		editSelectedForm.removeAttr('disabled');
+		editSelectedForm.fadeTo("fast", 1.0).attr("href", "#");
+	}
+
+	var printSelectedForm = $('#printSelectedForm');
+	if (!s || printFormApp.disabled) {
+		printSelectedForm.attr('disabled', 'disabled');
+		printSelectedForm.fadeTo("fast", .5).removeAttr("href"); 
+	} else {
+		printSelectedForm.removeAttr('disabled');
+		printSelectedForm.fadeTo("fast", 1.0).attr("href", "#");
+	}
+
 	if (actor == actor_enum.employee)
 		$(accTabs[4]).addClass( "ui-state-disabled" );			// user assignment tab
 	else
@@ -3210,7 +3262,7 @@ function initResourceTree() {
 	
 	var data = [], fields_data = [], node, id;
 	var forms = $('.forms, #accordion>span');
-	forms.push($('#printSelectedForm')[0]);
+	//forms.push($('#printSelectedForm')[0]);
 	forms.each(function(index) {
 		data.push({
 			'data': {
