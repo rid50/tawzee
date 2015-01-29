@@ -13,11 +13,13 @@ error_log($_SERVER['HTTP_USER_AGENT'] . " ****" . "\r\n", 3, "errors.log");
 error_log($_GET['userAgent'] . " ****" . "\r\n", 3, "errors.log");
 */
 //if (!(isset($_GET['userAgent']) && $_GET['userAgent'] == "jetty"){) {
-	if(isset($_SERVER['HTTP_USER_AGENT']))
-	{
-		if (strtolower(array_shift(explode("/", $_SERVER['HTTP_USER_AGENT']))) != "java")
-			require_once('session.php');
-	}
+
+if(isset($_SERVER['HTTP_USER_AGENT']))
+{
+	if (strtolower(array_shift(explode("/", $_SERVER['HTTP_USER_AGENT']))) != "java")
+		require_once('session.php');
+}
+	
 //}
 //require_once('is_authenticated.php');
 /*
@@ -113,37 +115,27 @@ $opti = getopt("content");
 	//error_log($param['applicationNumber'], 3, "errors.log");
 	
 	if (isset($param['applicationNumber'])) {
+		$stcount = "SELECT COUNT(*) FROM Attachments WHERE ApplicationNumber='{$param['applicationNumber']}'" . " AND ID = '{$param['id']}'";
 		if (isset($param['thumb']))
-			$st = "SELECT Thumb FROM Attachments WHERE ApplicationNumber='{$param['applicationNumber']}'" . " AND ID = '{$param['id']}'";
+			$st = "SELECT Thumb AS \"Thumb\" FROM Attachments WHERE ApplicationNumber='{$param['applicationNumber']}'" . " AND ID = '{$param['id']}'";
 		else
-			$st = "SELECT Image FROM Attachments WHERE ApplicationNumber='{$param['applicationNumber']}'" . " AND ID = '{$param['id']}'";
+			$st = "SELECT Image AS \"Image\" FROM Attachments WHERE ApplicationNumber='{$param['applicationNumber']}'" . " AND ID = '{$param['id']}'";
 	} else {
-			$st = "SELECT Image FROM SignatureList WHERE ID = '{$param['id']}'";
+		$stcount = "SELECT COUNT(*) FROM SignatureList WHERE ID = '{$param['id']}'";
+		$st = "SELECT Image AS \"Image\" FROM SignatureList WHERE ID = '{$param['id']}'";
 	}
-	
+
 	//error_log($st . "\r\n", 3, "errors.log");
-	
-	
-	//$st = "SELECT Image FROM Attachments WHERE ApplicationNumber='{$param['applicationNumber']}'" . " AND ID = 34";
-	//$st = "SELECT Image FROM Attachments WHERE ApplicationNumber='{$param['applicationNumber']}'" . " AND ID = 34";
-	//throw new Exception($st);
-	
-	
-	$ds = $dbh->query($st);
 
-	//$result = array();
+	$ds = $dbh->query($stcount);
 
-	//list($name, $type, $size, $content) = mysql_fetch_array($result);
-	
-	//error_log($ds->rowCount() . PHP_EOL, 3, "errors.log");
-	
-	if ($ds->rowCount() != 0) {
+    /* Check the number of rows that match the SELECT statement */
+	if ($ds->fetchColumn() > 0) {
+		$ds = $dbh->query($st);
 		$r = $ds->fetch(PDO::FETCH_ASSOC);
-		//$result = r2;
 	} else
 		throw new Exception('not found');
 
-		
 	//imagejpeg($r2);
 	//$image = imagecreatefromjpeg($r);
 	//if (isset($_GET['thumb'])) {
@@ -196,12 +188,13 @@ $opti = getopt("content");
 			header("Content-Type: image/png");
 			print $r['Image'];
 	}
-
+	
 	//print $thumb;
 	//print $r['Image'];
 	exit;
 
 } catch (Exception $e) {
+	//error_log($e . "\r\n", 3, "errors.log");
 	if ($e->getMessage() == 'not found') {
 		$filename = 'images/notification_error.png';
 		header("Content-Length: " . filesize($filename));

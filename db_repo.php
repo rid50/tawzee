@@ -175,15 +175,7 @@ class DatabaseRepository {
 		$dbh = $this->connect();
 		
 		try {
-		
-			//$ds = $dbh->query("SELECT loginName FROM userRepository WHERE loginName = :loginName'); 
-		
-			//$sth = $dbh->prepare('SELECT loginName AS \"loginName\", upn AS \"upn\", displayName AS \"displayName\" FROM UserRepository WHERE loginName = :loginName');
-			//$st = 'SELECT loginName AS "loginName", upn AS "upn", displayName AS "displayName" FROM UserRepository WHERE loginName = \':loginName\'';
-			$st = "SELECT loginName AS \"loginName\", upn AS \"upn\", displayName AS \"displayName\" FROM UserRepository WHERE loginName = '{:loginName}'";
-			//throw new Exception($st);
-
-			$sth = $dbh->prepare($st);
+			$sth = $dbh->prepare('SELECT loginName AS "loginName", upn AS "upn", displayName AS "displayName" FROM UserRepository WHERE loginName = :loginName');
 		} catch (PDOException $e) {
 			throw new Exception('Failed to prepare query: ' . $e->getMessage());
 		}
@@ -211,12 +203,13 @@ class DatabaseRepository {
 					$loginName = $value2;
 				}
 				
-				//$logName = "'" . $loginName . "'";
+				$logName = "'" . $loginName . "'";
 				//throw new Exception($loginName);
 				
 				try {
 					//if ($this->driver != 'oci')
 						$res = $sth->execute(array('loginName' => $loginName));
+						//$res = $sth->execute(array("ridavidenko"));
 						//$res = $sth->execute();
 					//else
 					//	$res = $sth->execute(array('loginName' => "\'" . $loginName . "\'"));
@@ -557,6 +550,7 @@ class DatabaseRepository {
 			if ($index == 0) {
 				if ($this->driver == 'oci')
 					$r2->LoadDate = DateTime::createFromFormat('d-M-y', $r2->LoadDate)->format('Y-m-d');
+					
 				$this->result[] = array('FileNumber' => $r2 -> FileNumber, 'LoadDate' => $r2 -> LoadDate,
 										'PowerFactorSummer' => $r2 -> PowerFactorSummer, 'PowerFactorWinter' => $r2 -> PowerFactorWinter,
 										'MaximumLoadsSummer' => $r2 -> MaximumLoadsSummer, 'MaximumLoadsWinter' => $r2 -> MaximumLoadsWinter
@@ -1134,7 +1128,7 @@ class DatabaseRepository {
 		$dbh = $this->connect();
 
 		try {
-			$st = "SELECT ID, Title FROM Attachments WHERE ApplicationNumber='{$param['applicationNumber']}'";
+			$st = "SELECT ID, Title AS \"Title\" FROM Attachments WHERE ApplicationNumber='{$param['applicationNumber']}'";
 			$ds = $dbh->query($st);
 		} catch (PDOException $e) {
 			throw new Exception('Failed to execute/prepare query: ' . $e->getMessage());
