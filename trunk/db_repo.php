@@ -7,6 +7,8 @@ class DatabaseRepository {
 	private $password;
 	private $result;
 	
+	private $driver;
+	
 	public function __construct() {
 		date_default_timezone_set('Asia/Kuwait');
 		//date_default_timezone_set('UTC');
@@ -99,13 +101,13 @@ class DatabaseRepository {
 		/* Ensure that we are operating with UTF-8 encoding.
 		 * This command is for MySQL. Other databases may need different commands.
 		 */
-		$driver = explode(':', $this->dsn, 2);
-		$driver = strtolower($driver[0]);
+		$this->driver = explode(':', $this->dsn, 2);
+		$this->driver = strtolower($this->driver[0]);
 
 		//throw new Exception($driver);
 		
 		/* Driver specific initialization. */
-		switch ($driver) {
+		switch ($this->driver) {
 			case 'mysql':
 				/* Use UTF-8. */
 				$dbh->exec("SET NAMES 'utf8'");
@@ -123,6 +125,36 @@ class DatabaseRepository {
 		
 		return $dbh;
 	}
+	
+	private function rebuildDMLSelect(&$st) {	// Rebuild DML Select Statement
+		if ($this->driver != 'oci')
+			return;
+			
+		$pos = strpos($st, " ") + 1;
+		$pos2 = strpos($st, "FROM", $pos);
+		$middle = substr($st, $pos, $pos2 - $pos - 1);
+		$column_names = explode(",", $middle);
+		$middle = "";
+		foreach ($column_names as &$value) {
+			if (stripos($value, " AS ") !== false) {
+				$pos11 = strpos($value, " ");
+				$pos22 = strrpos($value, " ", -1) + 1;
+				if (substr($value, $pos22, 1) == "\"")
+					$middle .= $value . ",";
+				else
+					$middle .= substr($value, 0, $pos11) . " AS \"" . substr($value, $pos22) . "\",";
+				
+				//throw new Exception(substr($value, $pos2, 1) . " --- " . strlen(substr($value, $pos2, 1)));
+			//$val = explode('.', $value, 2);
+			} else
+				$middle .= $value . " AS \"" . trim($value) . "\",";
+			//$middle .= $value . " AS \"" . trim(($val[1] == "") ? $val[0] : $val[1]) . "\",";
+		}
+		
+		$st = substr($st, 0, $pos) . substr_replace($middle, " ", -1, 1) . substr($st, $pos2);
+		//throw new Exception($st);
+	}
+
 	
 	public function startWebServer() {
 		//shell_exec('start /b /dc:\\tawsilat\\jetty\\ java -jar start.jar');
@@ -146,7 +178,12 @@ class DatabaseRepository {
 		
 			//$ds = $dbh->query("SELECT loginName FROM userRepository WHERE loginName = :loginName'); 
 		
-			$sth = $dbh->prepare('SELECT loginName, upn, displayName FROM UserRepository WHERE loginName = :loginName');
+			//$sth = $dbh->prepare('SELECT loginName AS \"loginName\", upn AS \"upn\", displayName AS \"displayName\" FROM UserRepository WHERE loginName = :loginName');
+			//$st = 'SELECT loginName AS "loginName", upn AS "upn", displayName AS "displayName" FROM UserRepository WHERE loginName = \':loginName\'';
+			$st = "SELECT loginName AS \"loginName\", upn AS \"upn\", displayName AS \"displayName\" FROM UserRepository WHERE loginName = '{:loginName}'";
+			//throw new Exception($st);
+
+			$sth = $dbh->prepare($st);
 		} catch (PDOException $e) {
 			throw new Exception('Failed to prepare query: ' . $e->getMessage());
 		}
@@ -174,8 +211,15 @@ class DatabaseRepository {
 					$loginName = $value2;
 				}
 				
+				//$logName = "'" . $loginName . "'";
+				//throw new Exception($loginName);
+				
 				try {
-					$res = $sth->execute(array('loginName' => $loginName));
+					//if ($this->driver != 'oci')
+						$res = $sth->execute(array('loginName' => $loginName));
+						//$res = $sth->execute();
+					//else
+					//	$res = $sth->execute(array('loginName' => "\'" . $loginName . "\'"));
 				} catch (PDOException $e) {
 					throw new Exception('Failed to execute query: ' . $e->getMessage());
 				}
@@ -185,6 +229,8 @@ class DatabaseRepository {
 				} catch (PDOException $e) {
 					throw new Exception('Failed to fetch result set: ' . $e->getMessage());
 				}
+
+				//throw new Exception("Row: " . $logName);
 				
 				if ($row) {
 					$this->result[] = array(
@@ -256,7 +302,7 @@ class DatabaseRepository {
 
 		//$param['applicationNumber'] = '2/12345';
 		$index = -1;
-		while($r = $ds->fetch(PDO::FETCH_ASSOC, $index++)) {
+		while($r = $ds->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT, $index++)) {
 			$r2 = (object)$r;
 			if ($r2 -> ApplicationNumber == $param['applicationNumber']) {
 				$this->result = array();
@@ -348,7 +394,7 @@ class DatabaseRepository {
 		$dbh = $this->connect(isset($param['dbName']) ? $param['dbName'] : '');
 		
 		try {
-			$st = "SELECT COUNT(*) AS count FROM Application";
+			$st = "SELECT COUNT(*) AS \"count\" FROM Application";
 			
 			if ($where != "")
 				$st .= " WHERE " . $where;
@@ -369,14 +415,36 @@ class DatabaseRepository {
 
 			$start = $limit * $page - $limit;
 
-			$st = "SELECT ApplicationNumber, ApplicationDate, OwnerName, ProjectName, ControlCenterId, ProjectType, AreaName AS Area, Block, Plot, ConstructionExpDate, FeedPoints
-				FROM Application LEFT JOIN Area ON Application.AreaID = Area.ID ";
+			$st = "SELECT ApplicationNumber AS \"ApplicationNumber\", ApplicationDate AS \"ApplicationDate\", OwnerName AS \"OwnerName\", ProjectName AS \"ProjectName\", ControlCenterId AS \"ControlCenterId\", ProjectType AS \"ProjectType\", AreaName AS \"Area\", Block AS \"Block\", Plot AS \"Plot\", ConstructionExpDate AS \"ConstructionExpDate\", FeedPoints AS \"FeedPoints\"
+				FROM Application LEFT JOIN Area ON Application.AreaID = Area.ID";
 
 			if ($where == "")
-				$st .= " ORDER BY $sidx $sord LIMIT $start, $limit";
+				$st .= " ORDER BY $sidx $sord";
 			else
-				$st .= " WHERE " . $where . " ORDER BY $sidx $sord LIMIT $start, $limit";
-				
+				$st .= " WHERE " . $where . " ORDER BY $sidx $sord";
+
+			if ($this->driver != 'oci')
+				$st .= " LIMIT $start, $limit";
+			else {
+				$st = "SELECT * FROM (
+				  SELECT a.*, ROWNUM rnum FROM (
+					$st
+				  ) a WHERE rownum <= $start + $limit
+				) WHERE rnum > $start";
+			}
+			//throw new Exception($start);
+/*			
+			if ($where == "")
+				if ($this->driver != 'oci')
+					$st .= " ORDER BY $sidx $sord LIMIT $start, $limit";
+				else
+					$st .= " ORDER BY $sidx $sord OFFSET $start ROWS FETCH NEXT $limit ROWS ONLY;";
+			else
+				if ($this->driver != 'oci')
+					$st .= " WHERE " . $where . " ORDER BY $sidx $sord LIMIT $start, $limit";
+				else
+					$st .= " WHERE " . $where . " ORDER BY $sidx $sord OFFSET $start ROWS FETCH NEXT $limit ROWS ONLY;";
+*/
 			//throw new Exception('Statement: ' . $st);
 				
 			$ds = $dbh->query($st);
@@ -392,10 +460,15 @@ class DatabaseRepository {
 		$this->result->userdata = $userdata;
 		$i = 0;
 		while($r = $ds->fetch(PDO::FETCH_ASSOC)) {
-			//$r2 = (object)$r;
+			$r2 = (object)$r;
+			//throw new Exception($r2->ApplicationNumber . " --- " . $r2->ApplicationDate);
 			//if ($i == 1)
 				//throw new Exception($r2->OwnerName);
-			$this->result->rows[$i]['cell'] = (object)$r;
+			if ($this->driver == 'oci')
+				$r2->ApplicationDate = DateTime::createFromFormat('d-M-y', $r2->ApplicationDate)->format('Y-m-d');
+			//$r2->ApplicationDate = date_format(date_create_from_format('Y-m-d', $r2->ApplicationDate), 'd/m/Y'));
+			$this->result->rows[$i]['cell'] = $r2;
+			//$this->result->rows[$i]['cell'] = (object)$r2;
 			$i++;
 		}
 		return $this->result;
@@ -408,8 +481,12 @@ class DatabaseRepository {
 			$st = "SELECT ResidenceTotalArea, ConstructionArea, ACArea, CurrentLoad, ExtraLoad, LoadAfterDelivery, ConductiveTotalLoad, SiteFeedPoint,
 				Requirements, CableSize, Fuze, Meter, PossibilityYes, PossibilityNo, StationNumber, 
 				Switch, K1000KWT, K1000AMP, K1250KWT, K1250AMP, K1600KWT, K1600AMP
-				FROM Application AS r LEFT JOIN ApplicationDetail AS d ON r.ApplicationNumber = d.ApplicationNumber
+				FROM Application r LEFT JOIN ApplicationDetail d ON r.ApplicationNumber = d.ApplicationNumber
 				WHERE r.ApplicationNumber='{$param['applicationNumber']}'";
+				
+
+			$this->rebuildDMLSelect($st);
+			//throw new Exception($st);
 
 //								FROM ApplicationRequirements AS r LEFT JOIN ApplicationRequirementsDetail AS d ON r.ApplicationNumber = d.ApplicationNumber 
 
@@ -422,9 +499,9 @@ class DatabaseRepository {
 		$this->result = array();
 
 		$index = -1;
-		while($r = $ds->fetch(PDO::FETCH_ASSOC, $index++)) {
+		while($r = $ds->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT, $index++)) {
 			$r2 = (object)$r;
-			if ($index == 0) 
+			if ($index == 0)
 				$this->result[] = array('ResidenceTotalArea' => $r2 -> ResidenceTotalArea, 'ConstructionArea' => $r2 -> ConstructionArea,
 										'ACArea' => $r2 -> ACArea, 'CurrentLoad' => $r2 -> CurrentLoad, 'ExtraLoad' => $r2 -> ExtraLoad,
 										'LoadAfterDelivery' => $r2 -> LoadAfterDelivery, 'ConductiveTotalLoad' => $r2 -> ConductiveTotalLoad,
@@ -445,12 +522,15 @@ class DatabaseRepository {
 	public function getLoad($param) {
 		$dbh = $this->connect();
 		try {
-			$st = "SELECT l.FileNumber AS FileNumber, LoadDate, Description,
+			$st = "SELECT lo.FileNumber AS FileNumber, LoadDate, Description,
 				PowerFactorSummer, PowerFactorWinter, MaximumLoadsSummer, MaximumLoadsWinter,
 				ConnectorLoad, SummerLoad, WinterLoad, Remarks
-				FROM ApplicationLoad AS l LEFT JOIN ApplicationLoadDetail AS d ON l.FileNumber = d.FileNumber 
+				FROM ApplicationLoad lo LEFT JOIN ApplicationLoadDetail d ON lo.FileNumber = d.FileNumber 
 				WHERE ApplicationNumber='{$param['applicationNumber']}'";
 				
+			$this->rebuildDMLSelect($st);
+			//throw new Exception($st);
+
 			//$st = "SELECT ApplicationNumber, FileNumber, LoadDate FROM ApplicationLoad WHERE ApplicationNumber=555";
 			$ds = $dbh->query($st);
 		} catch (PDOException $e) {
@@ -468,18 +548,21 @@ class DatabaseRepository {
 		}
 */
 		$index = -1;
-		while($r = $ds->fetch(PDO::FETCH_ASSOC, $index++)) {
+		while($r = $ds->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT, $index++)) {
 			$r2 = (object)$r;
 			//if ($first) {
 			//	$this->result[] = array('FileNumber' => $r2 -> FileNumber, 'LoadDate' => $r2 -> LoadDate);
 			//	$first = false;
 			//}
-			if ($index == 0) 
+			if ($index == 0) {
+				if ($this->driver == 'oci')
+					$r2->LoadDate = DateTime::createFromFormat('d-M-y', $r2->LoadDate)->format('Y-m-d');
 				$this->result[] = array('FileNumber' => $r2 -> FileNumber, 'LoadDate' => $r2 -> LoadDate,
 										'PowerFactorSummer' => $r2 -> PowerFactorSummer, 'PowerFactorWinter' => $r2 -> PowerFactorWinter,
 										'MaximumLoadsSummer' => $r2 -> MaximumLoadsSummer, 'MaximumLoadsWinter' => $r2 -> MaximumLoadsWinter
 				);
-
+			}
+			
 			if (!($r2 -> ConnectorLoad == null && $r2 -> SummerLoad == null && $r2 -> WinterLoad == null))
 				$this->result[] = array('Description' => $r2 -> Description, 'ConnectorLoad' => $r2 -> ConnectorLoad, 
 									'SummerLoad' => $r2 -> SummerLoad, 'WinterLoad' => $r2 -> WinterLoad, 'Remarks' => $r2 -> Remarks);
@@ -490,7 +573,7 @@ class DatabaseRepository {
 	public function getAreas() {
 		$dbh = $this->connect();
 		try {
-			$st = "SELECT ID, AreaName FROM Area ORDER BY AreaName ASC";
+			$st = "SELECT ID, AreaName AS \"AreaName\" FROM Area ORDER BY AreaName ASC";
 			$ds = $dbh->query($st);
 		} catch (PDOException $e) {
 			throw new Exception('Failed to execute/prepare query: ' . $e->getMessage());
@@ -778,10 +861,11 @@ class DatabaseRepository {
 	public function getActors() {
 		$dbh = $this->connect();
 
-		$driver = explode(':', $this->dsn, 2);
-		$driver = strtolower($driver[0]);
+		//$driver = explode(':', $this->dsn, 2);
+		//$driver = strtolower($driver[0]);
+		
 		$nullfirst = "";
-		if ($driver == 'oci')
+		if ($this->driver == 'oci')
 			$nullfirst = " NULLS FIRST";
 		
 		try {
@@ -828,7 +912,6 @@ class DatabaseRepository {
 			if ($r -> OfficeId == null)
 				continue;
 
-				
 			if ($r -> ManagerId == null) {
 				if (!isset($ar[$r -> OfficeId]))
 					$ar[$r -> OfficeId] = array('name' => $r -> Name, 'arname' => $r -> ArabicName, 'memberof' => $r -> MemberOf);
@@ -1030,248 +1113,7 @@ class DatabaseRepository {
 		
 		return $this->result;		
 	}
-/*
-	public function createUpdateOngoingCheckup($param) {
-		$dbh = $this->connect();
 
-		$columnsToUpdate = "";
-		$ar = [];
-		
-		if ($param['date_ins'] != "")
-			$param['date_ins'] = DateTime::createFromFormat('d/m/Y', $param['date_ins'])->format('Y-m-d');
-		else
-			$param['date_ins'] =  (new DateTime())->format('Y-m-d-H-i-s');
-			//$param['date_ins'] = (new DateTime("now", new DateTimeZone('Asia/Kuwait')))->format('Y-m-d-H-i-s');
-		
-		//throw new Exception($param['date_ins']);
-		//throw new Exception($param['elc_load_new'] == 0.0);
-			
-		//$param['date_ins'] = "";
-		$submmit_time=strtotime($param['date_ins']);
-		//throw new Exception(date("Y", $submmit_time));
-
-		$ds = $dbh->query("SELECT 1 FROM ongoing_check 
-							WHERE form_no = '$param[form_no]' AND year = " . date("Y", $submmit_time) . " AND file_no != '$param[file_no]'");
-		if($ds->fetchColumn() == 1) {
-			throw new Exception('23000');
-		}
-		
-		if ($param['check_1_dt'] != "")
-			$param['check_1_dt'] = DateTime::createFromFormat('d/m/Y', $param['check_1_dt'])->format('Y-m-d');
-		if ($param['check_2_dt'] != "")
-			$param['check_2_dt'] = DateTime::createFromFormat('d/m/Y', $param['check_2_dt'])->format('Y-m-d');
-		if ($param['check_3_dt'] != "")
-			$param['check_3_dt'] = DateTime::createFromFormat('d/m/Y', $param['check_3_dt'])->format('Y-m-d');
-		
-		$ds = $dbh->query("SELECT 1 FROM ongoing_check WHERE file_no = '$param[file_no]'");
-		if($ds->fetchColumn() == 1) {
-			if ($param['form_no'] != "") {
-				$columnsToUpdate .= " form_no = '{$param['form_no']}'";
-			}
-			if ($param['date_ins'] != "") {
-				$columnsToUpdate .= ($columnsToUpdate == "" ? '' : ',') . "date_ins = '{$param['date_ins']}'";
-				$columnsToUpdate .= ($columnsToUpdate == "" ? '' : ',') . "year = " . date("Y", $submmit_time);
-			}
-			
-			if (!isset($param['elc_load_new']) || $param['elc_load_new'] == "")
-				$param['elc_load_new'] = 0.0;
-			if (!isset($param['elc_load_old']) || $param['elc_load_old'] == "")
-				$param['elc_load_old'] = 0.0;
-
-			//if ($param['elc_load_new'] != "") {
-				$columnsToUpdate .= ($columnsToUpdate == "" ? '' : ',') . "elc_load_new = '{$param['elc_load_new']}'";
-			//}			
-			//if ($param['elc_load_old'] != "") {
-				$columnsToUpdate .= ($columnsToUpdate == "" ? '' : ',') . "elc_load_old = '{$param['elc_load_old']}'";
-			//}
-			if ($param['check_1_dt'] != "") {
-				$columnsToUpdate .= ($columnsToUpdate == "" ? '' : ',') . "check_1_dt = '{$param['check_1_dt']}'";
-			}
-			if ($param['checker_1'] != 0) {
-				$columnsToUpdate .= ($columnsToUpdate == "" ? '' : ',') . "checker_1 = {$param['checker_1']}";
-			}
-			if ($param['result_1'] != 0) {
-				$columnsToUpdate .= ($columnsToUpdate == "" ? '' : ',') . "result_1 = {$param['result_1']}";
-			}
-			if ($param['note_1'] != "") {
-				$columnsToUpdate .= ($columnsToUpdate == "" ? '' : ',') . "note_1 = '{$param['note_1']}'";
-			}
-			if ($param['check_2_dt'] != "") {
-				$columnsToUpdate .= ($columnsToUpdate == "" ? '' : ',') . "check_2_dt = '{$param['check_2_dt']}'";
-			}
-			if ($param['checker_2'] != 0) {
-				$columnsToUpdate .= ($columnsToUpdate == "" ? '' : ',') . "checker_2 = {$param['checker_2']}";
-			}
-			if ($param['result_2'] != 0) {
-				$columnsToUpdate .= ($columnsToUpdate == "" ? '' : ',') . "result_2 = {$param['result_2']}";
-			}
-			if ($param['note_2'] != "") {
-				$columnsToUpdate .= ($columnsToUpdate == "" ? '' : ',') . "note_2 = '{$param['note_2']}'";
-			}
-			if ($param['check_3_dt'] != "") {
-				$columnsToUpdate .= ($columnsToUpdate == "" ? '' : ',') . "check_3_dt = '{$param['check_3_dt']}'";
-			}
-			if ($param['checker_3'] != 0) {
-				$columnsToUpdate .= ($columnsToUpdate == "" ? '' : ',') . "checker_3 = {$param['checker_3']}";
-			}
-			if ($param['result_3'] != 0) {
-				$columnsToUpdate .= ($columnsToUpdate == "" ? '' : ',') . "result_3 = {$param['result_3']}";
-			}
-			if ($param['note_3'] != "") {
-				$columnsToUpdate .= ($columnsToUpdate == "" ? '' : ',') . "note_3 = '{$param['note_3']}'";
-			}
-		} else {
-			$columnsToUpdate .= " form_no = '{$param['form_no']}'";
-		}
-
-		$ar = array(
-			'file_no' => $param['file_no'],
-			'form_no' => $param['form_no'],
-			'year' => date("Y", $submmit_time),
-			'date_ins' => $param['date_ins'],
-			'elc_load_new' => $param['elc_load_new'],
-			'elc_load_old' => $param['elc_load_old'],
-			'check_1_dt' => $param['check_1_dt'],
-			'checker_1' => $param['checker_1'],
-			'result_1' => $param['result_1'],
-			'note_1' => $param['note_1'],
-			'check_2_dt' => $param['check_2_dt'],
-			'checker_2' => $param['checker_2'],
-			'result_2' => $param['result_2'],
-			'note_2' => $param['note_2'],
-			'check_3_dt' => $param['check_3_dt'],
-			'checker_3' => $param['checker_3'],
-			'result_3' => $param['result_3'],
-			'note_3' => $param['note_3'],
-		);
-		
-		try {
-			$st = "INSERT INTO ongoing_check (file_no, form_no, year, date_ins, elc_load_new, elc_load_old, check_1_dt, checker_1, result_1, note_1, check_2_dt, checker_2, result_2, note_2, check_3_dt, checker_3, result_3, note_3)
-					VALUES (:file_no,  :form_no, :year, :date_ins, :elc_load_new, :elc_load_old, :check_1_dt, :checker_1, :result_1, :note_1, :check_2_dt, :checker_2, :result_2, :note_2, :check_3_dt, :checker_3, :result_3, :note_3)
-					ON DUPLICATE KEY UPDATE " . $columnsToUpdate;
-					//ON DUPLICATE KEY UPDATE check_1_dt = '{check_1_dt}'"; // . $columnsToUpdate;
-
-			//throw new Exception($st);
-
-			$stp = $dbh->prepare($st);
-			$stp->execute($ar);
-		} catch (PDOException $e) {
-			throw new Exception('Failed to execute/prepare query: ' . $e->getMessage());
-		}
-	}
-	
-	public function insertIntoCheckups($param) {
-		$dbh = $this->connect();
-
-		if ($param['date_ins'] != "")
-			$param['date_ins'] = DateTime::createFromFormat('d/m/Y', $param['date_ins'])->format('Y-m-d');
-		else
-			$param['date_ins'] =  (new DateTime())->format('Y-m-d-H-i-s');
-			//$param['date_ins'] = (new DateTime("now", new DateTimeZone('Asia/Kuwait')))->format('Y-m-d-H-i-s');
-		
-		$submmit_time=strtotime($param['date_ins']);
-		
-		if ($param['check_1_dt'] != "")
-			$param['check_1_dt'] = DateTime::createFromFormat('d/m/Y', $param['check_1_dt'])->format('Y-m-d');
-		if ($param['check_2_dt'] != "")
-			$param['check_2_dt'] = DateTime::createFromFormat('d/m/Y', $param['check_2_dt'])->format('Y-m-d');
-		if ($param['check_3_dt'] != "")
-			$param['check_3_dt'] = DateTime::createFromFormat('d/m/Y', $param['check_3_dt'])->format('Y-m-d');
-		
-		$ar = [];
-		$ar = array(
-			'file_no' => $param['file_no'],
-			'form_no' => $param['form_no'],
-			'year' => date("Y", $submmit_time),
-			'date_ins' => $param['date_ins'],
-			'elc_load_new' => $param['elc_load_new'],
-			'elc_load_old' => $param['elc_load_old'],
-			'area_id' => $param['area_id'],
-			'sector_addrs' => $param['sector_addrs'],
-			'qasimaa' => $param['qasimaa'],
-			'usr_ins' => $param['user_name'],
-			'check_1_dt' => $param['check_1_dt'],
-			'checker' => $param['checker_1'],
-			'result_1' => $param['result_1'],
-			'notes_1' => $param['note_1'],
-			'check_2_dt' => $param['check_2_dt'],
-			'checker_2' => $param['checker_2'],
-			'result_2' => $param['result_2'],
-			'notes_2' => $param['note_2'],
-			'check_3_dt' => $param['check_3_dt'],
-			'checker_3' => $param['checker_3'],
-			'result_3' => $param['result_3'],
-			'notes_3' => $param['note_3'],
-		);
-		
-		try {
-			$dbh->beginTransaction();
-		
-			$st = "INSERT INTO check_form (file_no, form_no, year, date_ins, elc_load_new, elc_load_old, area_id, sector_addrs, qasimaa, usr_ins, check_1_dt, checker, result_1, notes_1, check_2_dt, checker_2, result_2, notes_2, check_3_dt, checker_3, result_3, notes_3)
-					VALUES (:file_no, :form_no, :year, :date_ins, :elc_load_new, :elc_load_old, :area_id, :sector_addrs, :qasimaa, :usr_ins, :check_1_dt, :checker, :result_1, :notes_1, :check_2_dt, :checker_2, :result_2, :notes_2, :check_3_dt, :checker_3, :result_3, :notes_3)";
-
-			//throw new Exception($st);
-
-			$stp = $dbh->prepare($st);
-			$stp->execute($ar);
-			
-			$st = "UPDATE doc SET sectionId = {$param['sectionId']} WHERE docFileNumber = {$param['file_no']}";
-			$stp = $dbh->prepare($st);
-			$stp->execute();
-
-			$st = "DELETE FROM ongoing_check WHERE file_no = {$param['file_no']}";
-			$stp = $dbh->prepare($st);
-			$stp->execute();
-
-			$dbh->commit();
-		} catch (PDOException $e) {
-			$dbh->rollBack();
-			throw new Exception('Failed to execute/prepare query: ' . $e->getMessage());
-		}
-	}
-	
-	public function approve_reject($param) {
-		$dbh = $this->connect();
-
-		try {
-			$dbh->beginTransaction();
-			
-			//throw new Exception ($dbh->quote($param[docComment]));
-			if ($param[sectionId] != null) {
-				$st = "UPDATE doc SET docComment = " . $dbh->quote($param[docComment]);
-				//if ($param[sectionId])
-				$st .= ", sectionId = " . $param[sectionId];
-				$st .= ", employeeId = NULL";
-				$st .= " WHERE docFileNumber = '$param[docFileNumber]'";
-				//$st = "UPDATE doc SET docComment = " . $dbh->quote($param[docComment]) . ", employeeId = NULL WHERE docFileNumber = $dbh->quote($param[docFileNumber])";
-				
-				$stDoc = $dbh->exec($st);
-				
-				$dt = date_create_from_format('d/m/Y', $param[docHistory][docDate]);
-				$dt = date_format($dt, 'Y-m-d');
-				//$appr = $param[docHistory][docApprover];
-				//$st = "INSERT INTO docHistory (docFileNumber, docDate, docApprover)	VALUES ($param[docFileNumber], '$dt', '$appr')";
-				$st = "INSERT INTO docHistory (docFileNumber, docDate, docApprover)	VALUES ('$param[docFileNumber]', '$dt', '{$param[docHistory][docApprover]}')";
-				$stDoc = $dbh->exec($st);
-			} else {
-				if ($param[employeeId] != null)
-					$st = "UPDATE doc SET employeeId = " . $dbh->quote($param[employeeId]);
-				else
-					$st = "UPDATE doc SET employeeId = NULL";
-				
-				$st .= " WHERE docFileNumber = '$param[docFileNumber]'";
-				//$stDoc = $dbh->prepare($st);
-				//$stDoc->execute();
-				$stDoc = $dbh->exec($st);
-			}
-			$dbh->commit();
-		} catch (PDOException $e) {
-			$dbh->rollBack();
-			//throw new Exception('Failed to execute/prepare query: ' . $st);
-			throw new Exception('Failed to execute/prepare query: ' . $e->getMessage());
-		}
-	}
-*/
 	public function delete($param) {
 		$dbh = $this->connect();
 
@@ -1323,15 +1165,6 @@ class DatabaseRepository {
 		$this->result = array();
 		while($r = $ds->fetch(PDO::FETCH_ASSOC)) {
 			$this->result[] = (object)$r;
-/*			
-			$r2 = (object)$r;
-			$image = $r2 -> Image;
-			$im = imagecreatefromstring($image);
-			$width = imagesx($im);
-			$height = imagesy($im);
-			error_log("id " . $r2 -> ID  . " ; width "  . $width . " ;  height "  . $height . " \n", 3, "error.log");
-			//error_log("id " . $r2 -> ID . " ; width "  . $width . " ;  height "  . $height . " \n");
-*/			
 		}
 
 		//throw new Exception((string)count($this->result[0]));
