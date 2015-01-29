@@ -475,12 +475,12 @@ $(document).ready(function () {
 									//tableRow = $('#load-form table tr:nth-child(3)');
 									tableRow = $('.tr-application-detail').eq(index - 1);
 									tableRow.find('td:first>input').val(r.Switch);
-									tableRow.find('td:nth-child(2)>input').val(r.K1000KWT);
-									tableRow.find('td:nth-child(3)>input').val(r.K1000AMP);
-									tableRow.find('td:nth-child(4)>input').val(r.K1250KWT);
-									tableRow.find('td:nth-child(5)>input').val(r.K1250AMP);
-									tableRow.find('td:nth-child(6)>input').val(r.K1600KWT);
-									tableRow.find('td:nth-child(7)>input').val(r.K1600AMP);
+									tableRow.find('td:nth-child(2)>input').val(format( "#,##0.##0", r.K1000KWT));
+									tableRow.find('td:nth-child(3)>input').val(format( "#,##0.##0", r.K1000AMP));
+									tableRow.find('td:nth-child(4)>input').val(format( "#,##0.##0", r.K1250KWT));
+									tableRow.find('td:nth-child(5)>input').val(format( "#,##0.##0", r.K1250AMP));
+									tableRow.find('td:nth-child(6)>input').val(format( "#,##0.##0", r.K1600KWT));
+									tableRow.find('td:nth-child(7)>input').val(format( "#,##0.##0", r.K1600AMP));
 								}
 							});
 						}
@@ -552,9 +552,9 @@ $(document).ready(function () {
 									//tableRow = $('#load-form table tr:nth-child(3)');
 									tableRow = $('.tr-load-detail').eq(index - 1);
 									tableRow.find('td:first>input').val(r.Description);
-									tableRow.find('td:nth-child(2)>input').val(r.ConnectorLoad);
-									tableRow.find('td:nth-child(3)>input').val(r.SummerLoad);
-									tableRow.find('td:nth-child(4)>input').val(r.WinterLoad);
+									tableRow.find('td:nth-child(2)>input').val(format( "#,##0.##0", r.ConnectorLoad));
+									tableRow.find('td:nth-child(3)>input').val(format( "#,##0.##0", r.SummerLoad));
+									tableRow.find('td:nth-child(4)>input').val(format( "#,##0.##0", r.WinterLoad));
 									tableRow.find('td:nth-child(5)>input').val(r.Remarks);
 									ConnectorLoad += parseFloat(r.ConnectorLoad);
 									SummerLoad += parseFloat(r.SummerLoad);
@@ -575,7 +575,7 @@ $(document).ready(function () {
 					}
 				})
 				.fail(function(jqXHR, textStatus, errorThrown) {
-					alert("getLoad - error: " + errorThrown);
+					alert("getApp/getLoad - error: " + errorThrown);
 				});
 		}
 
@@ -884,7 +884,7 @@ document.getElementById('theForm').submit();
 	//start(_userLoginName, 'db', function(){ applyAcl() });	// 'db' - get Actors from database
 	start(_userLoginName, 'db', null);	// 'db' - get Actors from database
 	
-	if (_admin != userInfo[0].loginName) {
+	if (userInfo[0] == undefined || _admin != userInfo[0].loginName) {
 		$('#userLoginSelectDiv').hide();
 	}			
 		
@@ -1354,7 +1354,7 @@ function applyAcl(office_groupName, manager_loginName, employee_loginName) {
 
 function initAppButtonAcl() {
 	var newForm = $('#newForm');
-	if (addFormApp.disabled) {
+	if ($('#addFormApp').disabled) {
 		newForm.attr('disabled', 'disabled');
 		newForm.fadeTo("fast", .5).removeAttr("href"); 
 	} else {
@@ -1365,7 +1365,7 @@ function initAppButtonAcl() {
 	var s = jQuery('#grid').jqGrid('getGridParam','selrow');
 	
 	var editSelectedForm = $('#editSelectedForm');
-	if (!s || saveFormApp.disabled) {
+	if (!s || $('#saveFormApp').disabled) {
 		editSelectedForm.attr('disabled', 'disabled');
 		editSelectedForm.fadeTo("fast", .5).removeAttr("href"); 
 	} else {
@@ -1374,7 +1374,7 @@ function initAppButtonAcl() {
 	}
 	
 	var printSelectedForm = $('#printSelectedForm');
-	if (!s || printFormApp.disabled) {
+	if (!s || $('#printFormApp').disabled) {
 		printSelectedForm.attr('disabled', 'disabled');
 		printSelectedForm.fadeTo("fast", .5).removeAttr("href"); 
 	} else {
