@@ -29,7 +29,12 @@ require_once('session.php');
 if (isset($_GET['applicationNumber'])) {
 	//error_log((isset($_GET['applicationNumber']) ? "true" : "false") . "\r\n", 3, "errors.log");
 	//header("Content-Type: image/jpg");
-
+	
+	//if (isset($param['thumb']))
+	//	$header = "Content-Type: image/jpg\r\n";
+	//else
+	//	$header = "Content-Type: application/pdf\r\n";
+	
 	$postdata = http_build_query(
 		array(
 			'applicationNumber' => $_GET['applicationNumber'],
@@ -41,6 +46,7 @@ if (isset($_GET['applicationNumber'])) {
 	//error_log((isset($_GET['applicationNumber']) ? 'true' : 'false') . PHP_EOL, 3, "errors.log");
 	//header("Content-Type: image/png");
 
+	//$header = "Content-Type: image/png\r\n";
 	$postdata = http_build_query(
 		array(
 			'id' => $_GET['id'],
@@ -51,7 +57,7 @@ if (isset($_GET['applicationNumber'])) {
 $opts = array('http' =>
     array(
         'method'  => 'POST',
-        //'header'  => $header,
+        'header'  => "Content-Type: application/x-www-form-urlencoded\r\n",
         'content' => $postdata
     )
 );
@@ -66,6 +72,7 @@ try {
 	$url = "http://" . $_SERVER['SERVER_NAME'] . $dir;	
 	//error_log($url . PHP_EOL, 3, "errors.log");		
 	
+	//header("Content-Type: application/x-www-form-urlencoded");
 	$handle = fopen($url . "/get_image.php", "rb", false, $context);
 	
 	if (isset($param['applicationNumber'])) {		// attachments
@@ -77,7 +84,7 @@ try {
 	} else {
 			header("Content-Type: image/png");
 	}
-		
+
 	//$handle = fopen($url."/get_image.php", "rb", false, $context);
 	//$handle = fopen("http://tawsilat/get_image.php", "rb", false, $context);
 	//print fgets($child);

@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.ServletException;
+
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -30,14 +32,14 @@ public class JasperReportsWrapper
 
     public JasperReportsWrapper ()   {}
 
-    public Connection connect2DB ()
+    public Connection connect2DB () throws ServletException
     {
         conManager = new ConnectionManager();
         connection = conManager.getConnection();
         return connection;
     }
 
-    public Connection getConnection() {
+    public Connection getConnection()  throws ServletException {
         conManager = new ConnectionManager();
         connection = conManager.getConnection();
         return connection;

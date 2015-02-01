@@ -1801,7 +1801,7 @@ function setAccordionState() {
 	}
 
 	var editSelectedForm = $('#editSelectedForm');
-	if (!s || saveFormApp.disabled) {
+	if (!s || $('#saveFormApp').disabled) {
 		editSelectedForm.attr('disabled', 'disabled');
 		editSelectedForm.fadeTo("fast", .5).removeAttr("href"); 
 	} else {
@@ -1810,7 +1810,7 @@ function setAccordionState() {
 	}
 
 	var printSelectedForm = $('#printSelectedForm');
-	if (!s || printFormApp.disabled) {
+	if (!s || $('#printFormApp').disabled) {
 		printSelectedForm.attr('disabled', 'disabled');
 		printSelectedForm.fadeTo("fast", .5).removeAttr("href"); 
 	} else {
