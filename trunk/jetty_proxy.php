@@ -1,5 +1,5 @@
 <?php
-require_once('session.php');
+//require_once('session.php');
 
 //error_log((isset($_GET['applicationNumber']) ? 'true' : 'false') . PHP_EOL, 3, "errors.log");
 
@@ -37,6 +37,7 @@ $opts = array('http' =>
     array(
         'method'  => 'POST',
         //'header'  => $header,
+        'header'  => "Content-Type: application/x-www-form-urlencoded\r\n",
         'content' => $postdata
     )
 );

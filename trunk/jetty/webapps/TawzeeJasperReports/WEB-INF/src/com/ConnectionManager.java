@@ -8,11 +8,13 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Properties;
 
+import javax.servlet.ServletException;
+
 public class ConnectionManager
 {
     Connection connection = null;
 
-    public ConnectionManager () {
+    public ConnectionManager() throws ServletException {
     	
         Properties props = new Properties();
         InputStream is = null;
@@ -28,9 +30,11 @@ public class ConnectionManager
         	
           	is = ConnectionManager.class.getClassLoader().getResourceAsStream("database.properties");
           	if (is == null) {
-        		System.out.println("Content-Type: text/html\n\n");
-	            System.out.println("Can't find 'database.properties' file");
-	            return;
+				throw new Exception("Can't find 'database.properties' file");
+          		
+        		//System.out.println("Content-Type: text/html\n\n");
+	            //System.out.println("Can't find 'database.properties' file");
+	            //return;
           	}
 
     		//load a properties file from class path
@@ -49,37 +53,46 @@ public class ConnectionManager
             //System.out.println("connection error: " + e.toString());
             //if (true)
             //	return;
-			System.out.println("Content-Type: text/html\n\n");
-			e.printStackTrace(System.out);
+			throw new ServletException(e.toString());
+        	
+			//System.out.println("Content-Type: text/html\n\n");
+			//e.printStackTrace(System.out);
         } finally {
 			if (is != null) {
 				try {
 					is.close();
 				} catch (IOException e) {
-					System.out.println("Content-Type: text/html\n\n");
-					e.printStackTrace(System.out);
+					throw new ServletException(e.toString());
+					
+					//System.out.println("Content-Type: text/html\n\n");
+					//e.printStackTrace(System.out);
 				}
 			}
         }
-
+/*
         if (connection == null) {
-			System.out.println("Content-Type: text/html\n\n");
-            System.out.println("Connection failed!");
+			throw new Exception("Connection failed!");
+        	
+			//System.out.println("Content-Type: text/html\n\n");
+            //System.out.println("Connection failed!");
         }
+*/        
     }
 
     public Connection getConnection() {
     	return connection;
     }
     
-    public void close()
+    public void close() throws ServletException
     {
         try
         {
             connection.close();
         } catch (Exception e) {
-			System.out.println("Content-Type: text/html\n\n");
-			e.printStackTrace(System.out);
+			throw new ServletException(e.toString());
+        	
+			//System.out.println("Content-Type: text/html\n\n");
+			//e.printStackTrace(System.out);
         }
     }
 

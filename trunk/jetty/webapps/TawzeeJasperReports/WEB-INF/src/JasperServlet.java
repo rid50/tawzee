@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Locale;
@@ -69,11 +70,21 @@ public class JasperServlet extends HttpServlet {
 			// Connect to DB and compile JRXML file
 			JasperReportsWrapper wrapper = new JasperReportsWrapper();
 			Connection conn = wrapper.getConnection();
-			
+
 	        if (conn == null) {
-	            System.out.println("Connection failed!");
-	            return;
+	            //System.out.println("Connection failed!");
+				throw new Exception("Connection failed!");
+	            //return;
 	        }
+	        
+			/*if (true) {
+				throw new Exception("conn: " + conn + " :conn");
+				//System.out.println("Content-Type: text/html\n");
+				//System.out.println("conn: " + conn + " :conn");
+				//return;
+			}*/
+			
+	        
 			
 /*			
 			Connection conn = wrapper.connect2DB(
@@ -171,7 +182,11 @@ public class JasperServlet extends HttpServlet {
 				exporter.exportReport();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			//response.setContentType("text/html");
+			PrintWriter out = response.getWriter();
+			out.print(e.toString());
+			
+			//e.printStackTrace(System.out);
 		}
 	}
 }

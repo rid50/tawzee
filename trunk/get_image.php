@@ -13,13 +13,13 @@ error_log($_SERVER['HTTP_USER_AGENT'] . " ****" . "\r\n", 3, "errors.log");
 error_log($_GET['userAgent'] . " ****" . "\r\n", 3, "errors.log");
 */
 //if (!(isset($_GET['userAgent']) && $_GET['userAgent'] == "jetty"){) {
-
+/*
 if(isset($_SERVER['HTTP_USER_AGENT']))
 {
 	if (strtolower(array_shift(explode("/", $_SERVER['HTTP_USER_AGENT']))) != "java")
 		require_once('session.php');
 }
-	
+*/	
 //}
 //require_once('is_authenticated.php');
 /*
@@ -88,8 +88,8 @@ if ($_SERVER["USERDOMAIN"] != null && (strtolower($_SERVER["USERDOMAIN"]) == "me
 	$domain = strtolower($_SERVER["USERDOMAIN"]);
 	
 $dsn = $ini[$domain]["dsn"];
-if (!preg_match('/;$/', $dsn))
-	$dsn .= ';';
+//if (!preg_match('/;$/', $dsn))
+//	$dsn .= ';';
 
 //header("Content-Type: image/jpg");
 header('Cache-Control: no-cache, must-revalidate');
@@ -99,16 +99,35 @@ header('Expires: Mon, 1 Jan 1990 00:00:00 GMT');
 //$connection = strtolower($dsn[0]) . ';dbname=' . strtolower($dsn[1]);
 	
 //error_log($connection, 3, "errors.log");
+
+$driver = explode(':', $dsn, 2);
+//$driver = strtolower($driver[0]);
+
+//dsn = "oci:dbname=//homam.mew.gov.kw:1521/tawzee;charset=UTF8"
+
+//error_log($driver . "\r\n", 3, "errors.log");
 	
 try {
-	$dbh = new PDO($dsn, $ini[$domain]["username"], $ini[$domain]["password"]);
-	//$dbh = new PDO($connection, $ini[$domain]["username"], $ini[$domain]["password"]);
-	//$dbh = new PDO($dsn . 'dbname=' . $dbName, $ini[$domain]["username"], $ini[$domain]["password"]);
-	$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	if ($driver[0] != 'oci') {
+		$dbh = new PDO($dsn, $ini[$domain]["username"], $ini[$domain]["password"]);
+		//$dbh = new PDO($connection, $ini[$domain]["username"], $ini[$domain]["password"]);
+		//$dbh = new PDO($dsn . 'dbname=' . $dbName, $ini[$domain]["username"], $ini[$domain]["password"]);
+		$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	} else {
+		$pos = strpos($driver[1], "//") + 2;
+		$pos2 = strpos($driver[1], ";");
 
-//throw new Exception($applicationNumber);
-//$applicationNumber = '12345';
-$opti = getopt("content");
+		//error_log($driver[1] . "\r\n", 3, "errors.log");
+		//error_log($pos . "\r\n", 3, "errors.log");
+		//error_log($pos2 . "\r\n", 3, "errors.log");
+		
+		//error_log(substr($driver[1], $pos, $pos2 - $pos) . "\r\n", 3, "errors.log");
+		
+		$dbh = oci_connect($ini[$domain]["username"], $ini[$domain]["password"], substr($driver[1], $pos, $pos2 - $pos));
+	}
+	
+	
+	$opti = getopt("content");
 //throw new Exception($opt);
 	//$st = "SELECT Image FROM Attachments WHERE ApplicationNumber='12345'" . " AND ID = 34";
 
@@ -127,15 +146,30 @@ $opti = getopt("content");
 
 	//error_log($st . "\r\n", 3, "errors.log");
 
-	$ds = $dbh->query($stcount);
-
-    /* Check the number of rows that match the SELECT statement */
+	if ($driver[0] != 'oci') {
+		$ds = $dbh->query($stcount);
+		if ($ds->fetchColumn() > 0) {
+			$ds = $dbh->query($st);
+			$r = $ds->fetch(PDO::FETCH_ASSOC);
+		} else
+			throw new Exception('not found');
+	} else {
+		$stid = oci_parse($dbh, $stcount);
+		oci_execute($stid);
+		if (oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
+			$stid = oci_parse($dbh, $st);
+			oci_execute($stid);
+			$r = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);		
+		} else
+			throw new Exception('not found');
+	}
+/*	
 	if ($ds->fetchColumn() > 0) {
 		$ds = $dbh->query($st);
 		$r = $ds->fetch(PDO::FETCH_ASSOC);
 	} else
 		throw new Exception('not found');
-
+*/
 	//imagejpeg($r2);
 	//$image = imagecreatefromjpeg($r);
 	//if (isset($_GET['thumb'])) {
@@ -179,14 +213,23 @@ $opti = getopt("content");
 	if (isset($param['applicationNumber'])) {		// attachments
 		if (isset($param['thumb'])) {
 			header("Content-Type: image/jpg");
-			print $r['Thumb'];
+			if ($driver[0] != 'oci')
+				print $r['Thumb'];
+			else
+				print $r['Thumb']->load();
 		} else {
 			header("Content-Type: application/pdf");
-			print $r['Image'];
+			if ($driver[0] != 'oci')
+				print $r['Image'];
+			else
+				print $r['Image']->load();
 		}
 	} else {
 			header("Content-Type: image/png");
-			print $r['Image'];
+			if ($driver[0] != 'oci')
+				print $r['Image'];
+			else
+				print $r['Image']->load();
 	}
 	
 	//print $thumb;
