@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version last-->
+<!-- Created with Jaspersoft Studio version 6.0.1.final using JasperReports Library version 6.0.0  -->
+<!-- 2015-02-02T10:07:49 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="TawzeeLoadForm" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b72b4f58-4586-4fe8-9d89-fb0f4548ed05">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="TawzeeAdapterMEW"/>
 	<style name="Table_TH" mode="Transparent" backcolor="#FFFFFF">
@@ -119,10 +120,10 @@
 		<queryString language="SQL">
 			<![CDATA[SELECT	lo.FileNumber AS FileNo, PowerFactorSummer, PowerFactorWinter, MaximumLoadsSummer, MaximumLoadsWinter, Description,
 				ConnectorLoad, SummerLoad, WinterLoad, Remarks,
-				(SELECT sum(ConnectorLoad) FROM ApplicationLoadDetail WHERE FileNumber = FileNo) AS ConnectorTotal,
-				(SELECT sum(SummerLoad) FROM ApplicationLoadDetail WHERE FileNumber = FileNo) AS SummerTotal,
-				(SELECT sum( WinterLoad) FROM ApplicationLoadDetail WHERE FileNumber = FileNo) AS  WinterTotal
-				FROM ApplicationLoad AS lo LEFT JOIN ApplicationLoadDetail AS de ON lo.FileNumber = de.FileNumber 
+				(SELECT sum(ConnectorLoad) FROM ApplicationLoadDetail WHERE FileNumber = lo.FileNumber) AS ConnectorTotal,
+				(SELECT sum(SummerLoad) FROM ApplicationLoadDetail WHERE FileNumber = lo.FileNumber) AS SummerTotal,
+				(SELECT sum( WinterLoad) FROM ApplicationLoadDetail WHERE FileNumber = lo.FileNumber) AS  WinterTotal
+				FROM ApplicationLoad lo LEFT JOIN ApplicationLoadDetail de ON lo.FileNumber = de.FileNumber 
 				WHERE lo.ApplicationNumber=$P{ApplicationNumberLoad}]]>
 		</queryString>
 		<field name="PowerFactorWinter" class="java.math.BigDecimal">

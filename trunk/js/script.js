@@ -1473,7 +1473,7 @@ function initAccordion() {
 					flexslider_container.hide();
 					resourceManagement.hide();						
 					break;
-				case 4:
+				case 4:									//report preview tab
 					$('#' + _currentForm).hide();
 					var keyFieldValue = $("#" + $('#' + _currentForm).attr('data-key-field')).val();
 					

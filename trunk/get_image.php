@@ -13,13 +13,13 @@ error_log($_SERVER['HTTP_USER_AGENT'] . " ****" . "\r\n", 3, "errors.log");
 error_log($_GET['userAgent'] . " ****" . "\r\n", 3, "errors.log");
 */
 //if (!(isset($_GET['userAgent']) && $_GET['userAgent'] == "jetty"){) {
-/*
+
 if(isset($_SERVER['HTTP_USER_AGENT']))
 {
 	if (strtolower(array_shift(explode("/", $_SERVER['HTTP_USER_AGENT']))) != "java")
 		require_once('session.php');
 }
-*/	
+	
 //}
 //require_once('is_authenticated.php');
 /*

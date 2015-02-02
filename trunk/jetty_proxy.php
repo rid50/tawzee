@@ -1,12 +1,7 @@
 <?php
-//require_once('session.php');
+require_once('session.php');
 
 //error_log((isset($_GET['applicationNumber']) ? 'true' : 'false') . PHP_EOL, 3, "errors.log");
-
-DB_DRIVER_CLASS=oracle.jdbc.driver.OracleDriver
-DB_URL=jdbc:oracle:thin:@//homam.mew.gov.kw:1521/tawzee
-DB_USERNAME=tawzee
-DB_PASSWORD=tawzee
 
 $url = "http://". $_SERVER['SERVER_NAME'] . ":8084/TawzeeJasperReports/JasperServlet";
 
