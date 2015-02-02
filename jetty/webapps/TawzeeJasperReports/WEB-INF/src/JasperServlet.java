@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperPrintManager;
 import net.sf.jasperreports.engine.JasperReport;
@@ -30,6 +31,9 @@ import net.sf.jasperreports.engine.export.JRGraphics2DExporter;
 import net.sf.jasperreports.engine.export.JRGraphics2DExporterParameter;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
 
 import com.JDesignerExtension;
 import com.JasperReportsWrapper;
@@ -66,7 +70,6 @@ public class JasperServlet extends HttpServlet {
 
 			//LOG.info("****rname: " + rName);
 			
-			
 			// Connect to DB and compile JRXML file
 			JasperReportsWrapper wrapper = new JasperReportsWrapper();
 			Connection conn = wrapper.getConnection();
@@ -76,16 +79,6 @@ public class JasperServlet extends HttpServlet {
 				throw new Exception("Connection failed!");
 	            //return;
 	        }
-	        
-			/*if (true) {
-				throw new Exception("conn: " + conn + " :conn");
-				//System.out.println("Content-Type: text/html\n");
-				//System.out.println("conn: " + conn + " :conn");
-				//return;
-			}*/
-			
-	        
-			
 /*			
 			Connection conn = wrapper.connect2DB(
 					JasperReportsWrapper.dbServerAdd,
@@ -120,8 +113,9 @@ public class JasperServlet extends HttpServlet {
 
 			// parameters.put(JRParameter.REPORT_LOCALE, Locale.AR);
 			// Fill compiled JRXML file with data
-			JasperPrint print = wrapper.fillReport(report, parameters,
-					wrapper.getConnection());
+			JasperPrint print = wrapper.fillReport(report, parameters);
+			//JasperPrint print = wrapper.fillReport(report, parameters, wrapper.getConnection());
+			//JasperPrint print = JasperFillManager.fillReport(report, parameters, wrapper.getConnection());
 
 			if (renderAs.equals("png")) {
 				response.setContentType("image/png");
@@ -170,15 +164,26 @@ public class JasperServlet extends HttpServlet {
 				ImageIO.write((BufferedImage) image, "png", out);
 				//out.close();
 			} else {
+				//PrintWriter out = response.getWriter();
+				//out.print("kuku");
+				//if (true)
+				//	return;
 				response.setContentType("application/pdf");
 
 				// Export PDF file to browser window
 				JRPdfExporter exporter = new JRPdfExporter();
+
+				exporter.setExporterInput(new SimpleExporterInput(print));
+				exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(response.getOutputStream()));
+				SimplePdfExporterConfiguration configuration = new SimplePdfExporterConfiguration();
+				exporter.setConfiguration(configuration);				
+/*				
 				exporter.setParameter(JRExporterParameter.CHARACTER_ENCODING,
 						"UTF-8");
 				exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
 				exporter.setParameter(JRExporterParameter.OUTPUT_STREAM,
 						response.getOutputStream());
+*/						
 				exporter.exportReport();
 			}
 		} catch (Exception e) {

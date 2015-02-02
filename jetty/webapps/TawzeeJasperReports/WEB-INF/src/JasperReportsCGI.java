@@ -165,7 +165,8 @@ public class JasperReportsCGI {
 			//if (true)
 			//	throw new Exception("************* Ok ******************");
 			
-			JasperPrint print = wrapper.fillReport(report, parameters, conn);
+			//JasperPrint print = wrapper.fillReport(report, parameters, conn);
+			JasperPrint print = wrapper.fillReport(report, parameters);
 
 	        //System.out.println("*************** fillReport: OK ****************");
 			

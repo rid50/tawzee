@@ -127,7 +127,7 @@ public class JDesignerExtension {
 		try {
 			// statements allow to issue SQL queries to the database
 		    PreparedStatement preparedStatement =
-		    	_connection.prepareStatement("SELECT SignatureID AS \"SignatureID\", TopPos AS \"TopPos\", LeftPos AS \"LeftPos\", Width AS \"Width\", Height AS \"Height\", Resolution AS \"Resolution\" FROM " + tableName + " INNER JOIN SignatureList ON SignatureID = ID WHERE " + keyFieldName + "  =  ? ");
+		    	_connection.prepareStatement("SELECT SignatureID, TopPos, LeftPos, Width, Height, Resolution FROM " + tableName + " INNER JOIN SignatureList ON SignatureID = ID WHERE " + keyFieldName + "  =  ? ");
 		    preparedStatement.setString(1, keyFieldValue);
 		    ResultSet resultSet = preparedStatement.executeQuery();
 		    //int count = 0;

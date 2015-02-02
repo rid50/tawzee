@@ -32,19 +32,19 @@ public class JasperReportsWrapper
 
     public JasperReportsWrapper ()   {}
 
-    public Connection connect2DB () throws ServletException
-    {
-        conManager = new ConnectionManager();
-        connection = conManager.getConnection();
-        return connection;
-    }
+    //public Connection connect2DB () throws ServletException
+    //{
+    //    conManager = new ConnectionManager();
+    //    connection = conManager.getConnection();
+    //    return connection;
+    //}
 
     public Connection getConnection()  throws ServletException {
         conManager = new ConnectionManager();
         connection = conManager.getConnection();
         return connection;
     }
-
+/*
     public JasperReport compileJRXMLFile(String jasperXMLFileName)
     {
     	JasperReport jr = null;
@@ -56,20 +56,20 @@ public class JasperReportsWrapper
         }
         return jr;
     }
-
+*/
 	//@SuppressWarnings("unchecked")
-    public JasperPrint fillReport(JasperReport jasperReport, HashMap<String, Object>params, Connection conn) throws Exception
+    public JasperPrint fillReport(JasperReport jasperReport, HashMap<String, Object>params) throws Exception
     {
         //if (true)
         //	throw new Exception("ReportWrapper");
 
-		return JasperFillManager.fillReport(jasperReport, params, conn);
+		return JasperFillManager.fillReport(jasperReport, params, connection);
     }
 
-    public void saveReportInPDF (JasperPrint jPrint, String pdfFileName) throws Exception
-    {
-        JasperExportManager.exportReportToPdfFile(jPrint, pdfFileName);
-    }
+    //public void saveReportInPDF (JasperPrint jPrint, String pdfFileName) throws Exception
+    //{
+    //    JasperExportManager.exportReportToPdfFile(jPrint, pdfFileName);
+    //}
 /*
     public static void main(String[] args)
     {
