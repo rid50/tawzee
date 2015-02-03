@@ -2378,7 +2378,6 @@ function loadStampedSignatures() {
 		});
 }
 
-
 function setUserSignatureAsDroppable(ui, cloneId) {
 	ui.droppable({ accept: '#' + cloneId,
 		over: function (event, ui) {
