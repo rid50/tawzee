@@ -287,7 +287,7 @@ class DatabaseRepository {
 		$dbh = $this->connect();
 		try {
 			//$st = "SELECT id FROM Application WHERE ApplicationNumber = '2/12345'";
-			$st = "SELECT ApplicationNumber FROM Application ORDER BY ApplicationDate desc";
+			$st = "SELECT ApplicationNumber AS \"ApplicationNumber\" FROM Application ORDER BY ApplicationDate desc";
 			$ds = $dbh->query($st);
 		} catch (PDOException $e) {
 			//throw new Exception($st);
@@ -1151,6 +1151,8 @@ class DatabaseRepository {
 
 		try {
 			$st = "SELECT ID, Width, Height, Resolution FROM SignatureList WHERE EmployeeId='{$param['currentuser']}'";
+			$this->rebuildDMLSelect($st);
+			
 			//$st = "SELECT ID, Image, Width, Height, Resolution FROM SignatureList WHERE EmployeeId='{$param['currentuser']}'";
 			$ds = $dbh->query($st);
 		} catch (PDOException $e) {
@@ -1185,7 +1187,7 @@ class DatabaseRepository {
 		
 		try {
 			$st = " SELECT SignatureID, EmployeeName, $dt AS \"Date\", TopPos, LeftPos, Width, Height, Resolution FROM {$tableName} INNER JOIN SignatureList ON SignatureID = ID WHERE 
-					{$this->hyphensToCamel($param['data-key-field'])}  =  '{$param['data-key-field-val']}' ";
+					{$this->hyphensToCamel($param['data-key-field'])} = '{$param['data-key-field-val']}' ";
 			
 			$this->rebuildDMLSelect($st);
 
@@ -1253,29 +1255,30 @@ class DatabaseRepository {
 				$ar["Date_"] = date('d-M-y');
 			}
 
+			if ($param['schema'] == 'main-form')
+				$tableName = "ApplicationSignature";
+			else
+				$tableName = "ApplicationLoadSignature";
+			
 			//error_log(print_r($columnsToUpdate, true));
 			//throw new Exception(print_r($ar, true));
 			
-			if ($param['schema'] == 'main-form') {
+			//if ($param['schema'] == 'main-form') {
 				if ($this->driver != 'oci')
-					$st = "INSERT INTO ApplicationSignature (" . $fields . ")" . "VALUES (" . $values . ") ON DUPLICATE KEY UPDATE " . $columnsToUpdate;
+					$st = "INSERT INTO {$tableName} (" . $fields . ")" . "VALUES (" . $values . ") ON DUPLICATE KEY UPDATE " . $columnsToUpdate;
 					//INSERT INTO ApplicationSignature (SignatureId,EmployeeName,TopPos,LeftPos,ApplicationNumber,Date)VALUES (:SignatureId,:EmployeeName,:TopPos,:LeftPos,:ApplicationNumber,:Date) ON DUPLICATE KEY UPDATE SignatureId = '6',EmployeeName = 'Roman Davidenko',TopPos = '712.066650390625',LeftPos = '227',ApplicationNumber = '2/12345', Date = '2015-02-02'				
 				else
-					$st = "MERGE INTO ApplicationSignature USING dual ON ( {$this->hyphensToCamel($param['data-key-field'])} = '{$param[$param['data-key-field']]}' AND "SignatureId" = 6 ) " .
+					$st = "MERGE INTO {$tableName} USING dual ON ({$this->hyphensToCamel($param['data-key-field'])} = '{$param['data-key-field-val']}' AND SignatureId = '{$ar['SignatureId']}') " .
 						" WHEN MATCHED THEN UPDATE SET " . $columnsToUpdate .
 						" WHEN NOT MATCHED THEN INSERT (" . $fields . ")" . "VALUES (" . $values . ")";
-					//MERGE INTO ApplicationSignature USING dual ON ( ApplicationNumber = '2/12345' ) WHEN MATCHED THEN UPDATE SET EmployeeName = 'Roman Davidenko',TopPos = '712.066650390625',LeftPos = '244', Date_ = '02-Feb-15' WHEN NOT MATCHED THEN INSERT (SignatureId,EmployeeName,TopPos,LeftPos,ApplicationNumber,Date_)VALUES (:SignatureId,:EmployeeName,:TopPos,:LeftPos,:ApplicationNumber,:Date_)
-			} else if ($param['schema'] == 'load-form')
-				$st = "INSERT INTO ApplicationLoadSignature (" . $fields . ")" . "VALUES (" . $values . ") ON DUPLICATE KEY UPDATE " . $columnsToUpdate;
-			else
-				throw new Exception('Wrong form: ' . $param['schema']);;
+						//MERGE INTO ApplicationSignature USING dual ON (ApplicationNumber = '2/12345' AND SignatureId = '6') WHEN MATCHED THEN UPDATE SET EmployeeName = 'Roman Davidenko',TopPos = '40.06666564941406',LeftPos = '219', Date_ = '03-Feb-15' WHEN NOT MATCHED THEN INSERT (SignatureId,EmployeeName,TopPos,LeftPos,ApplicationNumber,Date_)VALUES (:SignatureId,:EmployeeName,:TopPos,:LeftPos,:ApplicationNumber,:Date_)
+						//MERGE INTO ApplicationSignature using dual on (ApplicationNumber = '2/12345' AND SignatureId = '6') WHEN MATCHED THEN UPDATE SET EmployeeName = 'Roman Davidenko',TopPos = '105.06666564941406',LeftPos = '77', Date_ = '03-Feb-15' WHEN NOT MATCHED THEN INSERT (SignatureId,EmployeeName,TopPos,LeftPos,ApplicationNumber,Date_)VALUES ('6','Roman Davidenko','86.06666564941406','66','2/12345','03-Feb-15')
+			//} else if ($param['schema'] == 'load-form')
+			//	$st = "INSERT INTO ApplicationLoadSignature (" . $fields . ")" . "VALUES (" . $values . ") ON DUPLICATE KEY UPDATE " . $columnsToUpdate;
+			//else
+			//	throw new Exception('Wrong form: ' . $param['schema']);;
 				
 			//throw new Exception($st);
-			//throw new Exception($this->hyphensToCamel($param['data-key-field']));
-
-				
-				
-				
 				
 			$ds = $dbh->prepare($st);
 			$ds->execute($ar);
