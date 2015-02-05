@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 
 //import com.rid50.reports.util.JrUtils;
 
+import net.sf.jasperreports.charts.type.ScaleTypeEnum;
 import net.sf.jasperreports.engine.JRBand;
 import net.sf.jasperreports.engine.JRChild;
 import net.sf.jasperreports.engine.JRComponentElement;
@@ -43,7 +44,7 @@ import net.sf.jasperreports.engine.type.StretchTypeEnum;
 public class JDesignerExtension {
 	public static final int JAPER_REPORTS_DPI = 72;
 
-	//private static final Logger LOG = Logger.getLogger(JDesignerExtension.class);
+	private static final Logger LOG = Logger.getLogger(JDesignerExtension.class);
 	
     private Connection _connection = null;
     
@@ -78,13 +79,15 @@ public class JDesignerExtension {
 		if (((String)parameters.get("ReportName")).equals("TawzeeApplicationForm")) {
 			tableName = "ApplicationSignature";
 			keyFieldName = "ApplicationNumber";
-			imageYPosOffset = 20;
+			//imageYPosOffset = 20;
 		} else {
 			tableName = "ApplicationLoadSignature";
 			keyFieldName = "FileNumber";
-			imageYPosOffset = 30;
+			//imageYPosOffset = 30;
 		}
 		
+		imageYPosOffset = 20;
+
 		String parameterName = "";
 		//int reportHeight = 0;
 		JRBand[] allBands;
@@ -163,7 +166,7 @@ public class JDesignerExtension {
 
 				
 				//image.setPositionType(PositionTypeEnum.FIX_RELATIVE_TO_TOP);
-				image.setX(Math.round(leftPos) - design.getLeftMargin());
+				image.setX(Math.round(leftPos) - design.getLeftMargin() + 2);
 				int imagePosY = Math.round(topPos) - design.getTopMargin();
 				//int imagePosY = Math.round(topPos);
 				int imageHeight = height * JAPER_REPORTS_DPI / resolution;
@@ -190,7 +193,7 @@ public class JDesignerExtension {
 				//LOG.info("ScaleImageValue: " + image.getScaleImageValue());	// default RETAIN_SHAPE
 				//LOG.info("StretchTypeValue: " + image.getStretchTypeValue());	// default NO_STRETCH
 
-				
+				int diffRunTimeDesignDetailBandHeight = 0;
 				int bandPosY = 0; //boolean done = false;
 				int tableRowHeight = 0;
 				JRExpression exp;
@@ -207,12 +210,34 @@ public class JDesignerExtension {
 						continue;
 					}
 
+					//LOG.info("");
+					//LOG.info("bandPosY: " + bandPosY + " --- " + "ban.getHeight(): " + ban.getHeight());
+					
 					JRPropertiesMap prm = ban.getPropertiesMap();
 					if (prm != null &&
 						prm.getProperty("section_name") != null &&
 						prm.getProperty("section_name").equalsIgnoreCase("detail")) {
 						//LOG.info("SectionName: detail");
 						tableRowHeight = imageYPosOffset;
+						
+						JRDesignBand pageColumnFooter = (JRDesignBand)design.getColumnFooter();
+						JRDesignBand pageFooterBand = (JRDesignBand)design.getPageFooter();
+						//pageHeaderHeight = pageHeaderBand.getHeight();
+						diffRunTimeDesignDetailBandHeight = design.getPageHeight() - 
+									design.getTopMargin() - 
+									design.getBottomMargin() -
+									pageColumnFooter.getHeight() -
+									pageFooterBand.getHeight() -
+									bandPosY - ban.getHeight();
+						
+						//LOG.info("runTimeDetailBandHeight: " +  diffRunTimeDesignDetailBandHeight);
+						/*
+						LOG.info("design.getPageHeight(): " + design.getPageHeight());
+						LOG.info("design.getTopMargin(): " + design.getTopMargin());
+						LOG.info("design.getBottomMargin(): " + design.getBottomMargin());
+						LOG.info("pageHeaderBand.getHeight(): " + pageFooterBand.getHeight());
+						//LOG.info("banHeight: " + banHeight);
+						*/
 						//JRElementGroup gr = ban.getElementGroup();
 						//JRElement[] els = ban.getElements();
 					    //java.util.List<JRChild> list = ban.getChildren();
@@ -251,6 +276,7 @@ public class JDesignerExtension {
 					//if (imagePosY + imageHeight <= ban.getHeight()) {
 
 					if (imagePosY - bandPosY + imageHeight <= ban.getHeight()) {
+					//if (imagePosY - bandPosY + imageHeight <= banHeight) {
 					//if (imagePosY - bandPosY + imageHeight <= ban.getHeight()) {
 						//JRPropertiesHolder prh = ban.getParentProperties();
 						//JRElement el = ban.getElementByKey("jr:columnHeader");
@@ -261,8 +287,21 @@ public class JDesignerExtension {
 						//if (bandPosY > imagePosY) {
 						//imagePosY = imagePosY - bandPosY - (tableRowHeight * 2);
 						//image.setY(imagePosY);
-						image.setY(imagePosY - bandPosY - (tableRowHeight * 2));
-
+						//image.setY(imagePosY - bandPosY - (tableRowHeight * 2) + 4);
+						if (numOfBands > 1)
+							image.setY(imagePosY - bandPosY);
+						else
+							image.setY(imagePosY - bandPosY - diffRunTimeDesignDetailBandHeight);
+						/*
+						LOG.info("===================");
+						LOG.info("imagePosY: " + imagePosY);
+						LOG.info("imageHeight: " + imageHeight);
+						LOG.info("bandPosY: " + bandPosY);
+						LOG.info("tableRowHeight: " + tableRowHeight);
+						LOG.info("banHeight: " + ban.getHeight());
+						LOG.info("imagePosY - bandPosY + imageHeight: " + (imagePosY - bandPosY + imageHeight));
+						//LOG.info("imagePosY - bandPosY - (tableRowHeight * 2) + 4: " + (imagePosY - bandPosY - (tableRowHeight * 2) + 4));
+						*/
 						//LOG.info("BandPosY: " + bandPosY + " , ImagePosY: " + imagePosY + " , Height: " + ban.getHeight());
 
 						//image.setY(imagePosY);
@@ -287,11 +326,36 @@ public class JDesignerExtension {
 							
 							//if (imageBottom - bgrBand.getHeight() > 0) {
 							if (imageBottom - (bandPosY + ban.getHeight()) > 0) {
-								int delta = imageBottom - (bandPosY + ban.getHeight());
-								//image.setY(imagePosY - bandPosY - (tableRowHeight * 2) - delta);
-								image.setY(imagePosY - bandPosY - delta);
-								//LOG.info("Delta: " + delta + " , getY(): " + image.getY());
+								int delta = imageBottom - diffRunTimeDesignDetailBandHeight - (bandPosY + ban.getHeight());
+								if (delta > 0) {
+									imageHeight = (height - (height * delta / imageHeight)) * JAPER_REPORTS_DPI / resolution;
+									image.setHeight(imageHeight);
 
+									//image.setScaleImage(ScaleImageEnum.CLIP);
+								}
+								
+								
+								//image.setY(imagePosY - bandPosY - (tableRowHeight * 2) - delta);
+								//image.setY(imagePosY - bandPosY - delta - runTimeDetailBandHeight);
+								image.setY(imagePosY - bandPosY -  diffRunTimeDesignDetailBandHeight);
+								/*
+								LOG.info("****************************");
+								
+								//LOG.info("Delta: " + delta + " , getY(): " + image.getY());
+								LOG.info("diffRunTimeDesignDetailBandHeight: " + diffRunTimeDesignDetailBandHeight);
+								
+								LOG.info("imagePosY: " + imagePosY);
+								//LOG.info("imageHeight: " + imageHeight);
+								LOG.info("imageBottom: " + imageBottom);
+								LOG.info("bandPosY: " + bandPosY);
+								LOG.info("ban.getHeight(): " + ban.getHeight());
+								*/
+								LOG.info("height: " + height);
+								LOG.info("imageHeight: " + imageHeight);
+								LOG.info("delta: " + delta);
+								//LOG.info("imagePosY - bandPosY - delta: " + (imagePosY - bandPosY - delta));
+								
+								
 								list.add(image);
 								
 								//image.setY(imagePosY - (imageBottom - bgrBand.getHeight()));
@@ -303,6 +367,9 @@ public class JDesignerExtension {
 								//break;
 							}
 						}
+
+						//bandPosY += banHeight;
+						bandPosY += ban.getHeight();
 						//else {
 							//if (imagePosY == 745)
 							//	imagePosY -= 50;
@@ -310,9 +377,6 @@ public class JDesignerExtension {
 						//	image.setY(imagePosY);
 						//}
 					}
-					
-					bandPosY += ban.getHeight();
-					
 				}
 				
 				
