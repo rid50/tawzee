@@ -36,15 +36,17 @@ import net.sf.jasperreports.engine.design.JRDesignImage;
 import net.sf.jasperreports.engine.design.JRDesignParameter;
 import net.sf.jasperreports.engine.design.JRDesignStyle;
 import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.type.HorizontalAlignEnum;
 import net.sf.jasperreports.engine.type.ModeEnum;
 import net.sf.jasperreports.engine.type.PositionTypeEnum;
 import net.sf.jasperreports.engine.type.ScaleImageEnum;
 import net.sf.jasperreports.engine.type.StretchTypeEnum;
+import net.sf.jasperreports.engine.type.VerticalAlignEnum;
 
 public class JDesignerExtension {
 	public static final int JAPER_REPORTS_DPI = 72;
 
-	private static final Logger LOG = Logger.getLogger(JDesignerExtension.class);
+	//private static final Logger LOG = Logger.getLogger(JDesignerExtension.class);
 	
     private Connection _connection = null;
     
@@ -151,7 +153,8 @@ public class JDesignerExtension {
 
 				design.addParameter(parameter);
 
-				//parameters.put(parameterName, com.rid50.reports.util.JrUtils.getSignature(Integer.toString(signatureID), request));
+				////parameters.put(parameterName, com.rid50.reports.util.JrUtils.getSignature(Integer.toString(signatureID), request));
+
 				parameters.put(parameterName, com.rid50.reports.util.JrUtils.getSignature(Integer.toString(signatureID), reqUrl));
 				
 				//scale = false;
@@ -163,7 +166,6 @@ public class JDesignerExtension {
 				expression = new JRDesignExpression();
 				expression.setText("$P{s" + Integer.toString(signatureID) + "}");
 				image.setExpression(expression);
-
 				
 				//image.setPositionType(PositionTypeEnum.FIX_RELATIVE_TO_TOP);
 				image.setX(Math.round(leftPos) - design.getLeftMargin() + 2);
@@ -315,6 +317,8 @@ public class JDesignerExtension {
 						//done = true;
 						//LOG.info("RealImagePosY: " + image.getY() + " , BandPosY: " + bandPosY + " , ImagePosY: " + imagePosY + " , Height: " + ban.getHeight());
 						//LOG.info("yes");
+						//parameters.put(parameterName, com.rid50.reports.util.JrUtils.getSignature(Integer.toString(signatureID), reqUrl));
+						
 						break;
 					} else {
 						//LOG.info("numOfBands: " + numOfBands);
@@ -328,16 +332,29 @@ public class JDesignerExtension {
 							if (imageBottom - (bandPosY + ban.getHeight()) > 0) {
 								int delta = imageBottom - diffRunTimeDesignDetailBandHeight - (bandPosY + ban.getHeight());
 								if (delta > 0) {
+									parameters.put(parameterName, com.rid50.reports.util.JrUtils.getSignature(Integer.toString(signatureID), true, resolution, reqUrl));
+									
+									//imagePosY -= delta;
+//									ban.(ban.getHeight() + delta + 10);
+									
 									imageHeight = (height - (height * delta / imageHeight)) * JAPER_REPORTS_DPI / resolution;
+									//image.setX(0);
+									//image.setY(-500);
+									//image.setWidth(width);
+									//image.setHeight(height);
 									image.setHeight(imageHeight);
-
-									//image.setScaleImage(ScaleImageEnum.CLIP);
+									//image.setLazy(false);
+									//image.setHorizontalAlignment(HorizontalAlignEnum.CENTER);
+									//image.setVerticalAlignment(VerticalAlignEnum.TOP);
+									image.setScaleImage(ScaleImageEnum.CLIP);
+									
 								}
 								
 								
 								//image.setY(imagePosY - bandPosY - (tableRowHeight * 2) - delta);
-								//image.setY(imagePosY - bandPosY - delta - runTimeDetailBandHeight);
-								image.setY(imagePosY - bandPosY -  diffRunTimeDesignDetailBandHeight);
+								
+								image.setY(imagePosY - bandPosY - diffRunTimeDesignDetailBandHeight);
+								
 								/*
 								LOG.info("****************************");
 								
@@ -350,11 +367,14 @@ public class JDesignerExtension {
 								LOG.info("bandPosY: " + bandPosY);
 								LOG.info("ban.getHeight(): " + ban.getHeight());
 								*/
+								/*
 								LOG.info("height: " + height);
 								LOG.info("imageHeight: " + imageHeight);
 								LOG.info("delta: " + delta);
+								LOG.info("design.getPageHeight(): " + design.getPageHeight());
+								LOG.info("image.getScaleImageValue(): " + image.getScaleImageValue());
 								//LOG.info("imagePosY - bandPosY - delta: " + (imagePosY - bandPosY - delta));
-								
+								*/
 								
 								list.add(image);
 								
