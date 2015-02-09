@@ -624,11 +624,13 @@ class DatabaseRepository {
 			//throw new Exception($param['schema']);
 			$inserNewOrUpdateKey = false;
 			if ($param['schema'] == 'main-form') {
-				$inserNewOrUpdateKey = $param["application-number"] != $param["application-number-old-value"];
+				$inserNewOrUpdateKey = $param["application-number-old-value"] == null || $param["application-number"] != $param["application-number-old-value"];
 				if ($inserNewOrUpdateKey) {		// insert new / update key
 					$que = $dbh->query("SELECT COUNT(*) FROM Application WHERE ApplicationNumber = '{$param['application-number']}'");
+			
+			//throw new Exception("kuku");
 
-					if ($param["application-number-old-value"] == "")		// insert record
+					if ($param["application-number-old-value"] == null)		// insert record
 						$param['application-number'] = "somevalue";		// will be updated soon
 				}
 			} else if ($param['schema'] == 'load-form') {
@@ -673,9 +675,16 @@ class DatabaseRepository {
 				$areaId = $param['area-id'];
 				$areaName = $param['area'];
 				if ($areaId == NULL && $areaName != NULL) {
-					$stArea = $dbh->prepare("INSERT INTO Area(ID, AreaName) VALUES(NULL, '$areaName');");
+					//$stArea = $dbh->prepare("INSERT INTO Area(ID, AreaName) VALUES(NULL, '{$areaName}');");
+					$stArea = $dbh->prepare("INSERT INTO Area(AreaName) VALUES('$areaName')");
 					$stArea->execute();
-					$areaId = $dbh->lastInsertId();
+
+					if ($this->driver == 'oci') {
+						$que = $dbh->query("SELECT Area_ID_SEQ.CURRVAL AS lastInsertID FROM DUAL");
+						$areaId = $que->fetchColumn(0);
+					} else
+						$areaId = $dbh->lastInsertId();
+						
 					$param['area-id'] = $areaId;
 					//$this->result = array();
 					//$this->result[] = array('areaId' => $areaId);
@@ -708,9 +717,15 @@ class DatabaseRepository {
 				if ($key == 'schema' || $key == 'table' || $key == 'area' || $key == 'application-number-old-value' || $key == 'file-number-old-value')
 					continue;
 
+				//if ($this->driver == 'oci' && $key == 'application-number' && $val == null)
+				//	continue;
+					
 				if ($key == 'application-date' || $key == 'load-date') {
 					if ($param[$key] != '')
-						$val = DateTime::createFromFormat('d/m/Y', $param[$key])->format('Y-m-d');
+						if ($this->driver == 'oci')
+							$val = DateTime::createFromFormat('d/m/Y', $param[$key])->format('d-M-y');
+						else
+							$val = DateTime::createFromFormat('d/m/Y', $param[$key])->format('Y-m-d');
 					else
 						$val = null;
 				}
@@ -718,10 +733,19 @@ class DatabaseRepository {
 				//if ($param[$key] != '') {
 					//$key = str_replace('-', '', $key);
 					$key = $this->hyphensToCamel($key);
+
 					$columnsToUpdate .= ($columnsToUpdate == "" ? '' : ',') . $key . " = '{$val}'";
 					$fields .= ($fields == "" ? '' : ',') . $key;
 					$values .= ($values == "" ? ':' : ',:') . $key;
 					$ar[$key] = $val;
+					
+					
+//INSERT INTO table (id, data) VALUES(uid_seq.NEXTVAL, 255); followed by SELECT uid_seq.CURRVAL AS lastInsertID FROM DUAL; would also be perfectly valid.... but LASTVAL doesn't exist –  Mark Baker Feb 17 					
+					
+					//$columnsToUpdate .= ($columnsToUpdate == "" ? '' : ',') . $key . " = '{$val}'";
+					//$fields .= ($fields == "" ? '' : ',') . $key;
+					//$values .= ($values == "" ? ':' : ',:') . $key;
+					//$ar[$key] = $val;
 				//}
 
 				//if ($key == 'applicationdate')
@@ -731,16 +755,51 @@ class DatabaseRepository {
 			if ($param['schema'] == 'main-form') {
 				//if ($op == 'insert') {
 				if ($param["application-number-old-value"] == "") {		// insert new
+					//if ($this->driver == 'oci') {
+					//	$fields .= ($fields == "" ? '' : ',') . 'ID';
+					//	$values .= ($values == "" ? '' : ',') . 'APPLICATION_ID_SEQ.NEXTVAL';
+					//	$fields .= ($fields == "" ? '' : ',') . 'APPLICATIONNUMBER';
+					//	$values .= ($values == "" ? '' : ',') . 'APPLICATION_ID_SEQ.NEXTVAL';
+					//}
+					
 					$st = "INSERT INTO Application (" . $fields . ")" . "VALUES (" . $values . ")";
+					//throw new Exception($st);
+
 					$ds = $dbh->prepare($st);
 					$ds->execute($ar);
-					$lastInsertId = $dbh->lastInsertId();
-					$st = "UPDATE Application SET ApplicationNumber = LAST_INSERT_ID() WHERE id = LAST_INSERT_ID()";
+
+					if ($this->driver == 'oci' && $param['schema'] == 'main-form') {
+						$que = $dbh->query("SELECT APPLICATION_ID_SEQ.CURRVAL AS lastInsertID FROM DUAL");
+						$lastInsertId = $que->fetchColumn(0);
+						$st = "UPDATE Application SET ApplicationNumber = '{$lastInsertId}' WHERE id = '{$lastInsertId}'";
+					} else if ($this->driver == 'oci' && $param['schema'] == 'load-form') {
+						$que = $dbh->query("SELECT APPLICATIONLOAD_ID_SEQ.CURRVAL AS lastInsertID FROM DUAL");
+						$lastInsertId = $que->fetchColumn(0);
+						$st = "UPDATE Application SET ApplicationNumber = '{$lastInsertId}' WHERE id = '{$lastInsertId}'";
+					} else {
+						$lastInsertId = $dbh->lastInsertId();
+						$st = "UPDATE Application SET ApplicationNumber = LAST_INSERT_ID() WHERE id = LAST_INSERT_ID()";
+					}
+
+					$ds = $dbh->prepare($st);
+					$ds->execute();
+					
+					//throw new Exception($st);
+
+					//$lastInsertId = $dbh->lastInsertId();
+
+					//$st = "UPDATE Application SET ApplicationNumber = LAST_INSERT_ID() WHERE id = LAST_INSERT_ID()";
 					//$ds = $dbh->prepare($st);
 					//$ds->execute();
 					$this->result->applicationNumber = $lastInsertId;
 					$this->result->applicationDate = DateTime::createFromFormat('d/m/Y', $param['application-date'])->format('Y-m-d');
 
+					//if ($this->driver == 'oci')
+					//	$this->result->applicationDate = DateTime::createFromFormat('d-M-y', $param['application-date'])->format('Y-m-d');
+					//else
+					//	$this->result->applicationDate = DateTime::createFromFormat('d/m/Y', $param['application-date'])->format('Y-m-d');
+					
+					
 					//$this->result = array('applicationNumber' => $lastInsertId);
 
 				} else {
@@ -751,17 +810,31 @@ class DatabaseRepository {
 						
 					$ds = $dbh->prepare($st);
 					$ds->execute();
+			//throw new Exception($st);
 
 					//$st = "INSERT INTO Application (" . $fields . ")" . "VALUES (" . $values . ") ON DUPLICATE KEY UPDATE " . $columnsToUpdate;
 					if ($inserNewOrUpdateKey)		// update key
 						$st = "UPDATE Application SET " . $columnsToUpdate . " WHERE ApplicationNumber = '{$param['application-number-old-value']}'";
 					else
 						$st = "UPDATE Application SET " . $columnsToUpdate . " WHERE ApplicationNumber = '{$param['application-number']}'";
+
+					$ds = $dbh->prepare($st);
+					$ds->execute();
 				}
 			} else if ($param['schema'] == 'load-form') {
 				if ($param["file-number-old-value"] == "") {		// insert new
 					//$st = "INSERT INTO ApplicationLoad (" . $fields . ")" . "VALUES (" . $values . ") ON DUPLICATE KEY UPDATE " . $columnsToUpdate;
+					if ($this->driver == 'oci') {
+						$fields .= ($fields == "" ? '' : ',') . 'ID';
+						$values .= ($values == "" ? '' : ',') . 'APPLICATIONLOAD_ID_SEQ.NEXTVAL';
+						$fields .= ($fields == "" ? '' : ',') . 'APPLICATIONNUMBER';
+						$values .= ($values == "" ? '' : ',') . 'APPLICATIONLOAD_ID_SEQ.NEXTVAL';
+					} 
+					
 					$st = "INSERT INTO ApplicationLoad (" . $fields . ")" . "VALUES (" . $values . ")";
+					
+					$ds = $dbh->prepare($st);
+					$ds->execute($ar);
 				} else {
 					if ($inserNewOrUpdateKey)		// update key
 						$st = "DELETE FROM ApplicationLoadDetail WHERE FileNumber = '{$param['file-number-old-value']}'";
@@ -775,14 +848,21 @@ class DatabaseRepository {
 						$st = "UPDATE ApplicationLoad SET " . $columnsToUpdate . " WHERE FileNumber = '{$param['file-number-old-value']}'";
 					else
 						$st = "UPDATE ApplicationLoad SET " . $columnsToUpdate . " WHERE FileNumber = '{$param['file-number']}'";
+
+					$ds = $dbh->prepare($st);
+					$ds->execute();
 				}
 			} else
 				throw new Exception('Wrong form: ' . $param['schema']);;
 				
 			//throw new Exception($st);
-			
-			$ds = $dbh->prepare($st);
-			$ds->execute($ar);
+/*			
+			if ($st != "") {
+				$ds = $dbh->prepare($st);
+				//$ds->execute();
+				$ds->execute($ar);
+			}
+*/			
 /*		
 			if ($param['schema'] == 'main-form')
 				$st = "DELETE FROM ApplicationDetail WHERE ApplicationNumber = '{$param['application-number']}'";
@@ -793,6 +873,8 @@ class DatabaseRepository {
 			$ds = $dbh->prepare($st);
 			$ds->execute($ar);
 */			
+
+			//throw new Exception(count($param['table']));
 			for ($i = 0; $i < count($param['table']); $i++) {
 				//$columnsToUpdate = "";
 				//$ar2 = array();
@@ -830,6 +912,8 @@ class DatabaseRepository {
 					$st = "INSERT INTO ApplicationLoadDetail (" . $fields . ")" . "VALUES (" . $values . ")";
 					//throw new Exception(print_r($ar));
 
+				//throw new Exception($st);
+					
 				$ds = $dbh->prepare($st);
 				$ds->execute($ar);
 
@@ -837,6 +921,7 @@ class DatabaseRepository {
 				//throw new Exception($st);
 
 			}
+						
 			$dbh->commit();
 		} catch (PDOException $e) {
 			$dbh->rollBack();

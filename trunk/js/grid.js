@@ -326,8 +326,9 @@ function gridReload(searchOrReset, applicationNumber) {
 
 function addRowToGrid(param) {
 	var rowid = 1;
-	if ($grid.getDataIDs().length > 0) {
-		rowid = parseInt($grid.getDataIDs().length) + 1;
+	var len = $grid.getDataIDs().length;
+	if (len > 0) {
+		rowid = parseInt(len) + 1;
 	}
 
     var colNames = $grid.jqGrid("getGridParam", "colModel");
@@ -336,7 +337,7 @@ function addRowToGrid(param) {
 		rowData[value.name] = param[myHelper.camelToHyphens(value.name)];
 	})
 	
-	$grid.jqGrid("delRowData", rowid);
+	$grid.jqGrid("delRowData", len);
 	$grid.jqGrid("addRowData", rowid, rowData, "first");
 	$grid.jqGrid('setSelection', rowid);
 }
