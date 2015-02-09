@@ -426,11 +426,22 @@ $(document).ready(function () {
 							//$('#main-form').children().val("");
 						} else {
 							//$('#residence-total-area, #construction-area, #conditioning-area').val("");
+							
+							var len = $('.tr-application-detail').length;
+							$($('.tr-application-detail')[0]).find('td>input').val("");
+							for (var i = 1; i < len; i++) {
+								$($('.tr-application-detail')[1]).remove();
+							}
+							
+							/*
 							$('.tr-application-detail').each(function(index, tr) {
-								if (index > 0)
+								if ($('.tr-application-detail').length > 1) {
 									$(tr).remove();
+								} else {
+									$(tr).find('td>input').val("");
+								}
 							})
-
+							*/
 							var diff = result.length - 1 - $('.tr-application-detail').length;
 							if (diff > 0) {
 								var lastRow, i;
@@ -486,10 +497,15 @@ $(document).ready(function () {
 						}
 					} else if ("load-form" == _currentForm) {
 						//currForm.find("input[type='text']").not("#owner-name2, #project-name2, #area2, #block2, #plot2, #construction-exp-date2, #feed-points2").val("");
-						$('.tr-load-detail').each(function(index, tr) {
-							if (index > 0)
-								$(tr).remove();
-						})
+						//$('.tr-load-detail').each(function(index, tr) {
+						//	if (index > 0)
+						//		$(tr).remove();
+						//})
+						var len = $('.tr-load-detail').length;
+						$($('.tr-load-detail')[0]).find('td>input').val("");
+						for (var i = 1; i < len; i++) {
+							$($('.tr-load-detail')[1]).remove();
+						}
 
 						var diff = result.length - 1 - $('.tr-load-detail').length;
 						if (diff > 0) {
@@ -2433,6 +2449,11 @@ function saveSignature(id, top, left) {
 function setRadioButton(groupName, value) {
 	if (value != null && value != -1 && $('input:radio[name=' + groupName + ']').length > value)
 		$('input:radio[name=' + groupName + ']')[value].checked = true;
+	else {
+		$('input:radio[name=' + groupName + ']').each(function(i, rb) {
+			rb.checked = false;
+		})
+	}
 }
 
 function setCheckBox(groupName, value, bitmask) {
@@ -2444,6 +2465,10 @@ function setCheckBox(groupName, value, bitmask) {
 			bitmask >>= 1;
 		});
 		//$('input:checkbox[name=' + groupName + ']')[value].checked = true;
+	} else {
+		$('input:checkbox[name=' + groupName + ']').each(function(i, chb) {
+			chb.checked = false;
+		})
 	}
 }
 
@@ -4181,9 +4206,10 @@ function deleteForm() {
 						alert(data[0].error);
 				}
 			} else {
-				if ("main-form" == _currentForm)
+				if ("main-form" == _currentForm) {
 					$grid.jqGrid("delRowData", _rowId);
-					
+					gridReload('reset');
+				}
 				clearForm();
 				
 			}
