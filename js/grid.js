@@ -125,9 +125,19 @@ Grid = {
 					if (window.console) window.console.log(event[0].error);
 					alert (event[0].error);
 				} else {
-					if (_rowId && _page == $grid.jqGrid("getGridParam", "page")) {
-						$grid.jqGrid('setSelection', _rowId);
-					}
+					//debugger;
+					var rowId = getRowIdByApplicationNumber($('#app-number-search').val() || $('#application-number').val());
+					if (rowId != -1)
+						$grid.jqGrid('setSelection', rowId);
+					//else
+					//	$grid.jqGrid('resetSelection');
+
+					//if (_rowId && _page == $grid.jqGrid("getGridParam", "page")) {
+					//	$grid.jqGrid('setSelection', _rowId);
+					//}
+					
+					
+					
 					//this.p.lastSelected = lastSelected; // set this.p.lastSelected
 					//scrollTo(5);
 
@@ -322,6 +332,25 @@ function gridReload(searchOrReset, applicationNumber) {
 				$grid.jqGrid('setSelection', _rowId);
 		}
 	}
+}
+
+function getRowIdByApplicationNumber(appNum) {
+	var retCode = -1;
+	if (appNum == "")
+		return retCode;
+		
+	var rows = $grid.getDataIDs();
+
+	$.each(rows, function(index, row) {
+	//debugger;
+		var data = $grid.jqGrid('getRowData', row);
+		if (data.ApplicationNumber == appNum) {
+			retCode = row;
+			return false;
+		}
+	})
+	
+	return retCode;
 }
 
 function addRowToGrid(param) {
