@@ -827,8 +827,10 @@ document.getElementById('theForm').submit();
 			
 				//records = [];
 				//var o, result;
-				if (!data)
+				if (!data) {
+					//$("#grid").resetSelection();
 					return;
+				}
 					
 			$("#grid").setGridParam({page:data.page, selrow:data.rowNumber}).trigger('reloadGrid');
 			//$grid.jqGrid('setSelection', rowid);
