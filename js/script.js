@@ -27,6 +27,8 @@ var _runJettyEmbedded = "//tawzee/jetty/webapps/TawzeeJasperReports/WEB-INF/cgi-
 var _myCustomEvent;
 var _slider; 
 
+var _cgi = false;
+
 var actor_enum = {
 	manager: 0x1,
 	employee: 0x2
@@ -193,7 +195,8 @@ $(document).ready(function () {
 			searchInterval = data.searchInterval;
 			
 			if (data.jasperReportsServer == "cgi")
-				_jasperReportsURL = _jasperReportsURL_CGI;
+				_cgi = true;
+				//_jasperReportsURL = _jasperReportsURL_CGI;
 			
 			switch (data.jquery_theme) {
 				case "uilightness":
@@ -733,6 +736,7 @@ $(document).ready(function () {
 						$(win.document.head).append('<title>Ministry of Electricity and Water</title>');
 						$(win.document.head).append('<link rel="shortcut icon" type="image/vnd.microsoft.icon" href="favicon.ico" />');
 						var src = location.protocol + "//" + location.hostname + "/jetty_proxy.php?reportName=" + reportName + "&applicationNumber=" + _applicationNumber + "&keyFieldValue=" + keyFieldValue + "&renderAs=pdf";
+						src += (_cgi == true) ? "&cgi" : "";
 						//if (window.isIE)
 							$(win.document.body).append('<iframe width="100%" height="100%" src="' + src + '"></iframe>');
 						//else
@@ -1497,7 +1501,8 @@ function initAccordion() {
 					
 					printReport(function(reportName) {
 						$.blockUI();
-						$('<img src=\"jetty_proxy.php?reportName=' + reportName + '&applicationNumber=' + _applicationNumber + '&keyFieldValue=' + keyFieldValue + '&renderAs=png\" onload="$.unblockUI()" />').appendTo('#report-container');
+						var cgi = (_cgi == true) ? "&cgi" : "";
+						$('<img src=\"jetty_proxy.php?reportName=' + reportName + '&applicationNumber=' + _applicationNumber + '&keyFieldValue=' + keyFieldValue + cgi + '&renderAs=png\" onload="$.unblockUI()" />').appendTo('#report-container');
 						//$('<img src=\"' + _jasperReportsURL + '?reportName=' + reportName + '&applicationNumber=' + _applicationNumber + '&keyFieldValue=' + keyFieldValue + '&renderAs=png\" onload="$.unblockUI()" />').appendTo('#report-container');
 					});
 					
@@ -2509,7 +2514,8 @@ function CheckConnection(timeoutID, func) {
 	//try {
 	//var url = _jasperReportsURL + "?CheckConnection&r=" + Math.random();
 	var url = "jetty_proxy.php?CheckConnection&r=" + Math.random();
-	
+	url += (_cgi == true) ? "&cgi" : "";
+
 	xhr.open( "GET", url, true ); 	// true - the asynchronous operation 
 	//xhrTimeout = window.setTimeout(onTimeOutHandler, 5000);
 

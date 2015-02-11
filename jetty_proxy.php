@@ -3,8 +3,13 @@ require_once('session.php');
 
 //error_log((isset($_GET['applicationNumber']) ? 'true' : 'false') . PHP_EOL, 3, "errors.log");
 
-$url = "http://". $_SERVER['SERVER_NAME'] . ":8084/TawzeeJasperReports/JasperServlet";
+if (!isset($_GET['cgi']))
+	$url = "http://". $_SERVER['SERVER_NAME'] . ":8084/TawzeeJasperReports/JasperServlet";
+else
+	$url = "http://". $_SERVER['SERVER_NAME'] . "/cgi-bin/RunJasperReportsCGI.pl";
 
+	error_log($url . PHP_EOL, 3, "errors.log");		
+	
 if (!isset($_GET['CheckConnection'])) {
 	if ((isset($_GET['renderAs']) ? $_GET['renderAs'] : $_POST['renderAs']) == "png")
 		header("Content-Type: image/png");
