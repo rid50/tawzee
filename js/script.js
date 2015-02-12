@@ -2578,7 +2578,7 @@ function error(error) {
 			$('#error-box').remove();
 	} else {
 		if ($('#error-box').length == 0)
-			$('#left-section').append('<input type="text" id="error-box" tabindex="-1" />');
+			$('#left-section').prepend('<input type="text" id="error-box" tabindex="-1" />');
 		
 		$('#error-box').val(error);
 	}

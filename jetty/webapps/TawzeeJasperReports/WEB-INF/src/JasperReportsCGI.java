@@ -37,7 +37,8 @@ public class JasperReportsCGI {
 		String server_name = System.getProperty("cgi.server_name");
 		String query_string = System.getProperty("cgi.query_string");
 		if (query_string.equals("CheckConnection")) {
-			System.out.println("Content-Type: text/html\n\n");
+			//System.out.println("Content-Type: text/html\n\n");
+			System.out.println("Ok");
 			return;
 		}
 			
