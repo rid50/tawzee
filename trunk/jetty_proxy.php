@@ -1,5 +1,5 @@
 <?php
-require_once('session.php');
+//require_once('session.php');
 
 //error_log((isset($_GET['applicationNumber']) ? 'true' : 'false') . PHP_EOL, 3, "errors.log");
 
@@ -8,8 +8,6 @@ if (!isset($_GET['cgi']))
 else
 	$url = "http://". $_SERVER['SERVER_NAME'] . "/cgi-bin/RunJasperReportsCGI.pl";
 
-	error_log($url . PHP_EOL, 3, "errors.log");		
-	
 if (!isset($_GET['CheckConnection'])) {
 	if ((isset($_GET['renderAs']) ? $_GET['renderAs'] : $_POST['renderAs']) == "png")
 		header("Content-Type: image/png");
@@ -33,6 +31,9 @@ if (!isset($_GET['CheckConnection'])) {
 	$url .= "?CheckConnection";
 }
 
+	error_log($url . PHP_EOL, 3, "errors.log");		
+	
+
 //$header = "Content-Type: application/pdf";
 
 //	error_log($postdata . PHP_EOL, 3, "errors.log");		
@@ -53,6 +54,8 @@ try {
 	//error_log($url . PHP_EOL, 3, "errors.log");		
 	
 	$handle = fopen($url, "rb", false, $context);
+
+	error_log("handle: " . ($handle == null) . PHP_EOL, 3, "errors.log");		
 	
 	//$handle = fopen("http://tawsilat/get_image.php", "rb", false, $context);
 

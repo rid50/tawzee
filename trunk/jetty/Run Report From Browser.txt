@@ -5,3 +5,9 @@ http://tawzee:8084/TawzeeJasperReports/JasperServlet?reportName=TawzeeApplicatio
 
 http://tawzee.mew.gov.kw/cgi-bin/RunJasperReportsCGI.pl?reportName=TawzeeApplicationForm&applicationNumber=2/12345&keyFieldValue=2/12345&renderAs=png
 http://yaruss.org/cgi-bin/RunJasperReportsCGI.pl?reportName=TawzeeApplicationForm&applicationNumber=2/12345&keyFieldValue=2/12345&renderAs=png
+
+http://tawzee.mew.gov.kw/jetty_proxy.php?CheckConnection&r=0.36278979224152863&cgi
+http://yaruss.org/tawzee/jetty_proxy.php?CheckConnection&r=0.36278979224152863&cgi
+
+http://yaruss.org:8084/TawzeeJasperReports/JasperServlet?CheckConnection
+http://yaruss.org/cgi-bin/RunJasperReportsCGI.pl?CheckConnection

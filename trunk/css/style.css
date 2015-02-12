@@ -512,6 +512,7 @@ input[type='checkbox'] {
 	top: 0px;
 	bottom: 2px;
 	width: 600px;
+	height: 16px;
 	color: red;
 	background-color: transparent;
 	border-style: none;
