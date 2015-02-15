@@ -36,8 +36,8 @@ public class JasperReportsCGI {
 	public static void main( String args[] ) {
 		String server_name = System.getProperty("cgi.server_name");
 		String query_string = System.getProperty("cgi.query_string");
-		if (query_string.equals("CheckConnection")) {
-			//System.out.println("Content-Type: text/html\n\n");
+		if (query_string.startsWith("CheckConnection")) {
+			System.out.println("Content-Type: text/html\n\n");
 			System.out.println("Ok");
 			return;
 		}
@@ -124,6 +124,9 @@ public class JasperReportsCGI {
 	        //System.out.println("filePath: " + filePath + " :filePath");
 	        //if (true)
 	        //	return;
+
+			//if (true)
+			//	throw new Exception(server_name);
 
 			HashMap<String, Object> parameters = new HashMap<String, Object>();
 			parameters.put("ApplicationNumber", applicationNumber);
