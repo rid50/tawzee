@@ -96,7 +96,7 @@ public class JasperServlet extends HttpServlet {
 			parameters.put("ApplicationNumber", applicationNumber);
 
 			JasperDesign design = JRXmlLoader.load(filePath);
-
+			
 			if (renderAs.equals("pdf")) {
 				parameters.put("KeyFieldValue", keyFieldValue);
 				parameters.put("ReportName", rName);

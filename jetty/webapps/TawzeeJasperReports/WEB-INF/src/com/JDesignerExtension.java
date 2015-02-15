@@ -101,6 +101,8 @@ public class JDesignerExtension {
 //			LOG.info("Height: " + ban.getHeight() + " , ReportHeight" + reportHeight);
 //		}
 
+		//if (true)
+		//	throw new Exception(reqUrl);
 		
 //		LOG.info("Total Height: " + reportHeight);
 //		LOG.info("Page width: " + design.getPageWidth());

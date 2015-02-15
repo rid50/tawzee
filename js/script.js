@@ -20,7 +20,7 @@ var _currentForm;
 //var _formButtonSet;
 var _applicationNumber = "";
 var	_jasperReportsServerConnection = false;
-var _jasperReportsURL = "//" + location.hostname +  ":8084/TawzeeJasperReports/JasperServlet";
+//var _jasperReportsURL = "//" + location.hostname +  ":8084/TawzeeJasperReports/JasperServlet";
 var _jasperReportsURL_CGI = "//" + location.hostname +  "/cgi-bin/RunJasperReportsCGI.pl";
 var _runJettyEmbedded = "//tawzee/jetty/webapps/TawzeeJasperReports/WEB-INF/cgi-bin/RunJasperReportsCGI.bat";
 
@@ -736,10 +736,14 @@ $(document).ready(function () {
 						$(win.document.head).append('<title>Ministry of Electricity and Water</title>');
 						$(win.document.head).append('<link rel="shortcut icon" type="image/vnd.microsoft.icon" href="favicon.ico" />');
 						var src = location.protocol + "//" + location.hostname + "/jetty_proxy.php?reportName=" + reportName + "&applicationNumber=" + _applicationNumber + "&keyFieldValue=" + keyFieldValue + "&renderAs=pdf";
-						src += (_cgi == true) ? "&cgi" : "";
+						//src += (_cgi == true) ? "&cgi" : "";
 						//if (window.isIE)
+						if (!_cgi)
 							$(win.document.body).append('<iframe width="100%" height="100%" src="' + src + '"></iframe>');
-						//else
+						else
+							window.open(_jasperReportsURL_CGI + '?reportName=' + reportName + '&applicationNumber=' + _applicationNumber + '&keyFieldValue=' + keyFieldValue + '&renderAs=pdf', '_blank');
+						
+						
 						//	$(win.document.body).append('<embed width="100%" height="100%" name="plugin" src="' + src + '" type="application/pdf">');
 									
 // http://tawzee.mew.gov.kw/jetty_proxy.php?reportName=TawzeeApplicationForm&applicationNumber=2/12345&keyFieldValue=2/12345&renderAs=pdf
@@ -1501,9 +1505,12 @@ function initAccordion() {
 					
 					printReport(function(reportName) {
 						$.blockUI();
-						var cgi = (_cgi == true) ? "&cgi" : "";
-						$('<img src=\"jetty_proxy.php?reportName=' + reportName + '&applicationNumber=' + _applicationNumber + '&keyFieldValue=' + keyFieldValue + cgi + '&renderAs=png\" onload="$.unblockUI()" />').appendTo('#report-container');
-						//$('<img src=\"' + _jasperReportsURL + '?reportName=' + reportName + '&applicationNumber=' + _applicationNumber + '&keyFieldValue=' + keyFieldValue + '&renderAs=png\" onload="$.unblockUI()" />').appendTo('#report-container');
+						//var cgi = (_cgi == true) ? "&cgi" : "";
+						//$('<img src=\"jetty_proxy.php?reportName=' + reportName + '&applicationNumber=' + _applicationNumber + '&keyFieldValue=' + keyFieldValue + cgi + '&renderAs=png\" onload="$.unblockUI()" />').appendTo('#report-container');
+						if (!_cgi)
+							$('<img src=\"jetty_proxy.php?reportName=' + reportName + '&applicationNumber=' + _applicationNumber + '&keyFieldValue=' + keyFieldValue + '&renderAs=png\" onload="$.unblockUI()" />').appendTo('#report-container');
+						else
+							$('<img src=\"' + _jasperReportsURL_CGI + '?reportName=' + reportName + '&applicationNumber=' + _applicationNumber + '&keyFieldValue=' + keyFieldValue + '&renderAs=png\" onload="$.unblockUI()" />').appendTo('#report-container');
 					});
 					
 					
@@ -2513,8 +2520,12 @@ function CheckConnection(timeoutID, func) {
 	var xhr = new XMLHttpRequest();
 	//try {
 	//var url = _jasperReportsURL + "?CheckConnection&r=" + Math.random();
-	var url = "jetty_proxy.php?CheckConnection&r=" + Math.random();
-	url += (_cgi == true) ? "&cgi" : "";
+	var url;
+	if (!_cgi)
+		url = "jetty_proxy.php?CheckConnection&r=" + Math.random();
+	else
+		url = _jasperReportsURL_CGI + "?CheckConnection&r=" + Math.random();
+	//url += (_cgi == true) ? "&cgi" : "";
 
 	xhr.open( "GET", url, true ); 	// true - the asynchronous operation 
 	//xhrTimeout = window.setTimeout(onTimeOutHandler, 5000);
