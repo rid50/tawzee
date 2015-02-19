@@ -735,7 +735,8 @@ $(document).ready(function () {
 						var win = window.open();
 						$(win.document.head).append('<title>Ministry of Electricity and Water</title>');
 						$(win.document.head).append('<link rel="shortcut icon" type="image/vnd.microsoft.icon" href="favicon.ico" />');
-						var src = location.protocol + "//" + location.hostname + "/jetty_proxy.php?reportName=" + reportName + "&applicationNumber=" + _applicationNumber + "&keyFieldValue=" + keyFieldValue + "&renderAs=pdf";
+						//var src = location.protocol + "//" + location.hostname + "/jetty_proxy.php?reportName=" + reportName + "&applicationNumber=" + _applicationNumber + "&keyFieldValue=" + keyFieldValue + "&renderAs=pdf";
+						var src = location.href + "jetty_proxy.php?reportName=" + reportName + "&applicationNumber=" + _applicationNumber + "&keyFieldValue=" + keyFieldValue + "&renderAs=pdf";
 						//src += (_cgi == true) ? "&cgi" : "";
 						//if (window.isIE)
 						if (!_cgi)
@@ -1591,7 +1592,8 @@ function initAccordion() {
 									var win = window.open();
 									$(win.document.head).append('<title>Ministry of Electricity and Water</title>');
 									$(win.document.head).append('<link rel="shortcut icon" type="image/vnd.microsoft.icon" href="favicon.ico" />');
-									var src = location.protocol + "//" + location.hostname + '/get_image.php?applicationNumber=' + _applicationNumber + '&id=' + this.getAttribute("data-id") + '&rand=' + rand;
+									//var src = location.protocol + "//" + location.hostname + '/get_image.php?applicationNumber=' + _applicationNumber + '&id=' + this.getAttribute("data-id") + '&rand=' + rand;
+									var src = location.href + 'get_image.php?applicationNumber=' + _applicationNumber + '&id=' + this.getAttribute("data-id") + '&rand=' + rand;
 									$(win.document.body).append('<iframe width="100%" height="100%" src="' + src + '"></iframe>');
 
 									//$(win.document.body).append('<object width="100%" height="100%" name="plugin" data="' + src + '" type="application/pdf"></object>');
