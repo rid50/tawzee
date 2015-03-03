@@ -260,6 +260,7 @@ if ($idp == "SAML") {
 			</script--> 
 
 			<div class="button-set" style="display:inline">
+				<button id="approveFormApp" title="Approve form"></button>
 				<button id="addFormApp" title="Add form"></button>
 				<button id="saveFormApp" title="Save form"></button>
 				<button id="printFormApp" title="Print form"></button>

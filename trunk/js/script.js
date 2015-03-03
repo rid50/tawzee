@@ -798,6 +798,12 @@ document.getElementById('theForm').submit();
 					window.setTimeout(onTimeOutHandler, 5000);
 					CheckConnection();
 				*/
+				} else if (this.id == "approveFormApp") {
+					confirm("AreYouSure", null, function() {
+						$.blockUI();
+						approveForm();
+						$.unblockUI();
+					});
 				} else if (this.id == "deleteFormApp" || this.id == "deleteFormLoad") {
 					confirm("AreYouSure", null, function() {
 						$.blockUI();
@@ -1511,7 +1517,7 @@ function initAccordion() {
 						if (!_cgi)
 							$('<img src=\"jetty_proxy.php?reportName=' + reportName + '&applicationNumber=' + _applicationNumber + '&keyFieldValue=' + keyFieldValue + '&renderAs=png\" onload="$.unblockUI()" />').appendTo('#report-container');
 						else
-							$('<img src=\"' + _jasperReportsURL_CGI + '?reportName=' + reportName + '&applicationNumber=' + _applicationNumber + '&keyFieldValue=' + keyFieldValue + '&renderAs=png\" onload="$.unblockUI()" />').appendTo('#report-container');
+							$('<img src="' + _jasperReportsURL_CGI + '?reportName=' + reportName + '&applicationNumber=' + _applicationNumber + '&keyFieldValue=' + keyFieldValue + '&renderAs=png" onload="$.unblockUI()" />').appendTo('#report-container');
 					});
 					
 					
@@ -1560,8 +1566,8 @@ function initAccordion() {
 								var lastRow;
 								var rand = Math.random();
 								result.forEach(function(r, index) {
-									$('<li><img src=\"my_fopen.php?applicationNumber=' + _applicationNumber + '&id=' + r.ID + '&thumb&rand=' + rand + '\" /></li>').appendTo('#carousel .slides');
-									$('<li><img data-id=\"' + r.ID + '\" src=\"my_fopen.php?applicationNumber=' + _applicationNumber + '&id=' + r.ID + '&thumb&rand=' + rand + '\" /></li>').appendTo('#slider .slides');
+									$('<li><img src=\"get_image.php?applicationNumber=' + _applicationNumber + '&id=' + r.ID + '&thumb&rand=' + rand + '\" /></li>').appendTo('#carousel .slides');
+									$('<li><img data-id=\"' + r.ID + '\" src=\"get_image.php?applicationNumber=' + _applicationNumber + '&id=' + r.ID + '&thumb&rand=' + rand + '\" /></li>').appendTo('#slider .slides');
 									$('<div><a href="#" data-id=\"' + index + '\">' + r.Title + '</a><br/></div>').appendTo("#attachmentTitles");
 								});
 
@@ -2195,7 +2201,7 @@ function loadUserSignatures() {
 			var lastRow;
 			var rand = Math.random();
 			result.forEach(function(r, index) {
-				$('<div class="drag" id="sign' + r.ID + '"><li><img class="img-signature" data-id="' + r.ID + '" src="my_fopen.php?id=' + r.ID + '&rand=' + rand + '" /></li></div>').appendTo('#signatureImages');
+				$('<div class="drag" id="sign' + r.ID + '"><li><img class="img-signature" data-id="' + r.ID + '" src="get_image.php?id=' + r.ID + '&rand=' + rand + '" /></li></div>').appendTo('#signatureImages');
 
 				//$('.img-signature2').css({
 				$('#sign' + r.ID).css({
@@ -2392,7 +2398,7 @@ function loadStampedSignatures() {
 					setUserSignatureAsDroppable(signObj, _currentForm + r.SignatureID);
 					//setUserSignatureAsDroppable($('#sign' + r.SignatureID), _currentForm + r.SignatureID);
 				} else {
-					$('<div id="foreign' + r.SignatureID + '"><li><img class="img-signature" data-id="' + r.SignatureID + '" src="my_fopen.php?id=' + r.SignatureID + '&rand=' + rand + '" /></li></div>').appendTo(target);
+					$('<div id="foreign' + r.SignatureID + '"><li><img class="img-signature" data-id="' + r.SignatureID + '" src="get_image.php?id=' + r.SignatureID + '&rand=' + rand + '" /></li></div>').appendTo(target);
 
 					$('#foreign' + r.SignatureID).css({
 						"left": r.LeftPos + "px",
@@ -4199,6 +4205,31 @@ function saveForm(that) {
 	}
 }
 
+function approveForm() {
+	var attr = $('#' + _currentForm).attr('data-key-field');
+	var param = {};
+	param[attr] = $('#' + attr).val();
+	var url = "json_db_pdo.php";
+	var data = {"func":"approve", "param":param};
+
+	$.post(url, data)
+		.done(function(data){
+			if (data && data.constructor == Array) {
+				if (data[0] && data[0].error !== undefined) {
+					alert(data[0].error);
+				}
+			} else {
+				if ("main-form" == _currentForm) {
+					$grid.jqGrid("delRowData", _rowId);
+					gridReload('reset');
+				}
+			}
+		})
+		.fail(function(jqXHR, textStatus, errorThrown) {
+			alert("approveDoc - error: " + errorThrown);
+		});
+}
+
 function deleteForm() {
 	var attr = $('#' + _currentForm).attr('data-key-field');
 	var param = {};
@@ -4464,6 +4495,7 @@ function toggleLanguage(lang, dir) {
 			//$('#terms-button').attr({title: $.i18n.prop('TermsConditions')});
 			$('#terms-button').button({ label: $.i18n.prop('TermsConditions')});
 			
+			$('#approveFormApp').attr({title: $.i18n.prop('ApproveForm')});
 			$('#addFormApp, #addFormLoad, #newForm').attr({title: $.i18n.prop('AddForm')});
 			$('#editSelectedForm').attr({title: $.i18n.prop('EditForm')});
 			$('#saveFormApp, #saveFormLoad').attr({title: $.i18n.prop('SaveForm')});
