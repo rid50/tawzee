@@ -129,6 +129,7 @@ fieldset.possibility {
 
 #terms-button>span {white-space:nowrap}
 
+#approveFormApp {background-image: url(../images/approve24.png)}
 #addFormApp, #addFormLoad {background-image: url(../images/add24.png)}
 #saveFormApp, #saveFormLoad {background-image: url(../images/save24.png)}
 #printFormApp, #printFormLoad, #printSelectedForm {background-image: url(../images/print24.png)}

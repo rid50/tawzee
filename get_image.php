@@ -241,10 +241,11 @@ try {
 	if ($e->getMessage() == 'not found') {
 		$filename = 'images/notification_error.png';
 		header("Content-Length: " . filesize($filename));
+		header("Content-Type: image/png");
 		//header('HTTP/1.0 404 File Not Found');
 		$fp = fopen($filename, 'rb');
 		fpassthru($fp);
-		exit;
+		//exit;
 	} else {
 		header('Content-Type: text/plain; charset=utf-8');
 		print $e->getMessage();

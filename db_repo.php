@@ -171,6 +171,24 @@ class DatabaseRepository {
 		} 
 		*/
 	}
+
+	public function getApplicationStatus($param) {
+		$dbh = $this->connect();
+		
+		//throw new Exception("SELECT CompletionDate AS \"CompletionDate\" FROM Application WHERE ApplicationNumber = \"$param->applicationNumber\"");
+		try {
+			$sth = $dbh->query("SELECT CompletionDate AS \"CompletionDate\" FROM Application WHERE ApplicationNumber = \"$param->applicationNumber\"");
+			$row = $sth->fetch(PDO::FETCH_ASSOC);
+			
+		} catch (PDOException $e) {
+			throw new Exception('Failed to prepare query: ' . $e->getMessage());
+		}
+
+		//str = print_r($param, true);
+		//throw new Exception(print_r($param, true));
+			
+		return $row['CompletionDate'];
+	}
 	
 	public function getUserAttributes($param) {
 		$dbh = $this->connect();
@@ -180,13 +198,6 @@ class DatabaseRepository {
 		} catch (PDOException $e) {
 			throw new Exception('Failed to prepare query: ' . $e->getMessage());
 		}
-
-		//throw new Exception('SELECT loginName, upn, displayName FROM UserRepository WHERE loginName = :loginName');
-		
-		//if (isset($_POST['loginNames']))
-		//	$assoc_ar = json_decode($_POST['loginNames'], true);
-		//else
-		//	$assoc_ar = json_decode($_GET['loginNames'], true);
 
 		$assoc_ar = json_decode($param['loginNames'], true);
 		
@@ -1194,6 +1205,23 @@ class DatabaseRepository {
 		return $this->result;		
 	}
 
+	public function approve($param) {
+		$dbh = $this->connect();
+
+		if ($this->driver == 'oci')
+			$dt = (new DateTime('now', new DateTimeZone('Asia/Kuwait')))->format('d-M-y');
+		else
+			$dt = (new DateTime('now', new DateTimeZone('Asia/Kuwait')))->format('Y-m-d');
+
+		//throw new Exception("UPDATE Application SET CompletionDate = '{$dt}' WHERE ApplicationNumber = '{$param['application-number']}'");
+			
+		try {
+			$dbh->exec("UPDATE Application SET CompletionDate = '{$dt}' WHERE ApplicationNumber = '{$param['application-number']}'");
+		} catch (PDOException $e) {
+			throw new Exception('Failed to execute/prepare query: ' . $e->getMessage());
+		}
+	}
+	
 	public function delete($param) {
 		$dbh = $this->connect();
 
