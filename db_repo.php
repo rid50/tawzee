@@ -420,7 +420,7 @@ class DatabaseRepository {
 
 			$start = $limit * $page - $limit;
 
-			$st = "SELECT ApplicationNumber AS \"ApplicationNumber\", ApplicationDate AS \"ApplicationDate\", OwnerName AS \"OwnerName\", ProjectName AS \"ProjectName\", ControlCenterId AS \"ControlCenterId\", ProjectType AS \"ProjectType\", AreaName AS \"Area\", Block AS \"Block\", Plot AS \"Plot\", ConstructionExpDate AS \"ConstructionExpDate\", FeedPoints AS \"FeedPoints\"
+			$st = "SELECT ApplicationNumber AS \"ApplicationNumber\", ApplicationDate AS \"ApplicationDate\", OwnerName AS \"OwnerName\", OwnerPhone AS \"OwnerPhone\", ProjectName AS \"ProjectName\", ControlCenterId AS \"ControlCenterId\", ProjectType AS \"ProjectType\", AreaName AS \"Area\", Block AS \"Block\", Plot AS \"Plot\", ConstructionExpDate AS \"ConstructionExpDate\", FeedPoints AS \"FeedPoints\"
 				FROM Application LEFT JOIN Area ON Application.AreaID = Area.ID";
 
 			if ($where == "")
@@ -805,6 +805,7 @@ class DatabaseRepository {
 					$this->result->applicationNumber = $lastInsertId;
 					$this->result->applicationDate = DateTime::createFromFormat('d/m/Y', $param['application-date'])->format('Y-m-d');
 
+					
 					//if ($this->driver == 'oci')
 					//	$this->result->applicationDate = DateTime::createFromFormat('d-M-y', $param['application-date'])->format('Y-m-d');
 					//else
@@ -831,6 +832,9 @@ class DatabaseRepository {
 
 					$ds = $dbh->prepare($st);
 					$ds->execute();
+					
+					$this->createOwnerSignature($param["owner-name"], $param["owner-phone"]);
+					
 				}
 			} else if ($param['schema'] == 'load-form') {
 				if ($param["file-number-old-value"] == "") {		// insert new
@@ -1255,6 +1259,57 @@ class DatabaseRepository {
 
 		return $this->result;
 
+	}
+	
+	public function createOwnerSignature($ownername, $ownerphone) {
+		require('./I18N/Arabic.php'); 
+		$Arabic = new I18N_Arabic('Glyphs'); 
+		$text = $Arabic->utf8Glyphs($ownername);
+		
+		$width = 677;
+		$height = 500;
+		$img = imagecreatetruecolor($width, $height);
+		imagesavealpha($img, true);
+
+		$trans_colour = imagecolorallocatealpha($img, 0, 0, 0, 127);
+		imagefill($img, 0, 0, $trans_colour);
+		
+		//$white = imagecolorallocate( $img, 255, 255, 255 );
+		$grey = imagecolorallocate( $img, 128, 128, 128 );
+		$black = imagecolorallocate( $img, 0, 0, 0 );
+
+		$font = 'arial.ttf';
+
+		// Add some shadow to the text
+		imagettftext($img, 20, 0, 11, 41, $grey, $font, $text);
+
+		// Add the text
+		imagettftext($img, 20, 0, 10, 40, $black, $font, $text);
+		
+		//imagepng( $img, "./my_image.png"  );
+		
+		ob_start();
+		imagepng( $img, NULL, 5);
+		$imgData = ob_get_contents();
+		ob_end_clean();
+		
+			//throw new Exception("INSERT INTO SignatureList(EmployeeId, Image, Width, Height, Resolution) VALUES ('{$ownerphone}', $imgData, $width, $height, 300)");
+
+		$dbh = $this->connect();
+		
+		try {
+			$prest = $dbh->query("INSERT INTO SignatureList(EmployeeId, Image, Width, Height, Resolution) VALUES ('{$ownerphone}', $imgData, $width, $height, 300)");
+			//$prest->execute();
+		} catch (PDOException $e) {
+			throw new Exception('Failed to execute/prepare query: ' . $e->getMessage());
+		}
+//		finally {
+			imagecolordeallocate( $trans_colour );
+			//imagecolordeallocate( $white );
+			imagecolordeallocate( $grey );
+			imagecolordeallocate( $black );
+			imagedestroy( $img );	
+//		}
 	}
 	
 	public function getUserSignatureList($param) {

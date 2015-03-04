@@ -4552,6 +4552,7 @@ function toggleLanguage(lang, dir) {
 			$('label[for="application-number"]').html($.i18n.prop('ApplicationNumber'));
 			$('label[for="application-date"]').html($.i18n.prop('ApplicationDate'));
 			$('label[for="owner-name"]').html($.i18n.prop('OwnerName'));
+			$('label[for="owner-phone"]').html($.i18n.prop('OwnerPhone'));
 			$('label[for="project-name"], label[for="project-name2"]').html($.i18n.prop('ProjectName'));
 			$('label[for="controlCenterId"]').html($.i18n.prop('ControlCenter'));
 			$('label[for="area"], label[for="area2"]').html($.i18n.prop('Area'));

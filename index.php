@@ -282,10 +282,12 @@ if ($idp == "SAML") {
 			
 			<label for="owner-name">Owner Name</label>
 			<input type="text" id="owner-name" maxlength="24" style="width:140px" class="text ui-widget-content ui-corner-all" data-is-required="true"/>
+			<label for="owner-phone">Owner Phone</label>
+			<input type="text" id="owner-phone" maxlength="24" style="width:100px" class="text ui-widget-content ui-corner-all" data-is-required="true"/><br>
 			<label for="project-name">Project Name</label>
 			<input type="text" id="project-name" maxlength="24" style="width:140px" class="text ui-widget-content ui-corner-all" data-is-required="true"/>
 			<label for="controlCenterId">Control Center</label>
-			<select id="controlCenterId" class="ui-widget-content ui-corner-all" style="width:140px" data-validation='^([1-9])', data-validation-message="$.i18n.prop('ControlCenter') + ' ' + $.i18n.prop('CannotBeEmpty')"></select><br/>
+			<select id="controlCenterId" class="ui-widget-content ui-corner-all" style="width:200px" data-validation='^([1-9])', data-validation-message="$.i18n.prop('ControlCenter') + ' ' + $.i18n.prop('CannotBeEmpty')"></select><br/>
 						
 			<label for="area">Area</label>
 			<input type="text" id="area" maxlength="15" size="10" class="text ui-widget-content ui-corner-all" data-is-required="true"/>
