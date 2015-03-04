@@ -62,7 +62,7 @@ Grid = {
 			loadonce: false,
             mtype: "get",
             datatype: "json",
-            colNames: [$.i18n.prop('ApplicationNumber'), $.i18n.prop('ApplicationDate'), $.i18n.prop('OwnerName'), $.i18n.prop('ProjectName'), , $.i18n.prop('Area'), $.i18n.prop('Block'), $.i18n.prop('Plot'), $.i18n.prop('ConstructionExpDate'), $.i18n.prop('FeedPoints'), $.i18n.prop('ControlCenter')],
+            colNames: [$.i18n.prop('ApplicationNumber'), $.i18n.prop('ApplicationDate'), $.i18n.prop('OwnerName'), , $.i18n.prop('ProjectName'), , $.i18n.prop('Area'), $.i18n.prop('Block'), $.i18n.prop('Plot'), $.i18n.prop('ConstructionExpDate'), $.i18n.prop('FeedPoints'), $.i18n.prop('ControlCenter')],
             colModel: [ //http://php.net/manual/en/function.date.php
                         {name: 'ApplicationNumber', index: 'ApplicationNumber', align: 'left', width: '120px', sortable: true, resizable: true, frozen: true, 
 							cellattr: function(rowId, val, rawObject) {
@@ -75,6 +75,7 @@ Grid = {
                         {name: 'ApplicationDate', index: 'ApplicationDate', align: 'center', width: '100px', sortable: true, hidden: false, resizable: false, sorttype: 'date', formatter: 'date', formatoptions: { srcformat: 'Y-m-d', newformat: 'd-M-Y'} }, //DateEntry (src) = "12/31/1999 00:00:00"
                         //{name: 'ApplicationDate', index: 'ApplicationDate', align: 'center', width: '100px', sortable: true, hidden: false, resizable: false, sorttype: 'date', formatter: 'date', formatoptions: { srcformat: 'Y-m-d', newformat: 'd/m/Y'} }, //DateEntry (src) = "12/31/1999 00:00:00"
                         {name: 'OwnerName', index: 'OwnerName', align: 'right', width: '150px', sortable: true, editable: false, resizable: false },
+                        {name: 'OwnerPhone', hidden: true },
                         {name: 'ProjectName', index: 'ProjectName', align: 'right', width: '120px', sortable: true, editable: false, resizable: true },
                         {name: 'ProjectType', hidden: true },
                         {name: 'Area', index: 'Area', align: 'right', width: '120px', sortable: true, editable: false, resizable: false, searchoptions: { sopt: ['bw']} },
@@ -221,6 +222,7 @@ function fillFormFields(that, rowId) {
 	$('#application-date').val($.datepicker.formatDate('dd/mm/yy', dt));
 	//$('#application-date').val(row['ApplicationDate']);
 	$('#owner-name, #owner-name2').val(row['OwnerName']);
+	$('#owner-phone').val(row['OwnerPhone']);
 	$('#project-name, #project-name2').val(row['ProjectName']);
 	$('#area, #area2').val(row['Area']);
 	$('#block, #block2').val(row['Block']);
