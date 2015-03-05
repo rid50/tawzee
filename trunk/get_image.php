@@ -175,14 +175,6 @@ try {
 	//if (isset($_GET['thumb'])) {
 	//$thumb = 'thumb';	
 
-	if (false) {
-		$image = imagecreate(560, 260);
-		$bg = imagecolorallocate($image, 255, 255, 255);
-		$textcolor = imagecolorallocate($image, 0, 0, 255);
-		imagestring($image, 5, 0, 0, print_r($param['id'], true), $textcolor);
-		imagejpeg($image, null);
-		exit;
-	}
 /*
 	if (isset($param['thumb'])) {
 		$image = imagecreatefromstring($r['Image']);
