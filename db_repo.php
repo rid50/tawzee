@@ -833,7 +833,9 @@ class DatabaseRepository {
 					$ds = $dbh->prepare($st);
 					$ds->execute();
 					
-					$this->createOwnerSignature($param["owner-name"], $param["owner-phone"]);
+					$this->createOwnerSignature($dbh, $param["owner-name"], $param["owner-phone"]);
+					$this->stampOwnerSignature($dbh, $param["application-number"], $param["owner-phone"]);
+					
 					
 				}
 			} else if ($param['schema'] == 'load-form') {
@@ -1260,14 +1262,54 @@ class DatabaseRepository {
 		return $this->result;
 
 	}
-	
-	public function createOwnerSignature($ownername, $ownerphone) {
-		require('./I18N/Arabic.php'); 
-		$Arabic = new I18N_Arabic('Glyphs'); 
-		$text = $Arabic->utf8Glyphs($ownername);
+
+	public function stampOwnerSignature($dbh, $applicationnumber, $ownerphone) {
+		if ($this->driver == 'oci') {
+			$dateColumn = "Date_";
+			$dt = (new DateTime('now', new DateTimeZone('Asia/Kuwait')))->format('d-M-y');
+		} else {
+			$dateColumn = "Date";
+			$dt = (new DateTime('now', new DateTimeZone('Asia/Kuwait')))->format('Y-m-d');
+		}
 		
-		$width = 677;
-		$height = 500;
+		//$dbh = $this->connect();
+		
+		try {
+			$ds = $dbh->query("SELECT ID FROM SignatureList WHERE EmployeeId = '$ownerphone'");
+			$signatureid = $ds->fetchColumn();
+
+			$ds = $dbh->query("SELECT ApplicationNumber FROM ApplicationSignature WHERE ApplicationNumber = '$applicationnumber' AND SignatureID = $signatureid");
+			if($ds->fetchColumn() == 0)
+				$prest = $dbh->exec("INSERT INTO ApplicationSignature(ApplicationNumber, SignatureID, EmployeeName, $dateColumn, TopPos, LeftPos) VALUES ('$applicationnumber', $signatureid, '$ownerphone', '$dt', 620, 200)");
+				//throw new Exception("INSERT INTO ApplicationSignature(ApplicationNumber, SignatureID, EmployeeName, $dateColumn, TopPos, LeftPos) VALUES ('$applicationnumber', '$signatureid', '$ownerphone', '$dt', '20', '20')");
+		} catch (PDOException $e) {
+			throw new Exception('Failed to execute/prepare query: ' . $e->getMessage());
+		}
+	}
+	
+	public function createOwnerSignature($dbh, $ownername, $ownerphone) {
+		require('./I18N/Arabic.php'); 
+		$Arabic = new I18N_Arabic('Glyphs');
+		$font = 'arial.ttf';
+		$fontsize = 20;
+		$text = $Arabic->utf8Glyphs($ownername);
+		//$text = "KUKU";
+		
+		// First we create our bounding box for the first text
+		$bbox = imagettfbbox($fontsize, 0, $font, $text);
+		//throw new Exception(print_r($bbox, true));
+
+		// This is our cordinates for X and Y - center of the image created by imagecreatetruecolor function
+		//$x = $bbox[0] + (imagesx($img) / 2) - ($bbox[4] / 2) - 25;
+		//$y = $bbox[1] + (imagesy($img) / 2) - ($bbox[5] / 2) - 5;
+		
+		$width = $bbox[4] - $bbox[0] + 10;
+		$y = $bbox[1] - $bbox[5];
+		$height = $y + 40;
+		//throw new Exception($width . " ----- " . $height);
+		
+		//$width = 677;
+		//$height = 640;
 		$img = imagecreatetruecolor($width, $height);
 		imagesavealpha($img, true);
 
@@ -1275,39 +1317,39 @@ class DatabaseRepository {
 		imagefill($img, 0, 0, $trans_colour);
 		
 		//$white = imagecolorallocate( $img, 255, 255, 255 );
-		$grey = imagecolorallocate( $img, 128, 128, 128 );
-		$black = imagecolorallocate( $img, 0, 0, 0 );
-
-		$font = 'arial.ttf';
-
-		// Add some shadow to the text
-		imagettftext($img, 20, 0, 11, 41, $grey, $font, $text);
+		//$grey = imagecolorallocate( $img, 128, 128, 128 );
+		//$black = imagecolorallocate( $img, 0, 0, 0 );
+		$blue = imagecolorallocate( $img, 0, 0, 255 );
 
 		// Add the text
-		imagettftext($img, 20, 0, 10, 40, $black, $font, $text);
+		imagettftext($img, $fontsize, 0, 0, $y, $blue, $font, $text);
 		
-		//imagepng( $img, "./my_image.png"  );
+		//imagepng( $img, "./my_image.png", 5 );
+		//$size = getimagesize("./my_image.png", $info);
+		//throw new Exception(print_r($size, true));
 		
 		ob_start();
 		imagepng( $img, NULL, 5);
 		$imgData = ob_get_contents();
 		ob_end_clean();
 		
-			//throw new Exception("INSERT INTO SignatureList(EmployeeId, Image, Width, Height, Resolution) VALUES ('{$ownerphone}', $imgData, $width, $height, 300)");
-
-		$dbh = $this->connect();
+		//$dbh = $this->connect();
 		
 		try {
-			$prest = $dbh->query("INSERT INTO SignatureList(EmployeeId, Image, Width, Height, Resolution) VALUES ('{$ownerphone}', $imgData, $width, $height, 300)");
-			//$prest->execute();
+			$ds = $dbh->query("SELECT EmployeeId FROM SignatureList WHERE EmployeeId = '$ownerphone'");
+			if($ds->fetchColumn() == 0)
+				$dbh->exec("INSERT INTO SignatureList(EmployeeId, Image, Width, Height, Resolution) VALUES ('$ownerphone', " . $dbh->quote($imgData) . ", $width, $height, 72)");
+			else
+				$dbh->exec("UPDATE SignatureList SET Image = " . $dbh->quote($imgData) . ", Width = $width, Height = $height WHERE EmployeeId = '$ownerphone'");
 		} catch (PDOException $e) {
 			throw new Exception('Failed to execute/prepare query: ' . $e->getMessage());
 		}
 //		finally {
 			imagecolordeallocate( $trans_colour );
 			//imagecolordeallocate( $white );
-			imagecolordeallocate( $grey );
-			imagecolordeallocate( $black );
+			//imagecolordeallocate( $grey );
+			//imagecolordeallocate( $black );
+			imagecolordeallocate( $blue );
 			imagedestroy( $img );	
 //		}
 	}
