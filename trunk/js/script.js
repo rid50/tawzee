@@ -2204,7 +2204,7 @@ function loadUserSignatures() {
 				$('<div class="drag" id="sign' + r.ID + '"><li><img class="img-signature" data-id="' + r.ID + '" src="get_image.php?id=' + r.ID + '&rand=' + rand + '" /></li></div>').appendTo('#signatureImages');
 
 				//$('.img-signature2').css({
-				$('#sign' + r.ID).css({
+				$('#sign' + r.ID).find('img').css({
 						"height": r.Height * 72 / r.Resolution,
 						"width": r.Width * 72 / r.Resolution,
 					});
@@ -2400,7 +2400,7 @@ function loadStampedSignatures() {
 				} else {
 					$('<div id="foreign' + r.SignatureID + '"><li><img class="img-signature" data-id="' + r.SignatureID + '" src="get_image.php?id=' + r.SignatureID + '&rand=' + rand + '" /></li></div>').appendTo(target);
 
-					$('#foreign' + r.SignatureID).css({
+					$('#foreign' + r.SignatureID).find('img').css({
 						"left": r.LeftPos + "px",
 						"top": r.TopPos + "px",
 						"height": r.Height * 72 / r.Resolution,

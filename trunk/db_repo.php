@@ -1275,12 +1275,14 @@ class DatabaseRepository {
 		//$dbh = $this->connect();
 		
 		try {
-			$ds = $dbh->query("SELECT ID FROM SignatureList WHERE EmployeeId = '$ownerphone'");
-			$signatureid = $ds->fetchColumn();
+			$ds = $dbh->query("SELECT ID, Width FROM SignatureList WHERE EmployeeId = '$ownerphone'");
+			$r = (object)$ds->fetch(PDO::FETCH_ASSOC);
+			$signatureid = $r->ID;
+			$leftPos = 595 / 2 - $r->Width / 2 + 40;
 
 			$ds = $dbh->query("SELECT ApplicationNumber FROM ApplicationSignature WHERE ApplicationNumber = '$applicationnumber' AND SignatureID = $signatureid");
 			if($ds->fetchColumn() == 0)
-				$prest = $dbh->exec("INSERT INTO ApplicationSignature(ApplicationNumber, SignatureID, EmployeeName, $dateColumn, TopPos, LeftPos) VALUES ('$applicationnumber', $signatureid, '$ownerphone', '$dt', 620, 200)");
+				$prest = $dbh->exec("INSERT INTO ApplicationSignature(ApplicationNumber, SignatureID, EmployeeName, $dateColumn, TopPos, LeftPos) VALUES ('$applicationnumber', $signatureid, '$ownerphone', '$dt', 630, $leftPos)");
 				//throw new Exception("INSERT INTO ApplicationSignature(ApplicationNumber, SignatureID, EmployeeName, $dateColumn, TopPos, LeftPos) VALUES ('$applicationnumber', '$signatureid', '$ownerphone', '$dt', '20', '20')");
 		} catch (PDOException $e) {
 			throw new Exception('Failed to execute/prepare query: ' . $e->getMessage());
@@ -1291,7 +1293,7 @@ class DatabaseRepository {
 		require('./I18N/Arabic.php'); 
 		$Arabic = new I18N_Arabic('Glyphs');
 		$font = 'arial.ttf';
-		$fontsize = 20;
+		$fontsize = 18;
 		$text = $Arabic->utf8Glyphs($ownername);
 		//$text = "KUKU";
 		
@@ -1305,15 +1307,17 @@ class DatabaseRepository {
 		
 		$width = $bbox[4] - $bbox[0] + 10;
 		$y = $bbox[1] - $bbox[5];
-		$height = $y + 40;
+		//$height = $y + 40;
+		$height = $y + 10;
 		//throw new Exception($width . " ----- " . $height);
 		
-		//$width = 677;
-		//$height = 640;
+		//$width = 640;
+		//$y = $height = 480;
 		$img = imagecreatetruecolor($width, $height);
 		imagesavealpha($img, true);
 
 		$trans_colour = imagecolorallocatealpha($img, 0, 0, 0, 127);
+		//$trans_colour = imagecolorallocatealpha($img, 255, 0, 0, 127);
 		imagefill($img, 0, 0, $trans_colour);
 		
 		//$white = imagecolorallocate( $img, 255, 255, 255 );
@@ -1324,7 +1328,8 @@ class DatabaseRepository {
 		// Add the text
 		imagettftext($img, $fontsize, 0, 0, $y, $blue, $font, $text);
 		
-		//imagepng( $img, "./my_image.png", 5 );
+		imagepng( $img, "./my_image.png", 5 );
+		imagejpeg( $img, "./my_image.jpg", 5 );
 		//$size = getimagesize("./my_image.png", $info);
 		//throw new Exception(print_r($size, true));
 		
@@ -1338,7 +1343,7 @@ class DatabaseRepository {
 		try {
 			$ds = $dbh->query("SELECT EmployeeId FROM SignatureList WHERE EmployeeId = '$ownerphone'");
 			if($ds->fetchColumn() == 0)
-				$dbh->exec("INSERT INTO SignatureList(EmployeeId, Image, Width, Height, Resolution) VALUES ('$ownerphone', " . $dbh->quote($imgData) . ", $width, $height, 72)");
+				$dbh->exec("INSERT INTO SignatureList(EmployeeId, Image, Width, Height, Resolution) VALUES ('$ownerphone', " . $dbh->quote($imgData) . ", $width, $height, 96)");
 			else
 				$dbh->exec("UPDATE SignatureList SET Image = " . $dbh->quote($imgData) . ", Width = $width, Height = $height WHERE EmployeeId = '$ownerphone'");
 		} catch (PDOException $e) {
