@@ -370,7 +370,7 @@ input[type='checkbox'] {
   
 	//border: 2px outset gray;
 	width: auto;
-	height: 120px;	// 500/300 * 72
+	//height: 120px;	// 500/300 * 72
 	margin-bottom: 8px;
 	cursor:pointer;
 }
