@@ -2288,8 +2288,10 @@ function loadUserSignatures() {
 						var elementId = _currentForm + RegExp.$1;
 						element.attr("id", elementId);
 						element.find('img').css({
-							"height": element.css('height'),
-							"width": element.css('width'),
+							"height": ui.draggable.find('img').css('height'),
+							"width": ui.draggable.find('img').css('width'),
+							//"height": element.css('height'),
+							//"width": element.css('width'),
 						});
 						
 						element.addClass("dragclone");
