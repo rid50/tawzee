@@ -110,7 +110,9 @@ public class JrUtils
 	            
 	            g2d.drawImage(bImage, 0, 0, bImage.getWidth() * JAPER_REPORTS_DPI / resolution, bImage.getHeight() * JAPER_REPORTS_DPI / resolution, null);
 	
-	            ImageIO.write(scaledBufImage, "png", new File("scaledBufImage.png"));
+				//g2d.clip(new java.awt.Rectangle(0, 0, 162, 120));
+				
+	            //ImageIO.write(scaledBufImage, "png", new File("scaledBufImage.png"));
 
 				//Image bImage2 = bImage.getScaledInstance(677 * 72 /300, 500 * 72 /300, Image.SCALE_SMOOTH);
 				//LOG.info("Height: " + bImage.getHeight());
@@ -120,7 +122,7 @@ public class JrUtils
 	            
 				return scaledBufImage;
 			} else {
-	            ImageIO.write(bImage, "png", new File("notScaledBufImage.png"));
+	            //ImageIO.write(bImage, "png", new File("notScaledBufImage.png"));
 				return bImage;
 			}
 
