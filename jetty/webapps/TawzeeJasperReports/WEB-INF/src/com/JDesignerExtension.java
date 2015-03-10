@@ -46,7 +46,7 @@ import net.sf.jasperreports.engine.type.VerticalAlignEnum;
 public class JDesignerExtension {
 	public static final int JAPER_REPORTS_DPI = 72;
 
-	//private static final Logger LOG = Logger.getLogger(JDesignerExtension.class);
+	private static final Logger LOG = Logger.getLogger(JDesignerExtension.class);
 	
     private Connection _connection = null;
     
@@ -157,7 +157,7 @@ public class JDesignerExtension {
 
 				////parameters.put(parameterName, com.rid50.reports.util.JrUtils.getSignature(Integer.toString(signatureID), request));
 
-				parameters.put(parameterName, com.rid50.reports.util.JrUtils.getSignature(Integer.toString(signatureID), reqUrl));
+				//parameters.put(parameterName, com.rid50.reports.util.JrUtils.getSignature(Integer.toString(signatureID), reqUrl));
 				
 				//scale = false;
 
@@ -177,7 +177,8 @@ public class JDesignerExtension {
 				//image.setY(imagePosY);
 				image.setHeight(imageHeight);
 				image.setWidth(width * JAPER_REPORTS_DPI / resolution);
-		
+				//image.setScaleImage(ScaleImageEnum.RETAIN_SHAPE);
+
 				//parameters.put(parameterName, com.rid50.reports.util.JrUtils.getSignature(Integer.toString(signatureID), scale, resolution));
 				
 				//JRDesignStyle style = new JRDesignStyle();
@@ -296,6 +297,9 @@ public class JDesignerExtension {
 							image.setY(imagePosY - bandPosY);
 						else
 							image.setY(imagePosY - bandPosY - diffRunTimeDesignDetailBandHeight);
+						
+						parameters.put(parameterName, com.rid50.reports.util.JrUtils.getSignature(Integer.toString(signatureID), reqUrl));
+						
 						/*
 						LOG.info("===================");
 						LOG.info("imagePosY: " + imagePosY);
@@ -350,12 +354,15 @@ public class JDesignerExtension {
 									//image.setVerticalAlignment(VerticalAlignEnum.TOP);
 									image.setScaleImage(ScaleImageEnum.CLIP);
 									
-								}
-								
+								} else
+									parameters.put(parameterName, com.rid50.reports.util.JrUtils.getSignature(Integer.toString(signatureID), reqUrl));
 								
 								//image.setY(imagePosY - bandPosY - (tableRowHeight * 2) - delta);
 								
 								image.setY(imagePosY - bandPosY - diffRunTimeDesignDetailBandHeight);
+								
+								LOG.info("imageHeight: " + image.getHeight());
+								LOG.info("imageWidth: " + image.getWidth());								
 								
 								/*
 								LOG.info("****************************");

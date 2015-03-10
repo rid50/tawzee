@@ -833,8 +833,8 @@ class DatabaseRepository {
 					$ds = $dbh->prepare($st);
 					$ds->execute();
 					
-					$this->createOwnerSignature($dbh, $param["owner-name"], $param["owner-phone"]);
-					$this->stampOwnerSignature($dbh, $param["application-number"], $param["owner-phone"]);
+					//$this->createOwnerSignature($dbh, $param["owner-name"], $param["owner-phone"]);
+					//$this->stampOwnerSignature($dbh, $param["application-number"], $param["owner-phone"]);
 					
 					
 				}
@@ -1292,10 +1292,12 @@ class DatabaseRepository {
 	public function createOwnerSignature($dbh, $ownername, $ownerphone) {
 		require('./I18N/Arabic.php'); 
 		$Arabic = new I18N_Arabic('Glyphs');
-		$font = 'arial.ttf';
-		$fontsize = 18;
+		//$font = 'C:\Windows\Fonts\arabtype.ttf';
+		$font = '.\arial.ttf';
+		
+		$fontsize = 14;
 		$text = $Arabic->utf8Glyphs($ownername);
-		//$text = "KUKU";
+		//$text = "Abdalla Al Salem";
 		
 		// First we create our bounding box for the first text
 		$bbox = imagettfbbox($fontsize, 0, $font, $text);
@@ -1311,13 +1313,13 @@ class DatabaseRepository {
 		$height = $y + 10;
 		//throw new Exception($width . " ----- " . $height);
 		
-		//$width = 640;
-		//$y = $height = 480;
+		//$width = 184;
+		//$y = $height = 24;
 		$img = imagecreatetruecolor($width, $height);
 		imagesavealpha($img, true);
 
 		$trans_colour = imagecolorallocatealpha($img, 0, 0, 0, 127);
-		//$trans_colour = imagecolorallocatealpha($img, 255, 0, 0, 127);
+		//$trans_colour = imagecolorallocatealpha($img, 255, 255, 255, 127);
 		imagefill($img, 0, 0, $trans_colour);
 		
 		//$white = imagecolorallocate( $img, 255, 255, 255 );
@@ -1327,14 +1329,20 @@ class DatabaseRepository {
 
 		// Add the text
 		imagettftext($img, $fontsize, 0, 0, $y, $blue, $font, $text);
+
+		//$img2 = imagecreatetruecolor($width, $height);
+		//imagesavealpha($img2, true);
+		//imagefill($img2, 0, 0, $trans_colour);
+
+		//imagecopyresampled($img2, $img, 0, 0, 0, 0, $width, $height, $width * 8, $height * 8);
 		
-		imagepng( $img, "./my_image.png", 5 );
-		imagejpeg( $img, "./my_image.jpg", 5 );
+		imagepng( $img, "./my_image.png", 2 );
+		imagejpeg( $img, "./my_image.jpg", 2 );
 		//$size = getimagesize("./my_image.png", $info);
 		//throw new Exception(print_r($size, true));
 		
 		ob_start();
-		imagepng( $img, NULL, 5);
+		imagepng( $img, NULL, 2);
 		$imgData = ob_get_contents();
 		ob_end_clean();
 		
@@ -1350,12 +1358,13 @@ class DatabaseRepository {
 			throw new Exception('Failed to execute/prepare query: ' . $e->getMessage());
 		}
 //		finally {
-			imagecolordeallocate( $trans_colour );
-			//imagecolordeallocate( $white );
-			//imagecolordeallocate( $grey );
-			//imagecolordeallocate( $black );
-			imagecolordeallocate( $blue );
+			imagecolordeallocate( $img, $trans_colour );
+			//imagecolordeallocate( $img, $white );
+			//imagecolordeallocate( $img, $grey );
+			//imagecolordeallocate( $img, $black );
+			imagecolordeallocate( $img, $blue );
 			imagedestroy( $img );	
+			imagedestroy( $img2 );	
 //		}
 	}
 	
