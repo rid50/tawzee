@@ -1263,6 +1263,16 @@ class DatabaseRepository {
 
 	}
 
+	public function setOwnerSignature($param) {
+		$dbh = $this->connect();
+
+		try {
+			$dbh->exec("UPDATE Application SET OwnerSignature = 1 WHERE ApplicationNumber = \"$param->applicationNumber\" AND OwnerPhone = \"$param->ownerPhone\"");
+		} catch (PDOException $e) {
+			throw new Exception('Failed to execute/prepare query: ' . $e->getMessage());
+		}
+	}
+	
 	public function stampOwnerSignature($dbh, $applicationnumber, $ownerphone) {
 		if ($this->driver == 'oci') {
 			$dateColumn = "Date_";
