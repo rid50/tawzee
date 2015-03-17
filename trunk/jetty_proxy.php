@@ -1,4 +1,8 @@
 <?php
+//print $_SERVER['DOCUMENT_ROOT'];
+//$path = parse_url($_SERVER["HTTP_REFERER"], PHP_URL_PATH);
+
+//print  $path;
 require_once('session.php');
 
 //error_log((isset($_GET['applicationNumber']) ? 'true' : 'false') . PHP_EOL, 3, "errors.log");
