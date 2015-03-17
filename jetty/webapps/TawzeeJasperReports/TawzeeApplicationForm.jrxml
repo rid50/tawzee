@@ -1910,7 +1910,7 @@ WHERE a.ApplicationNumber = $P{ApplicationNumber}]]>
 				<text><![CDATA[5 أ / 2001]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="192" y="50" width="198" height="20" forecolor="#0066FF" uuid="55d14259-b0ed-41c5-b084-37c3d768e6b1">
+				<reportElement x="192" y="50" width="198" height="20" forecolor="#0000FF" uuid="55d14259-b0ed-41c5-b084-37c3d768e6b1">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$F{OwnerSignature} != false]]></printWhenExpression>

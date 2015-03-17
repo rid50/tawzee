@@ -1,8 +1,13 @@
 <?php
 session_start();
 
+//$path = parse_url($_SERVER["HTTP_REFERER"], PHP_URL_PATH);
+//print !isset($_SESSION['loginName']);
+
+//print $_SERVER['SCRIPT_NAME'];
 //check that the session exists
-if(!isset($_SESSION['loginName']))
+//if(!isset($_SESSION['loginName']))
+if(!isset($_SESSION['loginName']) && $_SERVER['SCRIPT_NAME'] != "/phone/request.php")
 {
 	//the session does not exist, redirect
 	$redirect = ($_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://';
@@ -10,6 +15,7 @@ if(!isset($_SESSION['loginName']))
 	$redirect .= '/index.php';
 	header("location: $redirect");
 }
+
 /*
 foreach ($_SESSION as $key=>$value)
 {

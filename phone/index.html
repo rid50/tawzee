@@ -33,7 +33,8 @@
       <ul>
         <li><a class="ui-btn-active" href="#home" data-icon="home" data-transition="fade">منزل</a></li>			<!-- Home -->
         <li><a href="#status-request" data-icon="info" data-transition="fade">حالة طلب</a></li>					<!-- Status Request -->
-        <li><a href="#signature-provision" data-icon="grid" data-transition="fade">توفير التوقيع</a></li>		<!-- Signature Provision -->
+        <li><a href="#signature-provision" data-icon="check" data-transition="fade">توفير التوقيع</a></li>		<!-- Signature Provision -->
+        <li><a href="#application-form" data-icon="grid" data-transition="fade">نموذج الطلب</a></li>			<!-- Application Form -->
       </ul>
     </div>
   </div>
@@ -65,7 +66,8 @@
       <ul>
         <li><a href="#home" data-icon="home" data-transition="fade">منزل</a></li>
         <li><a class="ui-btn-active" href="#status-request" data-icon="info" data-transition="fade">حالة طلب</a></li>
-        <li><a href="#signature-provision" data-icon="grid" data-transition="fade">توفير التوقيع</a></li>
+        <li><a href="#signature-provision" data-icon="check" data-transition="fade">توفير التوقيع</a></li>
+        <li><a href="#application-form" data-icon="grid" data-transition="fade">نموذج الطلب</a></li>
       </ul>
     </div>
   </div>
@@ -98,7 +100,60 @@
       <ul>
         <li><a href="#home" data-icon="home" data-transition="fade">منزل</a></li>
         <li><a href="#status-request" data-icon="info" data-transition="fade">حالة طلب</a></li>
-        <li><a class="ui-btn-active" href="#signature-provision" data-icon="grid" data-transition="fade">توفير التوقيع</a></li>
+        <li><a class="ui-btn-active" href="#signature-provision" data-icon="check" data-transition="fade">توفير التوقيع</a></li>
+        <li><a href="#application-form" data-icon="grid" data-transition="fade">نموذج الطلب</a></li>
+      </ul>
+    </div>
+  </div>
+  
+</div>
+
+<div data-role="page" id="application-form">
+
+  <div data-role="header">
+    <h1>توفير التوقيع</h1>
+  </div>
+  
+  <div data-role="content">
+	<!--form action="../jetty_proxy.php" method="post" data-transition="none"-->
+	<form action="request.php" method="post" data-transition="none">
+		<script type="text/javascript">
+			function getReport(e) {
+				var win = window.open();
+				$(win.document.head).append('<title>Ministry of Electricity and Water</title>');
+				$(win.document.head).append('<link rel="shortcut icon" type="../image/vnd.microsoft.icon" href="favicon.ico" />');
+				//var src = "http://" + location.host + "/jetty_proxy.php?reportName=TawzeeApplicationForm&applicationNumber=" + $('#applicationNumber').val() + "&keyFieldValue=" + $('#applicationNumber').val() + "&renderAs=pdf";
+				var src = "http://" + location.host + "/phone/phone_jetty_proxy.php?applicationNumber=" + $('#applicationNumber').val() + "&ownerPhone=" + $('#ownerPhone').val() + "&requestFor=" + $('#requestFor').val();
+				//$(win.document.body).append('<iframe width="100%" height="100%" src="' + src + '"></iframe>');
+				//$(win.document.body).append('<embed width="100%" height="100%" name="plugin" src="' + src + '" type="application/pdf">');
+				$(win.document.body).append('<object width="100%" height="100%" name="plugin" data="' + src + '" type="application/pdf"></object>');
+				
+			}
+		</script>
+
+		<div data-role="fieldcontain">
+		 <label for="applicationNumber">رقـــم الطلب:</label>
+		 <input type="text" name="applicationNumber" id="applicationNumber" value="2/12345" required />
+		 <input type="hidden" name="keyFieldValue" id="keyFieldValue" value="2/12345"/>
+		 <input type="hidden" name="reportName" id="reportName" value="TawzeeApplicationForm"/>
+		 <input type="hidden" name="renderAs" id="renderAs" value="pdf"/>
+		 <input type="hidden" id="ownerPhone" name="ownerPhone" value="66486696">
+		 <input type="hidden" id="requestFor" name="requestFor" value="application">
+		</div>
+
+		<!--input type="submit" value="Send" data-theme="a"-->
+		<input type="submit" value="Send" data-theme="a" onclick="getReport()">
+
+	</form>
+  </div>
+  
+  <div data-role="footer" data-position="fixed" data-id="toolbar">
+    <div data-role="navbar">
+      <ul>
+        <li><a href="#home" data-icon="home" data-transition="fade">منزل</a></li>
+        <li><a href="#status-request" data-icon="info" data-transition="fade">حالة طلب</a></li>
+        <li><a href="#signature-provision" data-icon="check" data-transition="fade">توفير التوقيع</a></li>
+        <li><a class="ui-btn-active" href="#application-form" data-icon="grid" data-transition="fade">نموذج الطلب</a></li>
       </ul>
     </div>
   </div>

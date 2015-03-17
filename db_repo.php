@@ -97,6 +97,7 @@ class DatabaseRepository {
 		}
 
 		$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		$dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 
 		/* Ensure that we are operating with UTF-8 encoding.
 		 * This command is for MySQL. Other databases may need different commands.
