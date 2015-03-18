@@ -52,7 +52,9 @@
 
 		<div data-role="fieldcontain">
 		 <label for="applicationNumber">رقـــم الطلب:</label>
-		 <input type="text" name="applicationNumber" id="applicationNumber" value="133" required />
+		 <input type="text" name="applicationNumber" id="applicationNumber" value="133" required /><br/>
+		 <label for="ownerPhone">رقم الهاتف:</label>
+		 <input type="text" name="ownerPhone" id="ownerPhone" value="66486696" disabled="disabled" />
 		 <input type="hidden" name="requestFor" value="status">		 
 		</div>
 
@@ -85,8 +87,9 @@
 
 		<div data-role="fieldcontain">
 		 <label for="applicationNumber">رقـــم الطلب:</label>
-		 <input type="text" name="applicationNumber" id="applicationNumber" value="2/12345" required />
-		 <input type="hidden" name="ownerPhone" value="66486696">
+		 <input type="text" name="applicationNumber" id="applicationNumber" value="2/12345" required /><br/>
+		 <label for="ownerPhone">رقم الهاتف:</label>
+		 <input type="text" name="ownerPhone" id="ownerPhone" value="66486696" disabled="disabled" />
 		 <input type="hidden" name="requestFor" value="signature">
 		</div>
 
@@ -114,6 +117,10 @@
     <h1>توفير التوقيع</h1>
   </div>
   
+  
+  <!-- https://docs.google.com/gview?embedded=true&url=http://tawzee/jetty_proxy.php?reportName=TawzeeApplicationForm&applicationNumber=2/12345&keyFieldValue=2/12345&renderAs=pdf -->
+  <!-- https://docs.google.com/gview?embedded=true&url=http%3A%2F%2Ftawzee%2Fjetty_proxy.php%3FreportName%3DTawzeeApplicationForm%26applicationNumber%3D2%2F12345%26keyFieldValue%3D2%2F12345%26renderAs%3Dpdf -->
+  
   <div data-role="content">
 	<!--form action="../jetty_proxy.php" method="post" data-transition="none"-->
 	<form action="request.php" method="post" data-transition="none">
@@ -122,22 +129,25 @@
 				var win = window.open();
 				$(win.document.head).append('<title>Ministry of Electricity and Water</title>');
 				$(win.document.head).append('<link rel="shortcut icon" type="../image/vnd.microsoft.icon" href="favicon.ico" />');
+				//var url = encodeURI("http://" + location.host + "/jetty_proxy.php?reportName=TawzeeApplicationForm&applicationNumber=" + $('#applicationNumberForm').val() + "&keyFieldValue=" + $('#applicationNumberForm').val() + "&renderAs=pdf");
+				//var src = "http://docs.google.com/gview?embedded=true&url=" + url;
 				//var src = "http://" + location.host + "/jetty_proxy.php?reportName=TawzeeApplicationForm&applicationNumber=" + $('#applicationNumber').val() + "&keyFieldValue=" + $('#applicationNumber').val() + "&renderAs=pdf";
-				var src = "http://" + location.host + "/phone/phone_jetty_proxy.php?applicationNumber=" + $('#applicationNumber').val() + "&ownerPhone=" + $('#ownerPhone').val() + "&requestFor=" + $('#requestFor').val();
-				//$(win.document.body).append('<iframe width="100%" height="100%" src="' + src + '"></iframe>');
+				var src = "http://" + location.host + "/phone/phone_jetty_proxy.php?applicationNumber=" + $('#applicationNumberForm').val() + "&ownerPhone=" + $('#ownerPhone').val() + "&requestFor=" + $('#requestFor').val();
+				$(win.document.body).append('<iframe width="100%" height="100%" src="' + src + '"></iframe>');
 				//$(win.document.body).append('<embed width="100%" height="100%" name="plugin" src="' + src + '" type="application/pdf">');
-				$(win.document.body).append('<object width="100%" height="100%" name="plugin" data="' + src + '" type="application/pdf"></object>');
+				//$(win.document.body).append('<object width="100%" height="100%" name="plugin" data="' + src + '" type="application/pdf"></object>');
 				
 			}
 		</script>
 
 		<div data-role="fieldcontain">
 		 <label for="applicationNumber">رقـــم الطلب:</label>
-		 <input type="text" name="applicationNumber" id="applicationNumber" value="2/12345" required />
+		 <input type="text" name="applicationNumber" id="applicationNumberForm" value="2/12345" required /><br/>
+		 <label for="ownerPhone">رقم الهاتف:</label>
+		 <input type="text" name="ownerPhone" id="ownerPhone" value="66486696" disabled="disabled" />
 		 <input type="hidden" name="keyFieldValue" id="keyFieldValue" value="2/12345"/>
 		 <input type="hidden" name="reportName" id="reportName" value="TawzeeApplicationForm"/>
 		 <input type="hidden" name="renderAs" id="renderAs" value="pdf"/>
-		 <input type="hidden" id="ownerPhone" name="ownerPhone" value="66486696">
 		 <input type="hidden" id="requestFor" name="requestFor" value="application">
 		</div>
 
