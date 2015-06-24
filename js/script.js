@@ -5,6 +5,8 @@ var searchInterval;
 
 var _admin;
 
+var _evtSource;
+
 var _directors = [];
 var _userLoginName = "";
 
@@ -316,7 +318,7 @@ $(document).ready(function () {
 		//$('#file-number').attr('readonly','readonly');
 		error('');
 	});
-	 
+	
 	$('#report-container').on('show', function() {
 		loadStampedSignatures();
 	});
@@ -967,6 +969,28 @@ document.getElementById('theForm').submit();
 		}, 100 );
 	}, false);
 	//applyAcl();
+	
+	_evtSource = new EventSource("sse.php");
+	_evtSource.onmessage = function(e) {
+		var obj = JSON.parse(e.data);
+		if (obj.opid == "approved") {
+			console.log(obj);
+			//window.location.reload();
+			//_evtSource.close();
+		}
+	}
+
+	//if (_evtSource != undefined)
+	//	_evtSource.close();
+	
+	//_evtSource.onopen = function(e) {
+	//	error('open');
+	//};
+	
+	//_evtSource.onerror = function(e) {
+	//	alert("EventSource failed.");
+	//};
+	
 });
 
 function setFocus() {
@@ -1519,9 +1543,6 @@ function initAccordion() {
 						else
 							$('<img src="' + _jasperReportsURL_CGI + '?reportName=' + reportName + '&applicationNumber=' + _applicationNumber + '&keyFieldValue=' + keyFieldValue + '&renderAs=png" onload="$.unblockUI()" />').appendTo('#report-container');
 					});
-					
-					
-					
 					
 					$("#signatureImages .drag").each(function() {
 						$(this).draggable( "option", "disabled", false );
@@ -2594,14 +2615,16 @@ function CheckConnection(timeoutID, func) {
 }
 
 function error(error) {
-	if (error == "") {
+	if (error == undefined) {
+		return $('#error-box').val();
+	} else if (error == "") {
 		if ($('#error-box').length != 0)
 			$('#error-box').remove();
 	} else {
 		if ($('#error-box').length == 0)
 			$('#left-section').prepend('<input type="text" id="error-box" tabindex="-1" />');
 		
-		$('#error-box').val(error);
+		return $('#error-box').val(error);
 	}
 }
 

@@ -1,5 +1,6 @@
 <?php
 require_once('session.php');
+require_once('sse.php');
 
 class DatabaseRepository {
 	private $dsn;

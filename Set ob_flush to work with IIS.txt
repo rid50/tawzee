@@ -1,0 +1,12 @@
+You must set the ResponseBufferLimit value of the desired handler to a number low enough to actually flush. I recommend using 0 since it prevents IIS from doing anything but passing along what you send it from your PHP script. You can use the following command line to set the ResponseBufferLimit to 0 for the php handler (just change “NAME” to the name of the handler you want to update e.g. PHP53_via_FastCGI):
+appcmd.exe set config /section:handlers "/[name='NAME'].ResponseBufferLimit:0"
+
+Alternatively, you can edit the applicationHost.config directly and add a ResponseBufferLimit attribute the XML element. 
+
+
+There is another way to set the Response Limit using the IIS Manager:
+1.On the server main page, under "Management", select "Configuration Editor";
+2.under "Section", enter 'system.webServer/handlers';
+3.next to "(Collection)" click "..." OR mark the element "(Collection)" and, under "Actions" und '(Collection)' Element, click "Edit Items";
+4.scroll down until you find your PHP version under "Name";
+5.at the bottom, the Properties are shown an can be edited manually, including responseBufferLimit, which should be set to 0 for flush() to work.
