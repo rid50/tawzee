@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Server Sent Event Demo</title>
+<body>
+<p><input type="button" id="btn" value="Stop SSE" /></p>
+
+<script type="text/javascript">
+var el = document.getElementById("btn");
+el.addEventListener("click", function(e) {_evtSource.close()}, false);
+
+var _evtSource;
+_evtSource = new EventSource("sse.php");
+//_evtSource.addEventListener("ping", function(e) {
+
+_evtSource.onmessage = function(e) {
+	//console.log(e);
+
+	//alert (e);
+	var obj = JSON.parse(e.data);
+	console.log(obj);
+	//if (obj.optid == "approved") {
+	//	error('kuku;');
+		//window.location.reload();
+		//_evtSource.close();
+	//}
+}
+//)
+
+</script>
+</body>
+</html>
