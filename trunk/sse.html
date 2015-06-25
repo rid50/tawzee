@@ -4,7 +4,10 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Server Sent Event Demo</title>
 <body>
-<p><input type="button" id="btn" value="Stop SSE" /></p>
+<form onsubmit="ajaxSent(); return false;">
+	<p><input type="button" id="btn" value="Stop SSE" /></p>
+	<p><input type="submit" /></p>
+</form>
 
 <script type="text/javascript">
 var el = document.getElementById("btn");
@@ -27,6 +30,26 @@ _evtSource.onmessage = function(e) {
 	//}
 }
 //)
+
+ajaxSent=function(){
+	try{
+         xhr=new XMLHttpRequest();
+    }
+    catch(err){
+         alert(err);
+    }
+	msg = 'kuku';
+	name = 'roman';
+    xhr.open('GET', 'sse-ob.php?msg=' + msg + '&name=' + name, false);
+    xhr.onreadystatechange = function(){
+         if(xhr.readyState == 4) {
+              if(xhr.status == 200) {
+                   msg.value="";
+              }
+         }     
+    };
+    xhr.send();
+};
 
 </script>
 </body>
