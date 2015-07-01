@@ -10,26 +10,29 @@
 </form>
 
 <script type="text/javascript">
-var el = document.getElementById("btn");
-el.addEventListener("click", function(e) {_evtSource.close()}, false);
+window.onload=function() {
+	var _evtSource;
+	_evtSource = new EventSource("sse.php");
+	//_evtSource.addEventListener("ping", function(e) {
 
-var _evtSource;
-_evtSource = new EventSource("sse.php");
-//_evtSource.addEventListener("ping", function(e) {
+	_evtSource.onmessage = function(e) {
+		//console.log(e);
 
-_evtSource.onmessage = function(e) {
-	//console.log(e);
-
-	//alert (e);
-	var obj = JSON.parse(e.data);
-	console.log(obj);
-	//if (obj.optid == "approved") {
-	//	error('kuku;');
-		//window.location.reload();
-		//_evtSource.close();
-	//}
+		//alert (e);
+		var obj = JSON.parse(e.data);
+		console.log(obj);
+		//if (obj.optid == "approved") {
+		//	error('kuku;');
+			//window.location.reload();
+			//_evtSource.close();
+		//}
+	}
+	
+	var el = document.getElementById("btn");
+	el.addEventListener("click", function(e) {_evtSource.close()}, false);
+	
+	//)
 }
-//)
 
 ajaxSent=function(){
 	try{

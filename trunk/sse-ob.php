@@ -35,22 +35,36 @@ $handle = fopen($url . "/sse.php", "rb", false, $context);
 //print stream_get_contents($handle);
 fclose($handle);
 */
+//$start_time = time();
+//error_log("s1: " . (time() - $start_time) . PHP_EOL, 3, "error.log");
 
-if(session_status() != PHP_SESSION_ACTIVE)
-	session_start();
+//if(session_status() != PHP_SESSION_ACTIVE)
+//	session_start();
 
-$current_id = session_id();
-session_write_close();
+//error_log("s2: " . (time() - $start_time) . PHP_EOL, 3, "error.log");
+	
+//$current_id = session_id();
+//session_write_close();
+
+//error_log("s3: " . (time() - $start_time) . PHP_EOL, 3, "error.log");
 
 //Set a global session with session_id = 11
-session_id(11);
+//if (session_id(11) === "") { session_start(); }
+session_id("g11");
+//session_name('PHPSESSID_GLOB');
 session_start();
+
+//error_log("s4: " . (time() - $start_time) . PHP_EOL, 3, "error.log");
 
 $_SESSION["myob"] = 1;
 session_write_close();
 
-session_id($current_id);
-session_start();
+//error_log("s5: " . (time() - $start_time) . PHP_EOL, 3, "error.log");
+
+//session_id($current_id);
+//session_start();
+
+//error_log("s6: " . (time() - $start_time) . PHP_EOL, 3, "error.log");
 
 /*
 error_log("==== M4444 ====: " . session_id(), 3, "error.log");
