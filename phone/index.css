@@ -2,7 +2,7 @@
 /* Some styles for header */
 .ui-header {
 	background-color: #69C;
-	background-image: url('images/fondo.png');
+	//background-image: url('images/fondo.png');
 	background-position: top right;
 	background-repeat: no-repeat
 }

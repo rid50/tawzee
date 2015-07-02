@@ -1,6 +1,5 @@
 <?php
 require_once('session.php');
-require_once('sse.php');
 
 class DatabaseRepository {
 	private $dsn;
@@ -176,7 +175,7 @@ class DatabaseRepository {
 
 	public function getApplicationStatus($param) {
 		$dbh = $this->connect();
-		
+		//print_r($param);
 		//throw new Exception("SELECT CompletionDate AS \"CompletionDate\" FROM Application WHERE ApplicationNumber = \"$param->applicationNumber\"");
 		try {
 			$sth = $dbh->query("SELECT CompletionDate AS \"CompletionDate\" FROM Application WHERE ApplicationNumber = \"$param->applicationNumber\"");
@@ -1265,11 +1264,33 @@ class DatabaseRepository {
 
 	}
 
+	private function setGlobal($param) {
+		session_id("g11");
+		session_start();
+
+		//error_log("param: " . $param . PHP_EOL, 3, "error.log");
+
+		$_SESSION["myob"] = $param;
+		session_write_close();
+	}
+	
 	public function setOwnerSignature($param) {
 		$dbh = $this->connect();
 
 		try {
-			$dbh->exec("UPDATE Application SET OwnerSignature = 1 WHERE ApplicationNumber = \"$param->applicationNumber\" AND OwnerPhone = \"$param->ownerPhone\"");
+			//print_r($param);
+			//var_dump($param);
+			//error_log("setSignature: " . (string)($param->setSignature = NULL) . PHP_EOL, 3, "error.log");
+
+			if ($param->setSignature != NULL)
+				$dbh->exec("UPDATE Application SET OwnerSignature = 1 WHERE ApplicationNumber = \"$param->applicationNumber\" AND OwnerPhone = \"$param->ownerPhone\"");
+			else
+				$dbh->exec("UPDATE Application SET OwnerSignature = 0 WHERE ApplicationNumber = \"$param->applicationNumber\" AND OwnerPhone = \"$param->ownerPhone\"");
+			
+			//setGlobal(array('op' => 'setOwnerSignature', 'date' => (new DateTime('now', new DateTimeZone('Asia/Kuwait')))->format('Y-m-d')));
+			$this->setGlobal(sprintf('data: {"op" : "setOwnerSignature", "date" : "%s"}', date('d/m/Y H:i:s')));
+			//printf ('data: {"opid" : "approved", "time" : "%s"}' . "\n", date('d/m H:i:s'));	
+
 		} catch (PDOException $e) {
 			throw new Exception('Failed to execute/prepare query: ' . $e->getMessage());
 		}

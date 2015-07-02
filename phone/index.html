@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <title>MEW mobile</title>
 <meta name="viewport" content="width=device-width,user-scalable=no">
-<link rel="stylesheet" href="jquery.mobile-1.0.css" />
+<link rel="stylesheet" href="jquery.mobile-1.0.min.css" />
 <link rel="stylesheet" href="index.css" />
 <script src="jquery.js"></script>
 <script src="index.js"></script>
-<script src="jquery.mobile-1.0.js"></script>
+<script src="jquery.mobile-1.0.min.js"></script>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <link rel="apple-touch-icon" sizes="80x80" href="icons/icon80.png">
@@ -89,7 +89,9 @@
 		 <label for="applicationNumber">رقـــم الطلب:</label>
 		 <input type="text" name="applicationNumber" id="applicationNumber" value="2/12345" required /><br/>
 		 <label for="ownerPhone">رقم الهاتف:</label>
-		 <input type="text" name="ownerPhone" id="ownerPhone" value="66486696" disabled="disabled" />
+		 <input type="text" name="ownerPhone" id="ownerPhone" value="66486696" readonly="readonly" />
+		 <label for="setSignature">Set Signature</label>
+		 <input type="checkbox" name="setSignature" id="setSignature" checked  data-mini="true" />
 		 <input type="hidden" name="requestFor" value="signature">
 		</div>
 

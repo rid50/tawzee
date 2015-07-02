@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <title>وزارة الكهرباء والماء</title>
 <meta name="viewport" content="width=device-width,user-scalable=no">
-<link rel="stylesheet" href="jquery.mobile-1.0.css" />
+<link rel="stylesheet" href="jquery.mobile-1.0.min.css" />
 <script src="jquery.js"></script>
-<script src="jquery.mobile-1.0.js"></script>
+<script src="jquery.mobile-1.0.min.js"></script>
 </head>
 
 <body>
@@ -41,6 +41,7 @@
 				print '<a data-role="button" data-inverse="true" href="index.html#status-request">Close</a>';
 			} else if ($_POST['requestFor'] == "signature") {
 				$obj->ownerPhone = $_POST['ownerPhone'];
+				$obj->setSignature = $_POST['setSignature'];
 				$result = $dbrep->setOwnerSignature($obj);
 				print '<div dir="rtl"><img src="../images/information32.png" alt="information" width="32" height="32">';		
 				print '<span style="position:absolute;line-height:32px;font-size:1.5em">&nbsp;&nbsp;منته</span></div>';

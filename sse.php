@@ -21,7 +21,7 @@ if(session_status() != PHP_SESSION_ACTIVE) {
 	
 	//set_global(5);
 
-	$_SESSION["myob"] = 0;
+//	$_SESSION["myob"] = 0;
 	
 	//error_log("3) session id:" . session_id() . PHP_EOL, 3, "error.log");
 	
@@ -33,7 +33,7 @@ if(session_status() != PHP_SESSION_ACTIVE) {
 	//default: 1 seconds
 	$_sleep_time = 1;
 	
-	$_global_session_id = "g11";
+	//$_global_session_id = "g11";
 	
 	//prevent buffering
 	if(function_exists('apache_setenv')){
@@ -59,31 +59,26 @@ if(session_status() != PHP_SESSION_ACTIVE) {
 //$_opid = 0;
 	
 function check_global() {	
-	$current_id = session_id();
-	session_write_close();
+//	$current_id = session_id();
+//	session_write_close();
 
 //error_log("OB: " . (string)($_SESSION['myob']) . PHP_EOL, 3, "error.log");
 	
-	//Set a global session with session_id = 11
-	//if (session_id(11) !== "") {
-	//error_log("Session ID11: " . (string)(session_id(11)) . PHP_EOL, 3, "error.log");
-		//session_id($_global_session_id);
-		session_id("g11");
-		session_start();
-	//error_log("OB2: " . (string)($_SESSION['myob']) . PHP_EOL, 3, "error.log");
-		$ob = 0;
-		if(isset($_SESSION["myob"])) {
-			$ob = $_SESSION["myob"];
-			unset($_SESSION["myob"]);
-		}
-		session_write_close();
-	//} else {
+//error_log("Session ID11: " . (string)(session_id(11)) . PHP_EOL, 3, "error.log");
+	//session_id($_global_session_id);
+	session_id("g11");
+	session_start();
+//error_log("OB2: " . (string)($_SESSION['myob']) . PHP_EOL, 3, "error.log");
+	$ob = 0;
+	if(isset($_SESSION["myob"])) {
+		$ob = $_SESSION["myob"];
+		unset($_SESSION["myob"]);
+	}
+	session_write_close();
+
 	//	error_log("else Session ID11: " . (string)(session_id(11)) . PHP_EOL, 3, "error.log");
 	//	error_log("else OB2: " . (string)($_SESSION["myob"]) . PHP_EOL, 3, "error.log");
 	
-	
-	
-	//}
 	
 	//if (session_id($current_id) === "") {
 	//	session_start();
@@ -91,13 +86,14 @@ function check_global() {
 	//} else {
 	//	error_log("else OB11: " . (string)($_SESSION["myob"]) . PHP_EOL, 3, "error.log");
 	//}
-	session_id($current_id);
-	session_start();
+
+//	session_id($current_id);
+//	session_start();
 //error_log("OB at end: " . (string)($_SESSION['myob']) . PHP_EOL, 3, "error.log");
 //error_log("==== OB ==== " . (string)($ob), 3, "error.log");
 	return $ob;
 }
-
+/*
 function set_global($val) {	
 	$current_id = session_id();
 	//session_write_close();
@@ -116,14 +112,16 @@ function set_global($val) {
 	//session_id($current_id);
 	//session_start();
 }
-
-function send()
+*/
+function send($ob)
 { 
+	echo $ob;
+	echo "\n\n";
 	//echo "event: ping\n";
-	echo 'data: {"opid" : "kuku"}' . "\n";
+	//echo 'data: {"opid" : "kuku"}' . "\n";
 	//printf ('data: {"time" : "%s"}' . "\n", date('d/m H:i:s'));	
 	//printf ('data: {"opid" : "approved", "time" : "%s"}' . "\n", date('d/m H:i:s'));	
-	echo "\n";
+	//echo "\n";
 	//echo "data: kuku\n\n";
 
 //	print 'data: {"opid" : "approved"}' . PHP_EOL;
@@ -166,9 +164,10 @@ while(true) {
 	//printf ('data: {"opid" : "approved", "time" : "%s"}' . "\n\n", date('d/m H:i:s'));
 	//print 'data: {"opid" : "approved"}' . PHP_EOL . PHP_EOL;
 
-	if (check_global()) {
+	if ($ob = check_global()) {
+		error_log($ob . PHP_EOL, 3, "error.log");
 		//set_global(0);
-		send();
+		send($ob);
 	} else {
 		if(SSEUtils::time_mod($_start, $_keep_alive_time) == 0) {
 			//error_log(date('d/m H:i:s'), 3, "error.log");
