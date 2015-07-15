@@ -1265,13 +1265,19 @@ class DatabaseRepository {
 	}
 
 	private function setGlobal($param) {
+		apc_store('myob', $param);
+//	$ob = apc_fetch("myob");
+//error_log("OB_F: " . (string)($ob) . PHP_EOL, 3, "error.log");
+		
+/*
 		session_id("g11");
-		session_start();
+		$started = session_start();
 
-		//error_log("param: " . $param . PHP_EOL, 3, "error.log");
+		error_log("Started: " . (string)($started == true) . PHP_EOL, 3, "error.log");
 
 		$_SESSION["myob"] = $param;
 		session_write_close();
+*/		
 	}
 	
 	public function setOwnerSignature($param) {

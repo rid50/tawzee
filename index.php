@@ -794,6 +794,7 @@ if ($idp == "SAML") {
 </div>
 -->
 
+  <script defer src="js/eventsource.min.js"></script>
   <!-- FlexSlider -->
   <script defer src="js/jquery.flexslider-min.js"></script>
 <!--
