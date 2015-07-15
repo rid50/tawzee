@@ -986,6 +986,11 @@ document.getElementById('theForm').submit();
 		//}
 	}
 
+	window.onbeforeunload = function() {
+		if (_evtSource != undefined)
+			_evtSource.close();
+	}
+	
 	//if (_evtSource != undefined)
 	//	_evtSource.close();
 	
