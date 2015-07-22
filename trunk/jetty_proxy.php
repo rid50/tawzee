@@ -64,10 +64,11 @@ try {
 	//$handle = fopen("http://tawsilat/get_image.php", "rb", false, $context);
 
 	if ($handle) {
+		//error_log("handle: " . ($handle == null) . PHP_EOL, 3, "errors.log");		
 		print stream_get_contents($handle);
 		fclose($handle);
 	} else {
-//		header('Content-type: text/plain; charset=utf-8');
+		//header('Content-type: text/plain; charset=utf-8');
 		if (isset($_GET['CheckConnection'])) {
 			http_response_code(200);
 			print "666";		// server is not running

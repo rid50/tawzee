@@ -1546,7 +1546,7 @@ function initAccordion() {
 					var keyFieldValue = $("#" + $('#' + _currentForm).attr('data-key-field')).val();
 					
 					printReport(function(reportName) {
-						$.blockUI();
+						$.blockUI();	// onload="$.unblockUI()"
 						//var cgi = (_cgi == true) ? "&cgi" : "";
 						//$('<img src=\"jetty_proxy.php?reportName=' + reportName + '&applicationNumber=' + _applicationNumber + '&keyFieldValue=' + keyFieldValue + cgi + '&renderAs=png\" onload="$.unblockUI()" />').appendTo('#report-container');
 						if (!_cgi)

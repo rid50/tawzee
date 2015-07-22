@@ -12,13 +12,13 @@
 	}
 	
 	@ini_set('zlib.output_compression', 0);
+
+	//@ini_set('implicit_flush', 1);
+	//while (ob_get_level() != 0) {
+	//	ob_end_flush();
+	//}
 	
-	@ini_set('implicit_flush', 1);
-	while (ob_get_level() != 0) {
-		ob_end_flush();
-	}
-	
-	ob_implicit_flush(1);
+	//ob_implicit_flush(1);
 	
 	//error_log(session_id() . " ----- " . session_status() . PHP_EOL, 3, "error.log");
 
@@ -212,8 +212,8 @@ while(true) {
 			//No updates needed, send a comment to keep the connection alive.
 			//From https://developer.mozilla.org/en-US/docs/Server-sent_events/Using_server-sent_events
 			echo ': ' . sha1(mt_rand()) . "\n\n";
-			//ob_flush();
-			//flush();
+			ob_flush();
+			flush();
 		}
 	}
 

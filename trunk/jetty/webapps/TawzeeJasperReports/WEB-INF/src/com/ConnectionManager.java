@@ -10,8 +10,11 @@ import java.util.Properties;
 
 import javax.servlet.ServletException;
 
+import org.apache.log4j.Logger;
+
 public class ConnectionManager
 {
+	//private static final Logger LOG = Logger.getLogger(ConnectionManager.class);	
     Connection connection = null;
 
     public ConnectionManager() throws ServletException {
@@ -50,6 +53,7 @@ public class ConnectionManager
             
             
         } catch (Exception e) {
+
             //System.out.println("connection error: " + e.toString());
             //if (true)
             //	return;
