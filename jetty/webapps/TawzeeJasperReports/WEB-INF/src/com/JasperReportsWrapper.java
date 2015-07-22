@@ -1,21 +1,25 @@
 package com;
 
-import java.io.File;
+//import java.io.File;
 import java.sql.Connection;
 import java.util.HashMap;
-import java.util.Map;
+//import java.util.Map;
 
 import javax.servlet.ServletException;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperExportManager;
+//import net.sf.jasperreports.engine.JRException;
+//import net.sf.jasperreports.engine.JasperCompileManager;
+//import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 
+import org.apache.log4j.Logger;
+
 public class JasperReportsWrapper
 {
+	//private static final Logger LOG = Logger.getLogger(JasperReportsWrapper.class);	
+	
 /*	
     public static String dbServerAdd = "tawzee.mew.gov.kw";
     //public static String dbServerAdd = "localhost";

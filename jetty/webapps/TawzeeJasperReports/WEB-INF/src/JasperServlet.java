@@ -1,12 +1,13 @@
 import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.RenderingHints;
+//import java.awt.Graphics2D;
+//import java.awt.Image;
+//import java.awt.RenderingHints;
+//import java.awt.Transparency;
 import java.awt.image.BufferedImage;
-import java.io.FileOutputStream;
+//import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
+//import java.io.PrintWriter;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Locale;
@@ -187,9 +188,35 @@ public class JasperServlet extends HttpServlet {
 				exporter.exportReport();
 			}
 		} catch (Exception e) {
+			//LOG.info("Exception: " + e.getMessage());
+			
+			response.setContentType("image/png");
+			
+			//GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		    //GraphicsDevice gs = ge.getDefaultScreenDevice();
+		    //GraphicsConfiguration gc = gs.getDefaultConfiguration();
+
+		    // Create an image that does support transparency
+		    //BufferedImage image = gc.createCompatibleImage(600, 600, Transparency.TRANSLUCENT);
+
+			
+			BufferedImage image = new BufferedImage(600, 600, BufferedImage.TYPE_INT_ARGB);
+			java.awt.Graphics graphics = image.getGraphics();
+	        //graphics.setColor(Color.OPAQUE);
+	        //graphics.fillRect(0, 0, 200, 200);
+	        graphics.setColor(Color.RED);
+	        graphics.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 12));
+	        String errtext = e.getMessage();
+	        int i; if ((i = errtext.indexOf("Access denied")) != -1)
+	        	errtext = errtext.substring(0, i + ("Access denied").length());  
+	        graphics.drawString(errtext, 10, 20);
+			OutputStream out = response.getOutputStream();
+			ImageIO.write((BufferedImage) image, "png", out);
+	        
+			
 			//response.setContentType("text/html");
-			PrintWriter out = response.getWriter();
-			out.print(e.toString());
+			//PrintWriter out = response.getWriter();
+			//out.print(e.toString());
 			
 			//e.printStackTrace(System.out);
 		}
