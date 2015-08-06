@@ -980,6 +980,7 @@ document.getElementById('theForm').submit();
 				$("#accordion").accordion( "option", "active", 2 );				
 			}
 		//}
+		
 		//if (obj.opid == "approved") {
 			console.log(obj);
 			//window.location.reload();
