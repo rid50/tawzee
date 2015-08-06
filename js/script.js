@@ -972,13 +972,14 @@ document.getElementById('theForm').submit();
 	
 	_evtSource = new EventSource("sse.php");
 	_evtSource.onmessage = function(e) {
-		var obj = JSON.parse(e.data);
-		var accTab = $("#accordion").accordion( "option", "active" );
-		if (obj.op == "setOwnerSignature" && accTab == 2) {
-			$("#accordion").accordion( "option", "active", "false" );				
-			$("#accordion").accordion( "option", "active", 2 );				
-		}
-		
+		//if (e.origin == 'http://tawzee.....') {
+			var obj = JSON.parse(e.data);
+			var accTab = $("#accordion").accordion( "option", "active" );
+			if (obj.op == "setOwnerSignature" && accTab == 2) {
+				$("#accordion").accordion( "option", "active", "false" );				
+				$("#accordion").accordion( "option", "active", 2 );				
+			}
+		//}
 		//if (obj.opid == "approved") {
 			console.log(obj);
 			//window.location.reload();
