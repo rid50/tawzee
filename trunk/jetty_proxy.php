@@ -32,7 +32,13 @@ if (!isset($_GET['CheckConnection'])) {
 		array()
 	);
 	
-	$url .= "?CheckConnection";
+	if ($_GET['sse'] == "false") {
+		$url .= "?CheckConnection=true";
+		$method = 'POST';
+	} else {
+		$url = "http://". $_SERVER['SERVER_NAME'] . ":8084/SSE/sse?CheckConnection=true";
+		$method = 'GET';
+	}
 }
 
 	//error_log($url . PHP_EOL, 3, "errors.log");		
@@ -45,7 +51,7 @@ if (!isset($_GET['CheckConnection'])) {
 
 $opts = array('http' =>
     array(
-        'method'  => 'POST',
+        'method'  => $method,
         //'header'  => $header,
         'header'  => "Content-Type: application/x-www-form-urlencoded\r\n",
         'content' => $postdata

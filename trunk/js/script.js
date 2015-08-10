@@ -21,7 +21,7 @@ var areaNames;
 var _currentForm;
 //var _formButtonSet;
 var _applicationNumber = "";
-var	_jasperReportsServerConnection = false;
+var	_isJettyStarted = false;
 //var _jasperReportsURL = "//" + location.hostname +  ":8084/TawzeeJasperReports/JasperServlet";
 var _jasperReportsURL_CGI = "//" + location.hostname +  "/cgi-bin/RunJasperReportsCGI.pl";
 var _runJettyEmbedded = "//tawzee/jetty/webapps/TawzeeJasperReports/WEB-INF/cgi-bin/RunJasperReportsCGI.bat";
@@ -779,14 +779,14 @@ document.getElementById('theForm').submit();
 				
 				/*
 					$.blockUI();
-					_jasperReportsServerConnection = false;
+					_isJettyStarted = false;
 					
 					function onTimeOutHandler() {
 						if ($('#error-box2').length > 0)
 							$('#error-box2').remove();
 					
 						$.unblockUI();
-						if (_jasperReportsServerConnection) {
+						if (_isJettyStarted) {
 							var ReportName;
 							if ("main-form" == _currentForm)
 								ReportName = "TawsilatApplicationForm";
@@ -969,42 +969,61 @@ document.getElementById('theForm').submit();
 		}, 100 );
 	}, false);
 	//applyAcl();
-	
-	_evtSource = new EventSource("sse.php");
-	_evtSource.onmessage = function(e) {
-		//if (e.origin == 'http://tawzee.....') {
-			var obj = JSON.parse(e.data);
-			var accTab = $("#accordion").accordion( "option", "active" );
-			if (obj.op == "setOwnerSignature" && accTab == 2) {
-				$("#accordion").accordion( "option", "active", "false" );				
-				$("#accordion").accordion( "option", "active", 2 );				
-			}
-		//}
-		
-		//if (obj.opid == "approved") {
-			console.log(obj);
-			//window.location.reload();
-			//_evtSource.close();
-		//}
-	}
 
-	window.onbeforeunload = function() {
-		if (_evtSource != undefined)
-			_evtSource.close();
+	function sse() {
+		var sseURL = "//" + location.hostname +  ":8084/SSE/sse";
+		_evtSource = new EventSource(sseURL);
+		_evtSource.onmessage = function(e) {
+			//if (e.origin == 'http://tawzee.....') {
+				var obj = JSON.parse(e.data);
+				var accTab = $("#accordion").accordion( "option", "active" );
+				if (obj.op == "setOwnerSignature" && accTab == 2) {
+					$("#accordion").accordion( "option", "active", "false" );				
+					$("#accordion").accordion( "option", "active", 2 );				
+				}
+			//}
+			
+			//if (obj.opid == "approved") {
+				console.log(obj);
+				//window.location.reload();
+				//_evtSource.close();
+			//}
+		}
+
+		window.onbeforeunload = function() {
+			if (_evtSource != undefined)
+				_evtSource.close();
+		}
+		
+		//if (_evtSource != undefined)
+		//	_evtSource.close();
+		
+		//_evtSource.onopen = function(e) {
+		//	error('open');
+		//};
+		
+		//_evtSource.onerror = function(e) {
+		//	alert("EventSource failed.");
+		//};
 	}
 	
-	//if (_evtSource != undefined)
-	//	_evtSource.close();
+	(function (func) {
+		error("");
+		$.blockUI();
+		_isJettyStarted = false;
+		
+		function onTimeOutHandler() {
+			$.unblockUI();
+			if (_isJettyStarted) {
+				func();
+			}
+		}
+		
+		var timeoutID = window.setTimeout(onTimeOutHandler, 5000);
+		CheckConnection(timeoutID, onTimeOutHandler, "true");
+	})(sse);
 	
-	//_evtSource.onopen = function(e) {
-	//	error('open');
-	//};
-	
-	//_evtSource.onerror = function(e) {
-	//	alert("EventSource failed.");
-	//};
-	
-});
+});	//$(document).ready
 
 function setFocus() {
 	//var currForm = $('#' + _currentForm);
@@ -2533,14 +2552,14 @@ function setCheckBox(groupName, value, bitmask) {
 function printReport(func) {
 	error("");
 	$.blockUI();
-	_jasperReportsServerConnection = false;
+	_isJettyStarted = false;
 	
 	function onTimeOutHandler() {
 		//if ($('#error-box2').length > 0)
 		//	$('#error-box2').remove();
 	
 		$.unblockUI();
-		if (_jasperReportsServerConnection) {
+		if (_isJettyStarted) {
 			//showError("");
 //			error("");
 			var reportName;
@@ -2560,17 +2579,18 @@ function printReport(func) {
 	CheckConnection(timeoutID, onTimeOutHandler);
 }
 
-function CheckConnection(timeoutID, func) {
+function CheckConnection(timeoutID, func, sse="false") {
 	var xhr = new XMLHttpRequest();
 	//try {
 	//var url = _jasperReportsURL + "?CheckConnection&r=" + Math.random();
 	var url;
 	if (!_cgi)
-		url = "jetty_proxy.php?CheckConnection&r=" + Math.random();
+		url = "jetty_proxy.php?CheckConnection&sse=" + sse + "&r=" + Math.random();
 	else
 		url = _jasperReportsURL_CGI + "?CheckConnection&r=" + Math.random();
 	//url += (_cgi == true) ? "&cgi" : "";
 
+	var sse = (sse != "true");
 	xhr.open( "GET", url, true ); 	// true - the asynchronous operation 
 	//xhrTimeout = window.setTimeout(onTimeOutHandler, 5000);
 
@@ -2584,20 +2604,23 @@ function CheckConnection(timeoutID, func) {
 		//showError("");	
 		error("");	
 		if (xhr.status != 200) {
-			error("Error connecting to Jetty Reporting Service: " + xhr.status);
+			if (!sse)
+				error("Error connecting to Jetty Reporting Service: " + xhr.status);
 		} else {
 			if (xhr.responseText != "666") {	// server is not running
-				_jasperReportsServerConnection = true;
+				_isJettyStarted = true;
 				window.clearTimeout(timeoutID);
 
 				func();
 			} else
-				error("Jetty Reporting Service is not running");
+				if (!sse)
+					error("Jetty Reporting Service is not running");
 		}
 	}
 	
 	xhr.onerror = function() {
-		error("Jetty Reporting Service is not running");
+		if (!sse)
+			error("Jetty Reporting Service is not running");
 	};
 	
 	//xhr.onprogress = function(){ };
@@ -2607,7 +2630,8 @@ function CheckConnection(timeoutID, func) {
 		xhr.abort();
 		//clearTimeout(xhrTimeout);
 		//showError("Jetty Reporting Service is not running");
-		error("Jetty Reporting Service is not running");
+		if (!sse)
+			error("Jetty Reporting Service is not running");
 		//$('#error-box').val("Check if Jetty Reporting Service started");
 		//return false;
 	}
