@@ -1280,6 +1280,19 @@ class DatabaseRepository {
 */		
 	}
 	
+	
+	private function curl_post($param) {
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, "http://tawzee:8084/SSE/sse?PostData=true");
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, "data=" . $param);
+		curl_exec ($ch);
+		curl_close ($ch);
+
+		//throw new Exception(print_r(curl_getinfo($ch), true));
+		
+	}
+	
 	public function setOwnerSignature($param) {
 		$dbh = $this->connect();
 
@@ -1294,7 +1307,8 @@ class DatabaseRepository {
 				$dbh->exec("UPDATE Application SET OwnerSignature = 0 WHERE ApplicationNumber = \"$param->applicationNumber\" AND OwnerPhone = \"$param->ownerPhone\"");
 			
 			//setGlobal(array('op' => 'setOwnerSignature', 'date' => (new DateTime('now', new DateTimeZone('Asia/Kuwait')))->format('Y-m-d')));
-			$this->setGlobal(sprintf('data: {"op" : "setOwnerSignature", "date" : "%s"}', date('d/m/Y H:i:s')));
+			//$this->setGlobal(sprintf('data: {"op" : "setOwnerSignature", "date" : "%s"}', date('d/m/Y H:i:s')));
+			$this->curl_post(sprintf('{"op" : "setOwnerSignature", "date" : "%s"}', date('d/m/Y H:i:s')));
 			//printf ('data: {"opid" : "approved", "time" : "%s"}' . "\n", date('d/m H:i:s'));	
 
 		} catch (PDOException $e) {

@@ -972,6 +972,7 @@ document.getElementById('theForm').submit();
 
 	function sse() {
 		var sseURL = "//" + location.hostname +  ":8084/SSE/sse";
+		//_evtSource = new EventSource(sseURL, {withCredentials: true});
 		_evtSource = new EventSource(sseURL);
 		_evtSource.onmessage = function(e) {
 			//if (e.origin == 'http://tawzee.....') {
@@ -1020,7 +1021,7 @@ document.getElementById('theForm').submit();
 		}
 		
 		var timeoutID = window.setTimeout(onTimeOutHandler, 5000);
-		CheckConnection(timeoutID, onTimeOutHandler, "true");
+		CheckConnection(timeoutID, onTimeOutHandler, true);
 	})(sse);
 	
 });	//$(document).ready
@@ -2579,18 +2580,24 @@ function printReport(func) {
 	CheckConnection(timeoutID, onTimeOutHandler);
 }
 
-function CheckConnection(timeoutID, func, sse="false") {
+function CheckConnection(timeoutID, func, sse) {
+
+	if (sse == undefined)
+		sse = false;
+		
 	var xhr = new XMLHttpRequest();
 	//try {
 	//var url = _jasperReportsURL + "?CheckConnection&r=" + Math.random();
 	var url;
-	if (!_cgi)
-		url = "jetty_proxy.php?CheckConnection&sse=" + sse + "&r=" + Math.random();
-	else
+	if (!_cgi) {
+		//if (!sse)
+			url = "jetty_proxy.php?CheckConnection&sse=" + sse + "&r=" + Math.random();
+		//else
+			//url = "//" + location.hostname +  ":8084/SSE/sse?CheckConnection=true&r=" + Math.random();
+	} else
 		url = _jasperReportsURL_CGI + "?CheckConnection&r=" + Math.random();
-	//url += (_cgi == true) ? "&cgi" : "";
 
-	var sse = (sse != "true");
+	//var sse = (sse != "true");
 	xhr.open( "GET", url, true ); 	// true - the asynchronous operation 
 	//xhrTimeout = window.setTimeout(onTimeOutHandler, 5000);
 
@@ -2607,7 +2614,7 @@ function CheckConnection(timeoutID, func, sse="false") {
 			if (!sse)
 				error("Error connecting to Jetty Reporting Service: " + xhr.status);
 		} else {
-			if (xhr.responseText != "666") {	// server is not running
+			if (xhr.responseText != "666") {	// 666 = server is not running
 				_isJettyStarted = true;
 				window.clearTimeout(timeoutID);
 

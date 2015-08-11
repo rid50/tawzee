@@ -18,6 +18,7 @@ if (!isset($_GET['CheckConnection'])) {
 	else
 		header("Content-Type: application/pdf");
 	
+	$method = 'POST';
 	$postdata = http_build_query(
 		array(
 			'reportName' => isset($_GET['reportName']) ? $_GET['reportName'] : $_POST['reportName'],
