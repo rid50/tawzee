@@ -1283,7 +1283,8 @@ class DatabaseRepository {
 	
 	private function curl_post($param) {
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, "http://tawzee:8084/SSE/sse?PostData=true");
+		//curl_setopt($ch, CURLOPT_URL, "http://tawzee:8084/SSE/sse?PostData=true");
+		curl_setopt($ch, CURLOPT_URL, "http://tawzee:8084/SSE/sse");
 		curl_setopt($ch, CURLOPT_POST, 1);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, "data=" . $param);
 		curl_exec ($ch);
