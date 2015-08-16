@@ -119,6 +119,7 @@ public class SSEServlet extends EventSourceServlet {
 	protected EventSource newEventSource(final HttpServletRequest request) {
 		return new EventSource() {
 			private Emitter emitter;
+			private boolean closed = false;
 
 			@Override
 			public void onOpen(final Emitter emitter) throws IOException {
@@ -193,6 +194,7 @@ public class SSEServlet extends EventSourceServlet {
 */
 			@Override
 			public void onClose() {
+	            closed = true;
 				emitters.remove(this.emitter);
 			}
 		};
