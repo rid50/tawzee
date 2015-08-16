@@ -18,7 +18,6 @@ public class ConnectionManager
     Connection connection = null;
 
     public ConnectionManager() throws ServletException {
-    	
         Properties props = new Properties();
         InputStream is = null;
 
