@@ -1309,7 +1309,7 @@ class DatabaseRepository {
 			
 			//setGlobal(array('op' => 'setOwnerSignature', 'date' => (new DateTime('now', new DateTimeZone('Asia/Kuwait')))->format('Y-m-d')));
 			//$this->setGlobal(sprintf('data: {"op" : "setOwnerSignature", "date" : "%s"}', date('d/m/Y H:i:s')));
-			$this->curl_post(sprintf('{"op" : "setOwnerSignature", "date" : "%s"}', date('d/m/Y H:i:s')));
+			$this->curl_post(sprintf('{"op" : "setOwnerSignature", "applicationNumber" : "%s", "date" : "%s"}', $param->applicationNumber, date('d/m/Y H:i:s')));
 			//printf ('data: {"opid" : "approved", "time" : "%s"}' . "\n", date('d/m H:i:s'));	
 
 		} catch (PDOException $e) {

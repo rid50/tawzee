@@ -978,7 +978,7 @@ document.getElementById('theForm').submit();
 			//if (e.origin == 'http://tawzee.....') {
 				var obj = JSON.parse(e.data);
 				var accTab = $("#accordion").accordion( "option", "active" );
-				if (obj.op == "setOwnerSignature" && accTab == 2) {
+				if (accTab == 2 && obj.op == "setOwnerSignature" && obj.applicationNumber == _applicationNumber) {
 					$("#accordion").accordion( "option", "active", "false" );				
 					$("#accordion").accordion( "option", "active", 2 );				
 				}
