@@ -2038,7 +2038,7 @@ function getUserIdentities(url, json, func) {
 		url = "json_db_pdo.php";
 		data = {"func":"getUserAttributes",	"param":{loginNames:JSON.stringify(json)}};
 	} else {
-		alert("Unknown user repository");
+		alert("getUserIdentities: Unknown user repository");
 		return;
 	}
 	

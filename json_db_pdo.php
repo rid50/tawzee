@@ -1,32 +1,8 @@
 <?php
-require_once('session.php');
-
-/*
-session_start();
-
-//foreach ($_SESSION as $key=>$value)
-//{
-//	print $key . " - " . $value . "<br/>";
-//}
-
-if(isset($_SESSION['loginName']))
-print $_SESSION['loginName'];
-else
-print 'NO';
-die();
-
-//check that the session exists
-if(!isset($_SESSION['loginName']))
-{
-	//the session does not exist, redirect
-	$redirect = ($_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://';
-	$redirect .= $_SERVER['HTTP_HOST'];
-	$redirect .= '/index.php';
-	header("location: $redirect");
-}
-*/
+//require_once('session.php');
+//session_start();
 require('db_repo.php');
-	
+
 $param = null;
 if (isset($_POST['func'])) {
 	$func = $_POST['func'];

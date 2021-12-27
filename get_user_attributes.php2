@@ -1,6 +1,8 @@
 <?php
-//session_start();
-require_once('session.php');
+session_start();
+//require_once('session.php');
+
+error_log('SESSION_GetUserAttributes_1:' . print_r($_SESSION, TRUE));
 
 try {
 	$ua = new GetUserAttributes();
@@ -101,6 +103,9 @@ class GetUserAttributes {
 		else
 			$assoc_ar = json_decode($_GET['loginNames'], true);
 		
+		error_log('SESSION_GetUserAttributes_2:' . print_r($_SESSION, TRUE));
+		//error_log('SESSION_GetUserAttributes:');
+
 		foreach ($assoc_ar as $key => $value) {
 			foreach ($value as $key2 => $value2) {
 				if ($value2 == "") {

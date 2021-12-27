@@ -1,5 +1,7 @@
 <?php
-session_start();
+if(!isset($_SESSION['ini_lang']) || empty($_SESSION['ini_lang'])) {
+	session_start();
+}
 
 if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
 	require_once('c:/simplesaml/lib/_autoload.php');
@@ -13,7 +15,8 @@ $ini = parse_ini_file("config.ini");
 $idp = $ini["IdP"];
 $idpSource = $ini["IdPSource"];
 
-$_SESSION['ini_lang'] = $ini["lang"];
+//error_log('SESSION_index.php:' . print_r($_SESSION, TRUE));
+//SimpleSAML\Logger::info('SESSION_1:' . print_r($_SESSION, TRUE));
 
 //throw new Exception(http_negotiate_language(array('en-US', 'ar-KW')));
 //throw new Exception($_SERVER['HTTP_ACCEPT_LANGUAGE']);
@@ -22,23 +25,29 @@ $_SESSION['ini_lang'] = $ini["lang"];
 
 if ($idp == "SAML") {
 	if ($idpSource == "DB")
-		$as = new SimpleSAML_Auth_Simple('mewSQLAuth');
+		$as = new SimpleSAML\Auth\Simple('mewSQLAuth');
 	else {
 		//print(strpos($_SERVER["HTTP_VIA"], 'mew.gov.kw'));
 		//return;
 		if ($_SERVER["HTTP_VIA"] != null && strpos($_SERVER["HTTP_VIA"], 'mew.gov.kw') !== false)
-			$as = new SimpleSAML_Auth_Simple('mewADAuth');
+			$as = new SimpleSAML\Auth\Simple('mewADAuth');
 		else
-			$as = new SimpleSAML_Auth_Simple('mewSQLAuth');
+			$as = new SimpleSAML\Auth\Simple('mewSQLAuth');
 	}
 	
-	if (!$as->isAuthenticated ()) {
+	if (!$as->isAuthenticated ()) {  // Replaces current session with the SimpleSAMLphp one
+		$_SESSION['ini_lang'] = $ini["lang"];
+		//SimpleSAML\Logger::info('SESSION_2:' . print_r($_SESSION, TRUE));
 		$as->requireAuth();
 		//$attributes = $as->getAttributes();
 		//$url = $url . '?loginName=' . $attributes["LoginName"];
 		//$_SESSION['loginName'] = $attributes["LoginName"];
 	}
-	
+
+	//SimpleSAML\Logger::info('SESSION_3:' . print_r($_SESSION, TRUE));	
+
+	//SimpleSAML\Session::getSessionFromRequest()->cleanup(); // Reverts to our PHP session
+
 	//$as->requireAuth();
 	//$attributes = $as->getAttributes();
 	//$url = $url . '?loginName=' . $attributes["LoginName"];
@@ -76,7 +85,7 @@ if ($idp == "SAML") {
 	
 	<script src="js/jquery-1.11.0.min.js" type="text/javascript"></script>
 	<!--script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script--> 
-	<!--script src="//code.jquery.com/jquery-1.11.1.min.js"></script--> 
+	<!-- <script src="//code.jquery.com/jquery-3.6.0.min.js"></script> -->
 
 	<script src="js/jquery-ui.min.js" type="text/javascript"></script>
 	<!--script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script-->

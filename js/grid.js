@@ -73,7 +73,6 @@ Grid = {
 							}
 						},
                         {name: 'ApplicationDate', index: 'ApplicationDate', align: 'center', width: '100px', sortable: true, hidden: false, resizable: false, sorttype: 'date', formatter: 'date', formatoptions: { srcformat: 'Y-m-d', newformat: 'd-M-Y'} }, //DateEntry (src) = "12/31/1999 00:00:00"
-                        //{name: 'ApplicationDate', index: 'ApplicationDate', align: 'center', width: '100px', sortable: true, hidden: false, resizable: false, sorttype: 'date', formatter: 'date', formatoptions: { srcformat: 'Y-m-d', newformat: 'd/m/Y'} }, //DateEntry (src) = "12/31/1999 00:00:00"
                         {name: 'OwnerName', index: 'OwnerName', align: 'right', width: '150px', sortable: true, editable: false, resizable: false },
                         {name: 'OwnerPhone', hidden: true },
                         {name: 'ProjectName', index: 'ProjectName', align: 'right', width: '120px', sortable: true, editable: false, resizable: true },
@@ -122,6 +121,7 @@ Grid = {
                 $('#alert').dialog('open');
             },
             loadComplete: function (event) {
+				//debugger;
                 if (event && event[0] && event[0].error != "") {
 					if (window.console) window.console.log(event[0].error);
 					alert (event[0].error);

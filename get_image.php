@@ -16,7 +16,9 @@ error_log($_GET['userAgent'] . " ****" . "\r\n", 3, "errors.log");
 
 if(isset($_SERVER['HTTP_USER_AGENT']))
 {
-	if (strtolower(array_shift(explode("/", $_SERVER['HTTP_USER_AGENT']))) != "java")
+//	if (strtolower(array_shift(explode("/", $_SERVER['HTTP_USER_AGENT']))) != "java")
+	$exp = explode("/", $_SERVER['HTTP_USER_AGENT']);
+	if (strtolower(array_shift($exp)) != "java")
 		require_once('session.php');
 }
 	

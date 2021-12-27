@@ -1,0 +1,10 @@
+*.log
+/jetty/jasper_reports.log
+/config.ini
+/jetty/webapps/TawzeeJasperReports/WEB-INF/classes/*.class
+/jetty/webapps/TawzeeJasperReports/.project
+/jetty/webapps/TawzeeJasperReports/TawzeeApplicationForm.jasper
+/jetty/webapps/TawzeeJasperReports/TawzeeLoadForm.jasper
+/jetty/webapps/TawzeeJasperReports/.classpath
+/jetty/webapps/TawzeeJasperReports/WEB-INF/src/database.properties
+/jetty/webapps/TawzeeJasperReports/WEB-INF/classes/database.properties

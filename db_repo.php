@@ -1,5 +1,7 @@
 <?php
-require_once('session.php');
+session_start();
+//require_once('session.php');
+//error_log('SESSION_db_repo_1:' . print_r($_SESSION, TRUE));
 
 class DatabaseRepository {
 	private $dsn;
@@ -421,6 +423,7 @@ class DatabaseRepository {
 
 			$start = $limit * $page - $limit;
 
+			//$st = "SELECT OwnerName AS \"OwnerName\"		
 			$st = "SELECT ApplicationNumber AS \"ApplicationNumber\", ApplicationDate AS \"ApplicationDate\", OwnerName AS \"OwnerName\", OwnerPhone AS \"OwnerPhone\", ProjectName AS \"ProjectName\", ControlCenterId AS \"ControlCenterId\", ProjectType AS \"ProjectType\", AreaName AS \"Area\", Block AS \"Block\", Plot AS \"Plot\", ConstructionExpDate AS \"ConstructionExpDate\", FeedPoints AS \"FeedPoints\"
 				FROM Application LEFT JOIN Area ON Application.AreaID = Area.ID";
 
@@ -463,7 +466,7 @@ class DatabaseRepository {
 		$this->result->page = $page;
 		$this->result->total = $total_pages;
 		$this->result->records = $count;
-		$this->result->userdata = $userdata;
+		//$this->result->userdata = $userdata;
 		$i = 0;
 		while($r = $ds->fetch(PDO::FETCH_ASSOC)) {
 			$r2 = (object)$r;
@@ -483,8 +486,8 @@ class DatabaseRepository {
 	public function getApp($param) {	
 		$dbh = $this->connect();
 		try {
-			//$st = "SELECT ResidenceTotalArea, ConstructionArea, ACArea, CurrentLoad, ExtraLoad, LoadAfterDelivery, ConductiveTotalLoad, FeedPoints, SiteFeedPoint,
-			$st = "SELECT ResidenceTotalArea, ConstructionArea, ACArea, CurrentLoad, ExtraLoad, LoadAfterDelivery, ConductiveTotalLoad, SiteFeedPoint,
+			//$st = "SELECT ResidenceTotalArea, ConstructionArea, ACArea, CurrentLoad, ExtraLoad, LoadAfterDelivery, ConductiveTotalLoad, SiteFeedPoint,
+			$st = "SELECT ResidenceTotalArea, ConstructionArea, ACArea, CurrentLoad, ExtraLoad, LoadAfterDelivery, ConductiveTotalLoad, FeedPoints, SiteFeedPoint,
 				Requirements, CableSize, Fuze, Meter, PossibilityYes, PossibilityNo, StationNumber, 
 				Switch, K1000KWT, K1000AMP, K1250KWT, K1250AMP, K1600KWT, K1600AMP
 				FROM Application r LEFT JOIN ApplicationDetail d ON r.ApplicationNumber = d.ApplicationNumber
